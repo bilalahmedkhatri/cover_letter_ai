@@ -1,10 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-t" />
+    <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Cover Letter Generator</title>
+    
+    <!-- SEO Meta Tags -->
+    <title>AI Professional Letter Generator | Craft Job & Admission Letters</title>
+    <meta name="description" content="An intelligent AI-powered generator that crafts tailored, professional cover letters for job applications and university admissions in minutes. Get a competitive edge with a perfectly written letter." />
+    <meta name="keywords" content="ai cover letter, cover letter generator, job application, university admission, resume helper, career tools, professional letter" />
+    <meta name="author" content="Bilal Ahmed" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://aistudio.google.com/" /> <!-- Placeholder URL -->
+    <meta property="og:title" content="AI Professional Letter Generator | Craft Job & Admission Letters" />
+    <meta property="og:description" content="Instantly create tailored cover letters for job applications and university admissions with our intelligent AI-powered generator." />
+    <meta property="og:image" content="https://aistudio.google.com/assets/images/og_image.png" /> <!-- Placeholder Image -->
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://aistudio.google.com/" /> <!-- Placeholder URL -->
+    <meta property="twitter:title" content="AI Professional Letter Generator | Craft Job & Admission Letters" />
+    <meta property="twitter:description" content="Instantly create tailored cover letters for job applications and university admissions with our intelligent AI-powered generator." />
+    <meta property="twitter:image" content="https://aistudio.google.com/assets/images/og_image.png" /> <!-- Placeholder Image -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       /* For custom scrollbar styling */
@@ -21,6 +41,15 @@
       ::-webkit-scrollbar-thumb:hover {
         background: #64748b; /* slate-500 */
       }
+
+      /* Animation for saved session display */
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+      }
     </style>
   <script type="importmap">
 {
@@ -32,8 +61,32 @@
   }
 }
 </script>
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "AI Professional Letter Generator",
+    "description": "An intelligent AI-powered generator that crafts tailored, professional cover letters for job applications and university admissions in minutes.",
+    "applicationCategory": "Productivity",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0"
+    },
+    "creator": {
+      "@type": "Person",
+      "name": "Bilal Ahmed"
+    }
+  }
+  </script>
+
 </head>
   <body class="bg-slate-900 text-slate-200">
+    <noscript>
+      You need to enable JavaScript to run this app. This application helps you generate professional letters using AI.
+    </noscript>
     <div id="root"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script type="module" src="/index.tsx"></script>
