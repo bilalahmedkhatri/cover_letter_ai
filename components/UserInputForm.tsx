@@ -157,6 +157,18 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
                     <input type="text" id="courseName" name="courseName" value={userData.courseName} onChange={handleUserChange} className={inputStyle} placeholder="e.g., B.S. in Computer Science" />
                 </div>
             </div>
+            <div>
+                <label htmlFor="universityAnalysisInstruction" className="block text-sm font-medium text-slate-300 mb-2">Analysis Instructions (Optional)</label>
+                <textarea
+                    id="universityAnalysisInstruction"
+                    name="universityAnalysisInstruction"
+                    value={userData.universityAnalysisInstruction}
+                    onChange={handleUserChange}
+                    rows={3}
+                    className={inputStyle}
+                    placeholder="e.g., 'Focus on finding the scholarship deadlines' or 'Check if they accept international students and find the language requirements.'"
+                />
+            </div>
             <button type="button" onClick={onAnalyzeUrl} disabled={isAnalyzing || !userData.universityUrl} className="flex items-center justify-center gap-2 w-full md:w-auto px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-md transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed">
               {isAnalyzing && <LoadingSpinner />}
               {isAnalyzing ? 'Analyzing...' : 'Analyze URL for Admission Info'}
@@ -198,11 +210,11 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
             </div>
             <div>
                 <label htmlFor="headerInfo" className="block text-sm font-medium text-slate-300 mb-2">Custom Header</label>
-                <textarea id="headerInfo" name="headerInfo" value={userData.headerInfo} onChange={handleUserChange} rows={3} className={inputStyle} placeholder="Your Name&#10;Your Address&#10;Your Contact Info"></textarea>
+                <textarea id="headerInfo" name="headerInfo" value={userData.headerInfo} onChange={handleUserChange} rows={4} className={inputStyle} placeholder="Your Name&#10;Your Address&#10;Your Contact Info"></textarea>
             </div>
             <div>
-                <label htmlFor="footerInfo" className="block text-sm font-medium text-slate-300 mb-2">Custom Closing</label>
-                <input type="text" id="footerInfo" name="footerInfo" value={userData.footerInfo} onChange={handleUserChange} className={inputStyle} placeholder="e.g., Best regards," />
+                <label htmlFor="footerInfo" className="block text-sm font-medium text-slate-300 mb-2">Custom Footer</label>
+                <textarea id="footerInfo" name="footerInfo" value={userData.footerInfo} onChange={handleUserChange} rows={4} className={inputStyle} placeholder="e.g., Best regards," ></textarea>
             </div>
         </div>
       </section>

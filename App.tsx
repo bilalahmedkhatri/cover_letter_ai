@@ -17,6 +17,7 @@ const App: React.FC = () => {
     footerInfo: '',
     universityUrl: '',
     courseName: '',
+    universityAnalysisInstruction: '',
   });
   const [jobDetails, setJobDetails] = useState<JobDetails>({
     url: '',
@@ -55,7 +56,7 @@ const App: React.FC = () => {
     setAdmissionInfo(null);
     setFoundCourses([]);
     try {
-      const result = await analyzeUniversityPage(userData.universityUrl, userData.courseName);
+      const result = await analyzeUniversityPage(userData.universityUrl, userData.courseName, userData.universityAnalysisInstruction);
       if (result.details) {
         setAdmissionInfo(result.details);
       }

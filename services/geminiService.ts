@@ -123,14 +123,15 @@ export const generateCoverLetter = async (userData: UserData, jobDetails: JobDet
  * Analyzes a university program webpage to extract admission details.
  * @param url The URL of the university program page.
  * @param courseName Optional specific course name to look for.
+ * @param userInstruction Optional specific instructions for the analysis.
  * @returns A promise that resolves to an object containing admission details and a list of found courses.
  */
-export const analyzeUniversityPage = async (url: string, courseName?: string): Promise<{ details: AdmissionInfo | null; courses: string[] }> => {
+export const analyzeUniversityPage = async (url: string, courseName?: string, userInstruction?: string): Promise<{ details: AdmissionInfo | null; courses: string[] }> => {
   if (!url) {
     throw new Error("University URL is required for analysis.");
   }
 
-  const prompt = `You are an expert admissions research assistant. Your task is to analyze the provided university URL and extract specific information.
+  let prompt = `You are an expert admissions research assistant. Your task is to analyze the provided university URL and extract specific information.
   
   URL to analyze: ${url}
   
@@ -144,7 +145,13 @@ export const analyzeUniversityPage = async (url: string, courseName?: string): P
       - program: The full, official name of the program.
       - department: The department or faculty offering the program.
       - admissionRequirements: A detailed summary of all requirements. Format this as a single string with each requirement on a new line (use '\\n').
-      - deadlines: A detailed list of all relevant application deadlines. Format this as a single string with each deadline on a new line (use '\\n').
+      - deadlines: A detailed list of all relevant application deadlines. Format this as a single string with each deadline on a new line (use '\\n').`;
+
+  if (userInstruction) {
+    prompt += `\n\n**Crucially, follow these specific instructions from the user:** ${userInstruction}`;
+  }
+  
+  prompt += `
   5.  Your final output MUST be a single, valid JSON object. Do not include any text, explanations, or markdown formatting like \`\`\`json\`\`\` before or after the JSON object.
   
   The JSON object should look like this:

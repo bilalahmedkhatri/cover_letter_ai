@@ -10,6 +10,7 @@ export interface UserData {
   footerInfo: string;
   universityUrl: string;
   courseName: string;
+  universityAnalysisInstruction: string;
 }
 
 export interface JobDetails {
