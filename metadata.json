@@ -1,0 +1,5 @@
+{
+  "name": "AI Cover Letter Generator",
+  "description": "An intelligent cover letter generator that tailors a professional letter to a specific job vacancy using your personal details.",
+  "requestFramePermissions": []
+}
