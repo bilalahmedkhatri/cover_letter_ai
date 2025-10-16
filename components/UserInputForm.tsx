@@ -154,7 +154,31 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
                 </div>
                  <div>
                     <label htmlFor="courseName" className="block text-sm font-medium text-slate-300 mb-2">Specific Course Name (Optional)</label>
-                    <input type="text" id="courseName" name="courseName" value={userData.courseName} onChange={handleUserChange} className={inputStyle} placeholder="e.g., B.S. in Computer Science" />
+                    {foundCourses && foundCourses.length > 0 ? (
+                      <select
+                        id="courseName"
+                        name="courseName"
+                        value={userData.courseName}
+                        onChange={handleUserChange}
+                        className={inputStyle}
+                        aria-label="Select from courses found on the page"
+                      >
+                        <option value="">-- Select a course --</option>
+                        {foundCourses.map(course => (
+                          <option key={course} value={course}>{course}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type="text"
+                        id="courseName"
+                        name="courseName"
+                        value={userData.courseName}
+                        onChange={handleUserChange}
+                        className={inputStyle}
+                        placeholder="e.g., B.S. in Computer Science"
+                      />
+                    )}
                 </div>
             </div>
             <div>
