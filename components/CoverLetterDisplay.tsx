@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import LoadingSpinner from './icons/LoadingSpinner';
 import CopyIcon from './icons/CopyIcon';
@@ -72,30 +71,32 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
 
     if (coverLetter) {
       return (
-        <div className="relative h-full">
-          <div className="absolute top-0 right-0 flex gap-2">
+        <div className="flex flex-col h-full">
+          <div className="flex-grow overflow-y-auto pr-2">
+            <textarea
+              value={coverLetter}
+              onChange={(e) => setCoverLetter(e.target.value)}
+              className="w-full h-full min-h-[250px] bg-transparent border-none outline-none resize-none text-slate-300 font-sans text-base leading-relaxed"
+              aria-label="Editable cover letter content"
+            />
+          </div>
+          <div className="flex justify-end gap-4 mt-4 flex-shrink-0">
             <button 
               onClick={handleCopy}
-              className="p-2 bg-slate-700/50 hover:bg-slate-600 rounded-md transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-slate-700/80 hover:bg-slate-700 rounded-md transition-colors text-sm font-medium"
               aria-label="Copy to clipboard"
             >
               {copied ? <CheckIcon className="w-5 h-5 text-green-400" /> : <CopyIcon className="w-5 h-5 text-slate-300" />}
+              <span>{copied ? 'Copied!' : 'Copy'}</span>
             </button>
              <button 
               onClick={handleDownloadPdf}
-              className="p-2 bg-slate-700/50 hover:bg-slate-600 rounded-md transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-md transition-colors text-sm font-medium"
               aria-label="Download as PDF"
             >
-              <DownloadIcon className="w-5 h-5 text-slate-300" />
+              <DownloadIcon className="w-5 h-5 text-slate-200" />
+              <span>Download PDF</span>
             </button>
-          </div>
-          <div className="h-full overflow-y-auto pr-4">
-             <textarea
-              value={coverLetter}
-              onChange={(e) => setCoverLetter(e.target.value)}
-              className="w-full h-full bg-transparent border-none outline-none resize-none text-slate-300 font-sans text-base leading-relaxed"
-              aria-label="Editable cover letter content"
-            />
           </div>
         </div>
       );
@@ -114,7 +115,7 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
   return (
     <div className="flex flex-col h-full">
       <h2 className="text-2xl font-bold text-cyan-300 mb-6 flex-shrink-0">Generated Letter</h2>
-      <div className="bg-slate-900/70 rounded-lg p-6 flex-grow min-h-[300px]">
+      <div className="bg-slate-900/70 rounded-lg p-6 flex-grow">
         {renderContent()}
       </div>
     </div>

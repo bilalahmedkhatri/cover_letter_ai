@@ -86,7 +86,7 @@ const App: React.FC = () => {
           </p>
         </header>
 
-        <main className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <main className="flex flex-col gap-8">
           <div className="bg-slate-800/50 rounded-xl p-6 shadow-2xl border border-slate-700">
             <UserInputForm 
               userData={userData}
@@ -102,7 +102,7 @@ const App: React.FC = () => {
               foundCourses={foundCourses}
             />
           </div>
-          <div className="bg-slate-800/50 rounded-xl p-6 shadow-2xl border border-slate-700 min-h-[400px] lg:min-h-0">
+          <div className="bg-slate-800/50 rounded-xl p-6 shadow-2xl border border-slate-700">
              <CoverLetterDisplay 
               coverLetter={coverLetter}
               setCoverLetter={setCoverLetter}
@@ -113,7 +113,7 @@ const App: React.FC = () => {
         </main>
 
         <footer className="text-center mt-12 text-slate-500">
-          <p>Powered by Google Gemini</p>
+          <p>Powered by <b>Bilal Ahmed</b></p>
         </footer>
       </div>
     </div>
