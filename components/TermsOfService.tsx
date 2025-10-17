@@ -8,15 +8,11 @@ const TermsOfService: React.FC = () => {
         <h2 className="text-3xl font-bold text-cyan-300 mb-6 border-b border-slate-700 pb-3">Terms of Service</h2>
         
         <div className="space-y-4 text-slate-300 prose prose-invert max-w-none">
-            <p className="text-amber-300 bg-amber-900/50 border border-amber-700 rounded-lg p-3 text-sm">
-                <strong>IMPORTANT:</strong> This is a template. You must replace the content below with your own accurate Terms of Service before publishing your site.
-            </p>
-
             <p>Last updated: [Date]</p>
 
             <h3 className="text-xl font-semibold text-slate-200">1. Acceptance of Terms</h3>
             <p>
-                By accessing and using [Your App Name] ("the Service"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
+                By accessing and using cover-letter-ai-xi ("the Service"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
             </p>
 
             <h3 className="text-xl font-semibold text-slate-200">2. Description of Service</h3>
@@ -31,12 +27,12 @@ const TermsOfService: React.FC = () => {
 
             <h3 className="text-xl font-semibold text-slate-200">4. Disclaimer of Warranties</h3>
             <p>
-                The Service is provided on an "as is" and "as available" basis. [Your App Name] makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
+                The Service is provided on an "as is" and "as available" basis. cover-letter-ai-xi makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
             </p>
 
             <h3 className="text-xl font-semibold text-slate-200">5. Limitation of Liability</h3>
             <p>
-                In no event shall [Your App Name] or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on our website, even if we or an authorized representative has been notified orally or in writing of the possibility of such damage.
+                In no event shall cover-letter-ai-xi or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on our website, even if we or an authorized representative has been notified orally or in writing of the possibility of such damage.
             </p>
 
             <h3 className="text-xl font-semibold text-slate-200">6. Changes to Terms</h3>
