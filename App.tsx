@@ -1,9 +1,11 @@
 // Fix: Replaced placeholder content with a functional App component to structure the application, manage state, and handle logic.
 import React, { useState, useEffect } from 'react';
-import { UserData, JobDetails, AdmissionInfo } from './types';
+import { UserData, JobDetails, AdmissionInfo, SavedLetter } from './types';
 import { generateCoverLetter, analyzeUniversityPage } from './services/geminiService';
+import * as storageService from './services/storageService';
 import UserInputForm from './components/UserInputForm';
 import CoverLetterDisplay from './components/CoverLetterDisplay';
+import SavedLettersDisplay from './components/SavedLettersDisplay';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
 import AboutUs from './components/AboutUs';
@@ -53,6 +55,14 @@ function App() {
   const [admissionInfo, setAdmissionInfo] = useState<AdmissionInfo | null>(null);
   const [foundCourses, setFoundCourses] = useState<string[]>([]);
 
+  // State for saved letters
+  const [savedLetters, setSavedLetters] = useState<SavedLetter[]>([]);
+
+  // Effect for loading saved letters on mount
+  useEffect(() => {
+    setSavedLetters(storageService.getSavedLetters());
+  }, []);
+
   // Effect for handling routing
   useEffect(() => {
     const handleLocationChange = () => {
@@ -98,6 +108,8 @@ function App() {
     try {
       const letter = await generateCoverLetter(userData, jobDetails);
       setCoverLetter(letter);
+      const updatedLetters = storageService.saveLetter(letter);
+      setSavedLetters(updatedLetters);
     } catch (e) {
       if (e instanceof Error) {
         setError(e.message);
@@ -132,6 +144,20 @@ function App() {
       setIsAnalyzing(false);
     }
   };
+
+  const handleRestoreLetter = (content: string) => {
+    setCoverLetter(content);
+    // Scroll to the top of the cover letter display for better UX
+    const letterDisplay = document.getElementById('cover-letter-display');
+    if (letterDisplay) {
+      letterDisplay.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleRemoveLetter = (id: number) => {
+    const updatedLetters = storageService.removeLetter(id);
+    setSavedLetters(updatedLetters);
+  };
   
   const renderPage = () => {
     if (page === '/') {
@@ -152,7 +178,7 @@ function App() {
               foundCourses={foundCourses}
             />
           </div>
-          <div className="bg-slate-800/50 p-6 rounded-lg shadow-lg">
+          <div id="cover-letter-display" className="bg-slate-800/50 p-6 rounded-lg shadow-lg">
             <CoverLetterDisplay
               coverLetter={coverLetter}
               setCoverLetter={setCoverLetter}
@@ -160,6 +186,11 @@ function App() {
               error={error}
             />
           </div>
+          <SavedLettersDisplay
+            letters={savedLetters}
+            onRestore={handleRestoreLetter}
+            onRemove={handleRemoveLetter}
+          />
         </div>
       );
     }

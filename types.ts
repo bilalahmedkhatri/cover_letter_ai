@@ -24,3 +24,9 @@ export interface AdmissionInfo {
   admissionRequirements: string;
   deadlines: string;
 }
+
+export interface SavedLetter {
+  id: number;
+  content: string;
+  date: string;
+}
