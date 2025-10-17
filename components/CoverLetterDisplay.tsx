@@ -73,14 +73,12 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
     if (coverLetter) {
       return (
         <div className="flex flex-col h-full">
-          <div className="flex-grow overflow-y-auto pr-2">
             <textarea
               value={coverLetter}
               onChange={(e) => setCoverLetter(e.target.value)}
-              className="w-full min-h-[250px] bg-transparent border-none outline-none resize-none text-slate-300 font-sans text-base leading-relaxed"
+              className="w-full flex-grow bg-transparent border-none outline-none resize-none text-slate-300 font-sans text-base leading-relaxed whitespace-pre-wrap overflow-y-auto pr-2"
               aria-label="Editable cover letter content"
             />
-          </div>
           <div className="flex justify-end gap-4 mt-4 flex-shrink-0">
             <button 
               onClick={handleCopy}
@@ -116,7 +114,7 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
   return (
     <div className="flex flex-col h-[36rem] my-6">
       <h2 className="text-2xl font-bold text-cyan-300 mb-6 flex-shrink-0">Generated Letter</h2>
-      <div className="bg-slate-900/70 rounded-lg p-6 flex-grow">
+      <div className="bg-slate-900/70 rounded-lg p-6 flex-grow flex flex-col">
         {renderContent()}
       </div>
     </div>
