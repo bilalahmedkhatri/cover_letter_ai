@@ -6,6 +6,39 @@ import { UserData, JobDetails, AdmissionInfo } from '../types';
 const ai = new GoogleGenAI({apiKey: process.env.API_KEY!});
 
 /**
+ * Translates a generic error into a user-friendly, actionable message.
+ * @param error The error object.
+ * @returns A string containing a user-friendly error message.
+ */
+const getFriendlyErrorMessage = (error: unknown): string => {
+  if (error instanceof Error) {
+    const message = error.message.toLowerCase();
+    
+    if (message.includes('api key not valid') || message.includes('api_key')) {
+      return "There's an issue with the AI service configuration. Please try again later or contact support if the problem persists.";
+    }
+
+    if (message.includes('rate limit') || message.includes('429')) {
+      return "The service is currently experiencing high demand. Please wait a moment and try again.";
+    }
+
+    if (message.includes('safety') || message.includes('blocked')) {
+      return "The request could not be processed due to content policies. Please adjust your input and try again, avoiding any potentially sensitive information.";
+    }
+
+    if (message.includes('failed to fetch') || message.includes('network')) {
+        return "A network error occurred. Please check your internet connection and try again.";
+    }
+    
+    // Fallback for other specific but non-actionable errors from the API
+    return `An unexpected error occurred: ${error.message}. Please try again.`;
+  }
+  
+  return "An unknown error occurred. Please refresh the page and try again.";
+};
+
+
+/**
  * Converts a File object to a GoogleGenAI.Part object.
  * @param file The file to convert.
  * @returns A promise that resolves to a Part object.
@@ -112,10 +145,7 @@ export const generateCoverLetter = async (userData: UserData, jobDetails: JobDet
     return response.text;
   } catch (error) {
     console.error("Error generating cover letter:", error);
-    if (error instanceof Error) {
-        throw new Error(`Failed to generate cover letter: ${error.message}`);
-    }
-    throw new Error("An unknown error occurred while generating the cover letter.");
+    throw new Error(getFriendlyErrorMessage(error));
   }
 };
 
@@ -165,21 +195,17 @@ export const analyzeUniversityPage = async (url: string, courseName?: string, us
     }
   }`;
 
-  let responseText = '';
   try {
     const response = await ai.models.generateContent({
         model: 'gemini-2.5-pro', // Using pro for better reasoning and web search
         contents: prompt,
         config: {
-            // Re-enabling googleSearch, which is the key to analyzing live URLs
             tools: [{googleSearch: {}}], 
         },
     });
 
-    responseText = response.text;
+    const responseText = response.text;
     
-    // The response is now a raw text string that we expect to be JSON.
-    // Let's make the parsing more robust.
     let jsonString = responseText;
     
     const firstBracket = jsonString.indexOf('{');
@@ -197,11 +223,9 @@ export const analyzeUniversityPage = async (url: string, courseName?: string, us
   } catch (error) {
     console.error("Error analyzing university page:", error);
     if (error instanceof SyntaxError) {
-      throw new Error(`Failed to parse the analysis result from the AI. The response was not valid JSON. Response text: ${responseText}`);
+      throw new Error(`The AI couldn't structure the information from the URL. This can happen if the page is complex, protected (e.g., requires a login), or doesn't contain clear admission details. Please try a more specific URL, like a direct link to the program or admissions page.`);
     }
-    if (error instanceof Error) {
-        throw new Error(`Failed to analyze the university URL: ${error.message}`);
-    }
-    throw new Error("An unknown error occurred while analyzing the university URL.");
+    // All other errors (API, network, etc.) go through the friendly helper
+    throw new Error(getFriendlyErrorMessage(error));
   }
 };

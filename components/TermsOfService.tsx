@@ -36,6 +36,11 @@ const TermsOfService: React.FC = () => {
         We reserve the right, at our sole discretion, to modify or replace these Terms at any time. We will provide notice of any changes by posting the new Terms on this page.
       </p>
 
+      <div className="mt-8 pt-6 border-t border-slate-700 text-center">
+        <a href="/" className="inline-block px-6 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-md transition-colors font-medium">
+            Back to Generator
+        </a>
+      </div>
     </div>
   );
 };

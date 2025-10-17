@@ -1,102 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <!-- SEO Meta Tags -->
-    <title>AI Professional Letter Generator | Craft Job & Admission Letters</title>
-    <meta name="description" content="An intelligent AI-powered generator that crafts tailored, professional cover letters for job applications and university admissions in minutes. Get a competitive edge with a perfectly written letter." />
-    <meta name="keywords" content="ai cover letter, cover letter generator, job application, university admission, resume helper, career tools, professional letter" />
-    <meta name="author" content="Bilal Ahmed" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Professional Letter Generator</title>
+  <meta name="description" content="Craft the perfect cover letter or university admission letter in seconds. Let our AI-powered advisor do the rest." />
+  
+  <!-- Social Media Meta Tags -->
+  <meta property="og:title" content="AI Professional Letter Generator">
+  <meta property="og:description" content="Craft the perfect cover letter or university admission letter in seconds. Let our AI-powered advisor do the rest.">
+  <meta property="og:image" content="/og-image.png">
+  <meta property="og:url" content="https://cover-letter-ai-xi.vercel.app/">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- jsPDF for PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://cover-letter-ai-xi.vercel.app/" />
-    <meta property="og:title" content="AI Professional Letter Generator | Craft Job & Admission Letters" />
-    <meta property="og:description" content="Instantly create tailored cover letters for job applications and university admissions with our intelligent AI-powered generator." />
-    <!-- TODO: Create a 1200x630px image named og-image.png and place it in your public folder -->
-    <meta property="og:image" content="https://cover-letter-ai-xi.vercel.app/og-image.png" />
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        },
+        container: {
+          center: true,
+          padding: {
+            DEFAULT: '1rem',
+            sm: '2rem',
+            lg: '4rem',
+            xl: '5rem',
+            '2xl': '6rem',
+          },
+        },
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap');
+  </style>
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://cover-letter-ai-xi.vercel.app/" />
-    <meta property="twitter:title" content="AI Professional Letter Generator | Craft Job & Admission Letters" />
-    <meta property="twitter:description" content="Instantly create tailored cover letters for job applications and university admissions with our intelligent AI-powered generator." />
-    <!-- TODO: Make sure the og-image.png is accessible for Twitter too -->
-    <meta property="twitter:image" content="https://cover-letter-ai-xi.vercel.app/og-image.png" />
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      /* For custom scrollbar styling */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #1e293b; /* slate-800 */
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #475569; /* slate-600 */
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #64748b; /* slate-500 */
-      }
-
-      /* Animation for saved session display */
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      .animate-fade-in {
-        animation: fadeIn 0.5s ease-out forwards;
-      }
-    </style>
   <script type="importmap">
-{
-  "imports": {
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.25.0"
-  }
-}
-</script>
-
-  <!-- JSON-LD Structured Data -->
-  <script type="application/ld+json">
   {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "AI Professional Letter Generator",
-    "description": "An intelligent AI-powered generator that crafts tailored, professional cover letters for job applications and university admissions in minutes.",
-    "applicationCategory": "Productivity",
-    "operatingSystem": "All",
-    "offers": {
-      "@type": "Offer",
-      "price": "0"
-    },
-    "creator": {
-      "@type": "Person",
-      "name": "Bilal Ahmed"
+    "imports": {
+      "react/": "https://aistudiocdn.com/react@^19.2.0/",
+      "react": "https://aistudiocdn.com/react@^19.2.0",
+      "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+      "@google/genai": "https://aistudiocdn.com/@google/genai@^1.25.0"
     }
   }
   </script>
 
-  <!-- TODO: Add your Google AdSense auto-ads script here when you get it -->
-  <!-- 
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_CLIENT_ID"
-     crossorigin="anonymous"></script>
-  -->
-
 </head>
-  <body class="bg-slate-900 text-slate-200">
-    <noscript>
-      You need to enable JavaScript to run this app. This application helps you generate professional letters using AI.
-    </noscript>
-    <div id="root"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script type="module" src="/index.tsx"></script>
-  </body>
+<body class="bg-slate-900">
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+  
+  <!-- Main entry point -->
+  <script type="module" src="/index.tsx"></script>
+</body>
 </html>

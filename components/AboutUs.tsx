@@ -24,6 +24,12 @@ const AboutUs: React.FC = () => {
       <p>
         This is a tool built for you. If you have any feedback, suggestions, or questions, please don't hesitate to reach out to us.
       </p>
+
+      <div className="mt-8 pt-6 border-t border-slate-700 text-center">
+        <a href="/" className="inline-block px-6 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-md transition-colors font-medium">
+            Back to Generator
+        </a>
+      </div>
     </div>
   );
 };

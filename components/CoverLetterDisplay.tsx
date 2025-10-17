@@ -59,12 +59,13 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
 
     if (error) {
       return (
-        <div className="flex flex-col items-center justify-center h-full text-red-400">
-           <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="flex flex-col items-center justify-center h-full text-red-400" role="alert">
+           <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <title>Error</title>
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <p className="font-bold">An error occurred</p>
-          <p className="text-sm text-center">{error}</p>
+          <p className="font-bold text-lg">Letter Generation Failed</p>
+          <p className="text-sm text-center text-slate-400 mt-2">{error}</p>
         </div>
       );
     }
