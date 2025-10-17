@@ -3,6 +3,9 @@ import { UserData, JobDetails, AdmissionInfo } from './types';
 import { generateCoverLetter, analyzeUniversityPage } from './services/geminiService';
 import UserInputForm from './components/UserInputForm';
 import CoverLetterDisplay from './components/CoverLetterDisplay';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsOfService from './components/TermsOfService';
+import AboutUs from './components/AboutUs';
 
 // New component for displaying saved session
 const PreviousSessionDisplay: React.FC<{
@@ -72,9 +75,39 @@ const PreviousSessionDisplay: React.FC<{
   );
 };
 
+const HowItWorks: React.FC = () => (
+  <section className="bg-slate-800/30 rounded-xl p-6 shadow-lg border border-slate-700/50 mb-8">
+    <h2 className="text-2xl font-bold text-center text-cyan-300 mb-6">How It Works</h2>
+    <div className="grid md:grid-cols-3 gap-6 text-center">
+      <div className="flex flex-col items-center">
+        <div className="flex items-center justify-center h-16 w-16 rounded-full bg-indigo-500/20 text-indigo-300 mb-4 border border-indigo-500/50">
+           <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+        </div>
+        <h3 className="font-semibold text-lg text-slate-200">1. Enter Your Details</h3>
+        <p className="text-slate-400 text-sm">Provide your information, skills, experience, and details about the job or university program you're applying for.</p>
+      </div>
+       <div className="flex flex-col items-center">
+        <div className="flex items-center justify-center h-16 w-16 rounded-full bg-indigo-500/20 text-indigo-300 mb-4 border border-indigo-500/50">
+           <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+        </div>
+        <h3 className="font-semibold text-lg text-slate-200">2. AI-Powered Generation</h3>
+        <p className="text-slate-400 text-sm">Our advanced AI analyzes your input and the target role or program to craft a unique, professional, and tailored letter.</p>
+      </div>
+       <div className="flex flex-col items-center">
+        <div className="flex items-center justify-center h-16 w-16 rounded-full bg-indigo-500/20 text-indigo-300 mb-4 border border-indigo-500/50">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+        </div>
+        <h3 className="font-semibold text-lg text-slate-200">3. Edit & Download</h3>
+        <p className="text-slate-400 text-sm">Review the generated letter, make any final edits directly in the app, and download it as a PDF, ready to send.</p>
+      </div>
+    </div>
+  </section>
+);
+
+
+type View = 'app' | 'privacy' | 'terms' | 'about';
 
 const App: React.FC = () => {
-  // Initialize state to be empty, not from localStorage
   const [userData, setUserData] = useState<UserData>({
     name: '',
     skills: '',
@@ -96,13 +129,11 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
-  // State for university URL analysis
   const [admissionInfo, setAdmissionInfo] = useState<AdmissionInfo | null>(null);
   const [foundCourses, setFoundCourses] = useState<string[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [analysisError, setAnalysisError] = useState<string>('');
 
-  // New state to hold data loaded from storage, with timestamp
   const [savedData, setSavedData] = useState<{ 
     userData: UserData; 
     jobDetails: JobDetails; 
@@ -110,10 +141,41 @@ const App: React.FC = () => {
     timestamp: number;
   } | null>(null);
 
-  // Effect to load data from localStorage ONCE on mount
+  // State to manage which view is active
+  const [view, setView] = useState<View>('app');
+
+  // Effect to handle routing based on URL hash
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#/', '');
+      switch(hash) {
+        case 'privacy':
+          setView('privacy');
+          break;
+        case 'terms':
+          setView('terms');
+          break;
+        case 'about':
+          setView('about');
+          break;
+        default:
+          setView('app');
+          break;
+      }
+    };
+    
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleHashChange);
+    
+    // Initial check
+    handleHashChange();
+    
+    // Cleanup
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   useEffect(() => {
     try {
-      // Clean up old storage items if they exist for a clean transition
       if (localStorage.getItem('ai-letter-gen-userData')) {
         localStorage.removeItem('ai-letter-gen-userData');
         localStorage.removeItem('ai-letter-gen-jobDetails');
@@ -126,7 +188,7 @@ const App: React.FC = () => {
         if (parsedSession.userData && (parsedSession.coverLetter || parsedSession.userData.name)) {
           setSavedData({
             ...parsedSession,
-            userData: { ...parsedSession.userData, resume: null }, // Resume cannot be persisted
+            userData: { ...parsedSession.userData, resume: null },
           });
         }
       }
@@ -135,19 +197,16 @@ const App: React.FC = () => {
     }
   }, []);
   
-  // Combined effect to save the entire session to localStorage whenever data changes
   useEffect(() => {
-    // Only save if there's a user name, to avoid saving an empty session on first load
     if (userData.name) {
       try {
         const sessionData = {
-          userData: { ...userData, resume: null }, // Never store the File object
+          userData: { ...userData, resume: null },
           jobDetails,
           coverLetter,
-          timestamp: Date.now(), // Add/update current timestamp
+          timestamp: Date.now(),
         };
         localStorage.setItem('ai-letter-gen-session', JSON.stringify(sessionData));
-        // Also update the savedData state so the prompt reflects the latest save
         setSavedData(sessionData);
       } catch (error) {
         console.error("Error saving session to localStorage:", error);
@@ -160,7 +219,6 @@ const App: React.FC = () => {
       setUserData(savedData.userData);
       setJobDetails(savedData.jobDetails);
       setCoverLetter(savedData.coverLetter);
-      // Do NOT hide the saved session display. Let it persist.
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -177,7 +235,6 @@ const App: React.FC = () => {
     try {
       const letter = await generateCoverLetter(userData, jobDetails);
       setCoverLetter(letter);
-      // Do NOT hide the saved session prompt. It will be updated by the useEffect hook.
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred.');
       console.error(err);
@@ -188,7 +245,6 @@ const App: React.FC = () => {
 
   const handleAnalyzeUrl = async () => {
     if (!userData.universityUrl) return;
-    // Clear previous results before starting a new analysis
     setIsAnalyzing(true);
     setAnalysisError('');
     setAdmissionInfo(null);
@@ -200,7 +256,6 @@ const App: React.FC = () => {
       }
       if (result.courses && result.courses.length > 0) {
         setFoundCourses(result.courses);
-        // If no course was selected by user, and we found courses, select the first one by default
         if (!userData.courseName && result.courses[0]) {
             setUserData(prev => ({ ...prev, courseName: result.courses[0]}));
         }
@@ -212,55 +267,81 @@ const App: React.FC = () => {
     }
   };
 
+  const renderView = () => {
+    switch(view) {
+      case 'privacy':
+        return <PrivacyPolicy />;
+      case 'terms':
+        return <TermsOfService />;
+      case 'about':
+        return <AboutUs />;
+      case 'app':
+      default:
+        return (
+          <>
+            <HowItWorks />
+            <main className="flex flex-col gap-8">
+              {/* TODO: Add manual AdSense ad units here if needed, e.g., between sections */}
+              <div className="bg-slate-800/50 rounded-xl p-6 shadow-2xl border border-slate-700">
+                <UserInputForm 
+                  userData={userData}
+                  setUserData={setUserData}
+                  jobDetails={jobDetails}
+                  setJobDetails={setJobDetails}
+                  onSubmit={handleGenerateLetter}
+                  isLoading={isLoading}
+                  onAnalyzeUrl={handleAnalyzeUrl}
+                  isAnalyzing={isAnalyzing}
+                  analysisError={analysisError}
+                  admissionInfo={admissionInfo}
+                  foundCourses={foundCourses}
+                />
+              </div>
+              <div className="bg-slate-800/50 rounded-xl p-6 shadow-2xl border border-slate-700">
+                 <CoverLetterDisplay 
+                  coverLetter={coverLetter}
+                  setCoverLetter={setCoverLetter}
+                  isLoading={isLoading}
+                  error={error}
+                />
+              </div>
+
+              {savedData && (
+                <PreviousSessionDisplay
+                  savedData={savedData}
+                  onLoad={handleLoadSavedData}
+                  onClear={handleClearSavedData}
+                />
+              )}
+            </main>
+          </>
+        );
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 font-sans p-4 sm:p-6 lg:p-8">
       <div className="max-w-6xl mx-auto">
         <header className="text-center mb-10">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400 mb-2">
-            AI Professional Letter Generator
+             <a href="#" aria-label="Back to main page">{/* Link to reset hash */}
+              AI Professional Letter Generator
+             </a>
           </h1>
           <p className="text-slate-400 text-lg">
             Craft tailored letters for job applications or university admissions.
           </p>
         </header>
 
-        <main className="flex flex-col gap-8">
-          <div className="bg-slate-800/50 rounded-xl p-6 shadow-2xl border border-slate-700">
-            <UserInputForm 
-              userData={userData}
-              setUserData={setUserData}
-              jobDetails={jobDetails}
-              setJobDetails={setJobDetails}
-              onSubmit={handleGenerateLetter}
-              isLoading={isLoading}
-              onAnalyzeUrl={handleAnalyzeUrl}
-              isAnalyzing={isAnalyzing}
-              analysisError={analysisError}
-              admissionInfo={admissionInfo}
-              foundCourses={foundCourses}
-            />
-          </div>
-          <div className="bg-slate-800/50 rounded-xl p-6 shadow-2xl border border-slate-700">
-             <CoverLetterDisplay 
-              coverLetter={coverLetter}
-              setCoverLetter={setCoverLetter}
-              isLoading={isLoading}
-              error={error}
-            />
-          </div>
-
-          {savedData && (
-            <PreviousSessionDisplay
-              savedData={savedData}
-              onLoad={handleLoadSavedData}
-              onClear={handleClearSavedData}
-            />
-          )}
-        </main>
+        {renderView()}
 
         <footer className="text-center mt-12 text-slate-500">
-          <p>Powered by <b><a href="https://www.linkedin.com/in/bilalahmeddev/" title="Go to my LinkedIn Profile">Bilal Ahmed</a></b></p>
+          <div className="flex justify-center gap-4 mb-2">
+            <a href="#/about" className="hover:text-slate-300 transition-colors text-sm">About Us</a>
+            <a href="#/privacy" className="hover:text-slate-300 transition-colors text-sm">Privacy Policy</a>
+            <a href="#/terms" className="hover:text-slate-300 transition-colors text-sm">Terms of Service</a>
+          </div>
+          <p>Powered by <b><a href="https://www.linkedin.com/in/bilalahmeddev/" title="Go to my LinkedIn Profile" target="_blank" rel="noopener noreferrer">Bilal Ahmed</a></b></p>
         </footer>
       </div>
     </div>
