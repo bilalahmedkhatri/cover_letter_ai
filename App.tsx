@@ -10,11 +10,26 @@ const PreviousSessionDisplay: React.FC<{
     userData: UserData;
     jobDetails: JobDetails;
     coverLetter: string;
+    timestamp?: number;
   };
   onLoad: () => void;
   onClear: () => void;
 }> = ({ savedData, onLoad, onClear }) => {
-  const { userData, jobDetails, coverLetter } = savedData;
+  const { userData, jobDetails, coverLetter, timestamp } = savedData;
+  const [isOld, setIsOld] = useState(false);
+
+  useEffect(() => {
+    if (timestamp) {
+      const FIVE_MINUTES_IN_MS = 5 * 60 * 1000;
+      const dataAge = Date.now() - timestamp;
+      if (dataAge > FIVE_MINUTES_IN_MS) {
+        setIsOld(true);
+      } else {
+        setIsOld(false); // Reset if data gets updated to be fresh
+      }
+    }
+  }, [timestamp]);
+
 
   const target = userData.letterType === 'job'
     ? jobDetails.url || 'a previously entered job'
@@ -23,9 +38,19 @@ const PreviousSessionDisplay: React.FC<{
   const letterPreview = coverLetter.substring(0, 200) + (coverLetter.length > 200 ? '...' : '');
 
   return (
-    <div className="bg-slate-800/50 rounded-xl p-6 shadow-2xl border border-slate-700 animate-fade-in">
-      <h3 className="text-xl font-bold text-cyan-300 mb-4">Saved Session Found</h3>
-      <div className="bg-slate-900/70 rounded-lg p-4 space-y-3">
+    <section aria-labelledby="saved-session-heading" className="bg-slate-800/50 rounded-xl p-6 shadow-2xl border border-slate-700 animate-fade-in">
+      <h3 id="saved-session-heading" className="text-xl font-bold text-cyan-300 mb-4">Saved Session Found</h3>
+      <div className="bg-slate-900/70 rounded-lg p-4 space-y-4">
+        {isOld && (
+          <div className="p-3 bg-amber-900/50 border border-amber-700/80 rounded-lg text-amber-200 text-sm flex items-start gap-3" role="alert">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 flex-shrink-0 mt-0.5 text-amber-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.21 3.03-1.742 3.03H4.42c-1.532 0-2.492-1.696-1.742-3.03l5.58-9.92zM10 13a1 1 0 110-2 1 1 0 010 2zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+            <div>
+              <p className="font-semibold">This session was saved more than 5 minutes ago and may be outdated.</p>
+            </div>
+          </div>
+        )}
         <p className="text-slate-400">
           You have a previously generated letter for <strong className="text-slate-200">{target}</strong>.
         </p>
@@ -43,7 +68,7 @@ const PreviousSessionDisplay: React.FC<{
           </button>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
@@ -77,69 +102,71 @@ const App: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [analysisError, setAnalysisError] = useState<string>('');
 
-  // New state to hold data loaded from storage
-  const [savedData, setSavedData] = useState<{ userData: UserData; jobDetails: JobDetails; coverLetter: string } | null>(null);
+  // New state to hold data loaded from storage, with timestamp
+  const [savedData, setSavedData] = useState<{ 
+    userData: UserData; 
+    jobDetails: JobDetails; 
+    coverLetter: string;
+    timestamp: number;
+  } | null>(null);
 
   // Effect to load data from localStorage ONCE on mount
   useEffect(() => {
     try {
-      const savedUserData = localStorage.getItem('ai-letter-gen-userData');
-      const savedJobDetails = localStorage.getItem('ai-letter-gen-jobDetails');
-      const savedCoverLetter = localStorage.getItem('ai-letter-gen-coverLetter');
+      // Clean up old storage items if they exist for a clean transition
+      if (localStorage.getItem('ai-letter-gen-userData')) {
+        localStorage.removeItem('ai-letter-gen-userData');
+        localStorage.removeItem('ai-letter-gen-jobDetails');
+        localStorage.removeItem('ai-letter-gen-coverLetter');
+      }
 
-      if (savedUserData && savedJobDetails && (savedCoverLetter || JSON.parse(savedUserData).name)) {
-        setSavedData({
-          userData: { ...JSON.parse(savedUserData), resume: null }, // Resume cannot be persisted
-          jobDetails: JSON.parse(savedJobDetails),
-          coverLetter: savedCoverLetter || ''
-        });
+      const savedSession = localStorage.getItem('ai-letter-gen-session');
+      if (savedSession) {
+        const parsedSession = JSON.parse(savedSession);
+        if (parsedSession.userData && (parsedSession.coverLetter || parsedSession.userData.name)) {
+          setSavedData({
+            ...parsedSession,
+            userData: { ...parsedSession.userData, resume: null }, // Resume cannot be persisted
+          });
+        }
       }
     } catch (error) {
       console.error("Error loading saved data from localStorage:", error);
     }
   }, []);
-
-  // Effect to save user data to localStorage whenever it changes
+  
+  // Combined effect to save the entire session to localStorage whenever data changes
   useEffect(() => {
-    try {
-      const dataToStore = { ...userData, resume: null }; // Never store the File object
-      localStorage.setItem('ai-letter-gen-userData', JSON.stringify(dataToStore));
-    } catch (error) {
-      console.error("Error saving user data to localStorage:", error);
+    // Only save if there's a user name, to avoid saving an empty session on first load
+    if (userData.name) {
+      try {
+        const sessionData = {
+          userData: { ...userData, resume: null }, // Never store the File object
+          jobDetails,
+          coverLetter,
+          timestamp: Date.now(), // Add/update current timestamp
+        };
+        localStorage.setItem('ai-letter-gen-session', JSON.stringify(sessionData));
+        // Also update the savedData state so the prompt reflects the latest save
+        setSavedData(sessionData);
+      } catch (error) {
+        console.error("Error saving session to localStorage:", error);
+      }
     }
-  }, [userData]);
-
-  // Effect to save job details to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem('ai-letter-gen-jobDetails', JSON.stringify(jobDetails));
-    } catch (error) {
-      console.error("Error saving job details to localStorage:", error);
-    }
-  }, [jobDetails]);
-
-  // Effect to save the generated cover letter
-  useEffect(() => {
-    // Only save if there's a cover letter to prevent overwriting with an empty string on load
-    if (coverLetter) {
-      localStorage.setItem('ai-letter-gen-coverLetter', coverLetter);
-    }
-  }, [coverLetter]);
+  }, [userData, jobDetails, coverLetter]);
   
   const handleLoadSavedData = () => {
     if (savedData) {
       setUserData(savedData.userData);
       setJobDetails(savedData.jobDetails);
       setCoverLetter(savedData.coverLetter);
-      // Optional: scroll to the top of the form after loading
+      // Do NOT hide the saved session display. Let it persist.
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const handleClearSavedData = () => {
-    localStorage.removeItem('ai-letter-gen-userData');
-    localStorage.removeItem('ai-letter-gen-jobDetails');
-    localStorage.removeItem('ai-letter-gen-coverLetter');
+    localStorage.removeItem('ai-letter-gen-session');
     setSavedData(null);
   };
 
@@ -150,6 +177,7 @@ const App: React.FC = () => {
     try {
       const letter = await generateCoverLetter(userData, jobDetails);
       setCoverLetter(letter);
+      // Do NOT hide the saved session prompt. It will be updated by the useEffect hook.
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred.');
       console.error(err);
@@ -160,6 +188,7 @@ const App: React.FC = () => {
 
   const handleAnalyzeUrl = async () => {
     if (!userData.universityUrl) return;
+    // Clear previous results before starting a new analysis
     setIsAnalyzing(true);
     setAnalysisError('');
     setAdmissionInfo(null);
