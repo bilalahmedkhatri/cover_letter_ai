@@ -1,6 +1,6 @@
 // Fix: Replaced placeholder content with a functional App component to structure the application, manage state, and handle logic.
 import React, { useState, useEffect } from 'react';
-import { UserData, JobDetails, AdmissionInfo, SavedLetter } from './types';
+import { UserData, JobDetails, AdmissionInfo, SavedSession } from './types';
 import { generateCoverLetter, analyzeUniversityPage } from './services/geminiService';
 import * as storageService from './services/storageService';
 import UserInputForm from './components/UserInputForm';
@@ -56,11 +56,11 @@ function App() {
   const [foundCourses, setFoundCourses] = useState<string[]>([]);
 
   // State for saved letters
-  const [savedLetters, setSavedLetters] = useState<SavedLetter[]>([]);
+  const [savedSessions, setSavedSessions] = useState<SavedSession[]>([]);
 
   // Effect for loading saved letters on mount
   useEffect(() => {
-    setSavedLetters(storageService.getSavedLetters());
+    setSavedSessions(storageService.getSavedSessions());
   }, []);
 
   // Effect for handling routing
@@ -108,8 +108,8 @@ function App() {
     try {
       const letter = await generateCoverLetter(userData, jobDetails);
       setCoverLetter(letter);
-      const updatedLetters = storageService.saveLetter(letter);
-      setSavedLetters(updatedLetters);
+      const updatedSessions = storageService.saveSession(userData, jobDetails, letter);
+      setSavedSessions(updatedSessions);
     } catch (e) {
       if (e instanceof Error) {
         setError(e.message);
@@ -145,18 +145,17 @@ function App() {
     }
   };
 
-  const handleRestoreLetter = (content: string) => {
-    setCoverLetter(content);
-    // Scroll to the top of the cover letter display for better UX
-    const letterDisplay = document.getElementById('cover-letter-display');
-    if (letterDisplay) {
-      letterDisplay.scrollIntoView({ behavior: 'smooth' });
-    }
+  const handleRestoreSession = (session: SavedSession) => {
+    setUserData(session.userData);
+    setJobDetails(session.jobDetails);
+    setCoverLetter(session.coverLetter);
+    // Scroll to the top of the form for better UX
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleRemoveLetter = (id: number) => {
-    const updatedLetters = storageService.removeLetter(id);
-    setSavedLetters(updatedLetters);
+  const handleRemoveSession = (id: number) => {
+    const updatedSessions = storageService.removeSession(id);
+    setSavedSessions(updatedSessions);
   };
   
   const renderPage = () => {
@@ -187,9 +186,9 @@ function App() {
             />
           </div>
           <SavedLettersDisplay
-            letters={savedLetters}
-            onRestore={handleRestoreLetter}
-            onRemove={handleRemoveLetter}
+            sessions={savedSessions}
+            onRestore={handleRestoreSession}
+            onRemove={handleRemoveSession}
           />
         </div>
       );

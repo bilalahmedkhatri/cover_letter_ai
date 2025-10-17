@@ -25,8 +25,10 @@ export interface AdmissionInfo {
   deadlines: string;
 }
 
-export interface SavedLetter {
+export interface SavedSession {
   id: number;
-  content: string;
+  userData: UserData;
+  jobDetails: JobDetails;
+  coverLetter: string;
   date: string;
 }
