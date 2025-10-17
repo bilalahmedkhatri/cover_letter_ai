@@ -136,7 +136,7 @@ function App() {
   const renderPage = () => {
     if (page === '/') {
       return (
-         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+         <div className="space-y-8">
           <div className="bg-slate-800/50 p-6 rounded-lg shadow-lg">
              <UserInputForm
               userData={userData}
@@ -170,7 +170,7 @@ function App() {
     if (page === '/about') content = <AboutUs />;
 
     return (
-       <div className="bg-slate-800/50 p-8 rounded-lg shadow-lg max-w-4xl mx-auto">
+       <div className="bg-slate-800/50 p-8 rounded-lg shadow-lg">
         {content}
       </div>
     );
@@ -178,8 +178,8 @@ function App() {
 
   return (
     <div className="bg-slate-900 text-slate-300 min-h-screen font-sans">
-      <header className="bg-slate-900/80 backdrop-blur-sm sticky top-0 z-10 border-b border-slate-800">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <header className="sticky top-0 z-10 border-b border-slate-800 bg-slate-900/80 backdrop-blur-sm">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
                 <a href="/" className="text-2xl font-bold text-cyan-400">AI Letter Generator</a>
                 <nav className="flex space-x-4 text-sm font-medium">
@@ -191,7 +191,7 @@ function App() {
         </div>
       </header>
 
-      <main className="container mx-auto p-4 sm:p-6 lg:p-8">
+      <main className="max-w-screen-xl mx-auto p-4 sm:p-6 lg:p-8">
         {renderPage()}
       </main>
     </div>
