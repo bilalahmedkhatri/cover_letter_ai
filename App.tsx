@@ -3,6 +3,7 @@ import React, { useState, useEffect, createContext, useContext, ReactNode } from
 import { UserData, JobDetails, AdmissionInfo, SavedSession } from './types';
 import { generateCoverLetter, analyzeUniversityPage } from './services/geminiService';
 import * as storageService from './services/storageService';
+import { getFriendlyErrorMessage, FriendlyError } from './services/errorService';
 import UserInputForm from './components/UserInputForm';
 import CoverLetterDisplay from './components/CoverLetterDisplay';
 import SavedLettersDisplay from './components/SavedLettersDisplay';
@@ -141,11 +142,11 @@ function AppContent() {
   // State for letter generation
   const [coverLetter, setCoverLetter] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<FriendlyError | null>(null);
 
   // State for university URL analysis
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisError, setAnalysisError] = useState('');
+  const [analysisError, setAnalysisError] = useState<FriendlyError | null>(null);
   const [admissionInfo, setAdmissionInfo] = useState<AdmissionInfo | null>(null);
   const [foundCourses, setFoundCourses] = useState<string[]>([]);
   const [analysisNotes, setAnalysisNotes] = useState('');
@@ -198,7 +199,7 @@ function AppContent() {
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    setError('');
+    setError(null);
     setCoverLetter('');
     try {
       const letter = await generateCoverLetter(userData, jobDetails);
@@ -206,11 +207,7 @@ function AppContent() {
       const updatedSessions = storageService.saveSession(userData, jobDetails, letter);
       setSavedSessions(updatedSessions);
     } catch (e) {
-      if (e instanceof Error) {
-        setError(e.message);
-      } else {
-        setError('An unexpected error occurred.');
-      }
+      setError(getFriendlyErrorMessage(e));
     } finally {
       setIsLoading(false);
     }
@@ -218,7 +215,7 @@ function AppContent() {
 
   const handleAnalyzeUrl = async () => {
     setIsAnalyzing(true);
-    setAnalysisError('');
+    setAnalysisError(null);
     setAdmissionInfo(null);
     setFoundCourses([]);
     setAnalysisNotes('');
@@ -234,11 +231,7 @@ function AppContent() {
         setAnalysisNotes(result.notes);
       }
     } catch (e) {
-      if (e instanceof Error) {
-        setAnalysisError(e.message);
-      } else {
-        setAnalysisError('An unexpected error occurred during analysis.');
-      }
+      setAnalysisError(getFriendlyErrorMessage(e));
     } finally {
       setIsAnalyzing(false);
     }
@@ -287,6 +280,7 @@ function AppContent() {
               setCoverLetter={setCoverLetter}
               isLoading={isLoading}
               error={error}
+              onSubmit={handleSubmit}
             />
           </div>
           <SavedLettersDisplay

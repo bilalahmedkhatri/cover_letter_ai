@@ -200,7 +200,7 @@ export const generateCoverLetter = async (userData: UserData, jobDetails: JobDet
     return response.text;
   } catch (error) {
     console.error("Error generating cover letter:", error);
-    throw new Error(getFriendlyErrorMessage(error));
+    throw error;
   }
 };
 
@@ -294,8 +294,7 @@ export const analyzeUniversityPage = async (
     
   } catch (error) {
     console.error("Error analyzing university page:", error);
-    // Leverage the friendly error message for API/parsing errors
-    throw new Error(getFriendlyErrorMessage(error));
+    throw error;
   }
 
   // Handle application-level "error" (i.e., AI couldn't find info) separately

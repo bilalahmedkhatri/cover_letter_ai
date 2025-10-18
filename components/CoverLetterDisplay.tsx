@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { FriendlyError } from '../services/errorService';
 import LoadingSpinner from './icons/LoadingSpinner';
 import CopyIcon from './icons/CopyIcon';
 import CheckIcon from './icons/CheckIcon';
 import DownloadIcon from './icons/DownloadIcon';
+import ErrorIcon from './icons/ErrorIcon';
 
 // Fix: Corrected the global type for 'window.jspdf' to match the declaration in 'services/pdfService.ts', resolving a conflict where it was improperly typed as 'any'.
 declare namespace jspdf {
@@ -35,10 +37,11 @@ interface CoverLetterDisplayProps {
   coverLetter: string;
   setCoverLetter: (value: string) => void;
   isLoading: boolean;
-  error: string;
+  error: FriendlyError | null;
+  onSubmit: () => void;
 }
 
-const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, setCoverLetter, isLoading, error }) => {
+const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, setCoverLetter, isLoading, error, onSubmit }) => {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -79,13 +82,18 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
 
     if (error) {
       return (
-        <div className="flex flex-col items-center justify-center h-full text-red-400" role="alert">
-           <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <title>Error</title>
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <p className="font-bold text-lg">Letter Generation Failed</p>
-          <p className="text-sm text-center text-text-secondary mt-2">{error}</p>
+        <div className="flex flex-col items-center justify-center h-full text-center" role="alert">
+          <ErrorIcon className="h-14 w-14 mb-4 text-red-500" />
+          <p className="font-bold text-lg text-red-500">Letter Generation Failed</p>
+          <p className="text-sm text-text-secondary mt-2 max-w-md">{error.message}</p>
+          {error.isRetryable && (
+            <button
+              onClick={onSubmit}
+              className="mt-4 flex items-center gap-2 px-4 py-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-md transition-colors text-sm font-medium"
+            >
+              <span>Retry</span>
+            </button>
+          )}
         </div>
       );
     }

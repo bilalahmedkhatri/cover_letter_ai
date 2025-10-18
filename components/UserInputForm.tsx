@@ -1,5 +1,6 @@
 import React from 'react';
 import { UserData, JobDetails, AdmissionInfo } from '../types';
+import { FriendlyError } from '../services/errorService';
 import { generateAnalysisReportPdf } from '../services/pdfService';
 import SmallLoadingSpinner from './icons/SmallLoadingSpinner';
 import InfoIcon from './icons/InfoIcon';
@@ -16,7 +17,7 @@ interface UserInputFormProps {
   isLoading: boolean;
   onAnalyzeUrl: () => void;
   isAnalyzing: boolean;
-  analysisError: string;
+  analysisError: FriendlyError | null;
   admissionInfo: AdmissionInfo | null;
   foundCourses: string[];
   analysisNotes: string;
@@ -223,7 +224,7 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
               {isAnalyzing && <SmallLoadingSpinner />}
               {isAnalyzing ? 'Analyzing...' : 'Analyze URL for Admission Info'}
             </button>
-            {analysisError && <p className="text-sm text-red-400 mt-4">{analysisError}</p>}
+            {analysisError && <p className="text-sm text-red-400 mt-4">{analysisError.message}</p>}
             {analysisNotes && !analysisError && (
               <div className="mt-4 bg-amber-900/50 border border-amber-700 text-amber-300 text-sm rounded-lg p-3 flex items-start gap-3" role="alert">
                 <InfoIcon className="w-5 h-5 flex-shrink-0 mt-0.5" />
