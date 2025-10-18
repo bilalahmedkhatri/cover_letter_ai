@@ -182,12 +182,17 @@ function AppContent() {
 
       if (anchor && anchor.target !== '_blank' && anchor.origin === window.location.origin) {
         const path = anchor.pathname as Page;
-        if (pagesInfo[path] && path !== window.location.pathname) {
+        // Check if the link is a valid internal route.
+        if (pagesInfo[path]) {
+          // Always prevent the default browser navigation for internal routes.
           e.preventDefault();
-          window.history.pushState({}, '', path);
-          setPage(path);
-          document.title = pagesInfo[path].title;
-          window.scrollTo(0, 0);
+          // Only push to history and update state if the path is different.
+          if (path !== window.location.pathname) {
+            window.history.pushState({}, '', path);
+            setPage(path);
+            document.title = pagesInfo[path].title;
+            window.scrollTo(0, 0);
+          }
         }
       }
     };
