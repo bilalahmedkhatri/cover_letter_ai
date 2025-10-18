@@ -2,7 +2,7 @@ import React from 'react';
 
 const AboutUs: React.FC = () => {
   return (
-    <div className="space-y-4 text-slate-300">
+    <div className="space-y-4 text-text-primary">
       <h1 className="text-3xl font-bold text-cyan-300 mb-4">About Us</h1>
       
       <h2 className="text-xl font-semibold text-cyan-400 pt-4">Our Mission</h2>
@@ -25,7 +25,7 @@ const AboutUs: React.FC = () => {
         This is a tool built for you. If you have any feedback, suggestions, or questions, please don't hesitate to reach out to us.
       </p>
 
-      <div className="mt-8 pt-6 border-t border-slate-700 text-center">
+      <div className="mt-8 pt-6 border-t border-border text-center">
         <a href="/dashboard" className="inline-block px-6 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-md transition-colors font-medium">
             Back to Generator
         </a>
