@@ -33,6 +33,7 @@ function App() {
     language: 'English',
     customInstruction: '',
     letterType: 'job',
+    documentType: 'letter',
     headerInfo: '',
     footerInfo: '',
     universityUrl: '',
@@ -54,6 +55,7 @@ function App() {
   const [analysisError, setAnalysisError] = useState('');
   const [admissionInfo, setAdmissionInfo] = useState<AdmissionInfo | null>(null);
   const [foundCourses, setFoundCourses] = useState<string[]>([]);
+  const [analysisNotes, setAnalysisNotes] = useState('');
 
   // State for saved letters
   const [savedSessions, setSavedSessions] = useState<SavedSession[]>([]);
@@ -126,6 +128,7 @@ function App() {
     setAnalysisError('');
     setAdmissionInfo(null);
     setFoundCourses([]);
+    setAnalysisNotes('');
     try {
       const result = await analyzeUniversityPage(
         userData.universityUrl,
@@ -134,6 +137,9 @@ function App() {
       );
       setAdmissionInfo(result.details);
       setFoundCourses(result.courses);
+      if (result.notes) {
+        setAnalysisNotes(result.notes);
+      }
     } catch (e) {
       if (e instanceof Error) {
         setAnalysisError(e.message);
@@ -175,6 +181,7 @@ function App() {
               analysisError={analysisError}
               admissionInfo={admissionInfo}
               foundCourses={foundCourses}
+              analysisNotes={analysisNotes}
             />
           </div>
           <div id="cover-letter-display" className="bg-slate-800/50 p-6 rounded-lg shadow-lg">

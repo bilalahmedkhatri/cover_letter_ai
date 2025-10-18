@@ -4,10 +4,30 @@ import CopyIcon from './icons/CopyIcon';
 import CheckIcon from './icons/CheckIcon';
 import DownloadIcon from './icons/DownloadIcon';
 
-// Add jsPDF to the window interface to avoid TypeScript errors
+// Fix: Corrected the global type for 'window.jspdf' to match the declaration in 'services/pdfService.ts', resolving a conflict where it was improperly typed as 'any'.
+declare namespace jspdf {
+  class jsPDF {
+    constructor(options?: any);
+    internal: {
+      pageSize: {
+        height: number;
+        width: number;
+      };
+    };
+    splitTextToSize(text: string, maxWidth: number): string[];
+    addPage(): jsPDF;
+    text(text: string | string[], x: number, y: number, options?: any): jsPDF;
+    setFont(fontName: string, fontStyle: string): jsPDF;
+    setFontSize(size: number): jsPDF;
+    save(filename: string): void;
+  }
+}
+
 declare global {
   interface Window {
-    jspdf: any;
+    jspdf: {
+      jsPDF: new (options?: any) => jspdf.jsPDF;
+    };
   }
 }
 

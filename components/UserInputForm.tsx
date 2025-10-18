@@ -1,7 +1,11 @@
 import React from 'react';
 import { UserData, JobDetails, AdmissionInfo } from '../types';
+import { generateAnalysisReportPdf } from '../services/pdfService';
 import SmallLoadingSpinner from './icons/SmallLoadingSpinner';
 import InfoIcon from './icons/InfoIcon';
+import DownloadIcon from './icons/DownloadIcon';
+import ExternalLinkIcon from './icons/ExternalLinkIcon';
+
 
 interface UserInputFormProps {
   userData: UserData;
@@ -15,6 +19,7 @@ interface UserInputFormProps {
   analysisError: string;
   admissionInfo: AdmissionInfo | null;
   foundCourses: string[];
+  analysisNotes: string;
 }
 
 const UserInputForm: React.FC<UserInputFormProps> = ({
@@ -29,6 +34,7 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
   analysisError,
   admissionInfo,
   foundCourses,
+  analysisNotes,
 }) => {
 
   const handleUserChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -68,10 +74,15 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
     e.preventDefault();
     onSubmit();
   };
+
+  const handleDownloadAnalysisPdf = () => {
+    if (!admissionInfo) return;
+    generateAnalysisReportPdf(admissionInfo, foundCourses);
+  };
   
   const renderBulletedText = (text: string) => {
-    if (!text || text.toLowerCase() === 'not specified' || text.trim() === '') {
-      return <p className="text-slate-400 italic">Not specified</p>;
+    if (!text || text.toLowerCase() === 'information not found' || text.trim() === '') {
+      return <p className="text-slate-400 italic">Information not found</p>;
     }
     const items = text.split('\n').filter(line => line.trim() !== '');
     return (
@@ -86,9 +97,22 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
     "Arabic", "Dutch", "Russian", "Portuguese", "Slovak", "Polish"
   ];
 
+  const emailReasonsForUniversity = [
+    "Inquire about my application status.",
+    "Ask a question about specific admission requirements.",
+    "Inquire about available scholarship opportunities and the application process.",
+    "Ask about the admission process for international students.",
+    "Request to connect with a professor or faculty member in my department of interest.",
+    "Inquire about scheduling a campus tour or virtual visit.",
+    "Ask for more details about a specific course or program curriculum.",
+    "Request information on application fee waivers.",
+    "Inquire about the possibility of deferring my admission if accepted.",
+    "Report a technical issue I'm experiencing with the application portal."
+  ];
+
   const inputStyle = "w-full bg-slate-900 border border-slate-700 rounded-md px-3 py-2 text-slate-300 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors";
   const inputFileStyle = "w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600/20 file:text-indigo-300 hover:file:bg-indigo-600/30 cursor-pointer";
-  const mainButtonSpinner = <svg className="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>;
+  const mainButtonSpinner = <svg className="animate-spin h-6 w-6 text-white" xmlns="http://www.w.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>;
 
 
   return (
@@ -199,18 +223,73 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
               {isAnalyzing && <SmallLoadingSpinner />}
               {isAnalyzing ? 'Analyzing...' : 'Analyze URL for Admission Info'}
             </button>
-            {analysisError && <p className="text-sm text-red-400">{analysisError}</p>}
+            {analysisError && <p className="text-sm text-red-400 mt-4">{analysisError}</p>}
+            {analysisNotes && !analysisError && (
+              <div className="mt-4 bg-amber-900/50 border border-amber-700 text-amber-300 text-sm rounded-lg p-3 flex items-start gap-3" role="alert">
+                <InfoIcon className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-semibold">Analysis Note</h4>
+                  <p className="leading-relaxed mt-1">{analysisNotes}</p>
+                </div>
+              </div>
+            )}
             {admissionInfo && (
-                <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700 space-y-3">
-                    <h3 className="font-semibold text-lg text-cyan-400">Analysis Results</h3>
-                    <div><strong className="font-medium text-slate-300">Program:</strong> <span className="text-slate-400">{admissionInfo.program}</span></div>
-                    <div><strong className="font-medium text-slate-300">Department:</strong> <span className="text-slate-400">{admissionInfo.department}</span></div>
-                    <div><strong className="font-medium text-slate-300 block mb-1">Requirements:</strong> {renderBulletedText(admissionInfo.admissionRequirements)}</div>
-                    <div><strong className="font-medium text-slate-300 block mb-1">Deadlines:</strong> {renderBulletedText(admissionInfo.deadlines)}</div>
+                <div className="mt-4 bg-slate-900/50 p-4 rounded-lg border border-slate-700 space-y-4">
+                    <div className="flex justify-between items-center">
+                      <h3 className="font-semibold text-lg text-cyan-400">Analysis Results</h3>
+                      <button
+                        type="button"
+                        onClick={handleDownloadAnalysisPdf}
+                        className="flex items-center gap-2 px-3 py-1 bg-indigo-600 hover:bg-indigo-500 rounded-md transition-colors text-xs font-medium"
+                        aria-label="Download analysis as PDF"
+                      >
+                        <DownloadIcon className="w-4 h-4" />
+                        <span>Download PDF</span>
+                      </button>
+                    </div>
+                    <div>
+                        <strong className="font-medium text-slate-300 flex items-center gap-2 mb-1">
+                           Requirements
+                           {admissionInfo.admissionRequirements.sourceUrl && <a href={admissionInfo.admissionRequirements.sourceUrl} target="_blank" rel="noopener noreferrer" title="View Source" className="text-indigo-400 hover:text-indigo-300"><ExternalLinkIcon className="w-4 h-4" /></a>}
+                        </strong> 
+                        {renderBulletedText(admissionInfo.admissionRequirements.text)}
+                    </div>
+                    <div>
+                        <strong className="font-medium text-slate-300 flex items-center gap-2 mb-1">
+                            Deadlines
+                            {admissionInfo.deadlines.sourceUrl && <a href={admissionInfo.deadlines.sourceUrl} target="_blank" rel="noopener noreferrer" title="View Source" className="text-indigo-400 hover:text-indigo-300"><ExternalLinkIcon className="w-4 h-4" /></a>}
+                        </strong> 
+                        {renderBulletedText(admissionInfo.deadlines.text)}
+                    </div>
+                    {admissionInfo.scholarships && (
+                      <div>
+                        <strong className="font-medium text-slate-300 flex items-center gap-2 mb-1">
+                            Scholarships
+                            {admissionInfo.scholarships.sourceUrl && <a href={admissionInfo.scholarships.sourceUrl} target="_blank" rel="noopener noreferrer" title="View Source" className="text-indigo-400 hover:text-indigo-300"><ExternalLinkIcon className="w-4 h-4" /></a>}
+                        </strong> 
+                        {renderBulletedText(admissionInfo.scholarships.text)}
+                      </div>
+                    )}
+                    {admissionInfo.emails && admissionInfo.emails.list.length > 0 && (
+                      <div>
+                        <strong className="font-medium text-slate-300 flex items-center gap-2 mb-1">
+                            Contact Emails
+                             {admissionInfo.emails.sourceUrl && <a href={admissionInfo.emails.sourceUrl} target="_blank" rel="noopener noreferrer" title="View Source" className="text-indigo-400 hover:text-indigo-300"><ExternalLinkIcon className="w-4 h-4" /></a>}
+                        </strong>
+                        <ul className="list-disc list-inside space-y-1 text-slate-300">
+                            {admissionInfo.emails.list.map((email, index) => (
+                                <li key={index}>
+                                    <a href={`mailto:${email.address}`} className="text-indigo-400 hover:underline">{email.address}</a>
+                                    <span className="text-slate-400 text-sm"> ({email.description})</span>
+                                </li>
+                            ))}
+                        </ul>
+                      </div>
+                    )}
                 </div>
             )}
             {foundCourses.length > 0 && !admissionInfo && (
-                <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
+                <div className="mt-4 bg-slate-900/50 p-4 rounded-lg border border-slate-700">
                     <h3 className="font-semibold text-lg text-cyan-400 mb-2">Found Courses</h3>
                     <p className="text-sm text-slate-400 mb-2">We found multiple courses. Select one from your details or enter a name above and analyze again for specific details.</p>
                     <ul className="list-disc list-inside text-slate-300 text-sm">{foundCourses.map(c => <li key={c}>{c}</li>)}</ul>
@@ -223,24 +302,78 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
       {/* Step 4 */}
       <section>
         <h2 className="text-xl font-bold text-cyan-300 mb-4 border-b border-slate-700 pb-2">Step 4: Customization (Optional)</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+        <div className="space-y-6 mt-4">
             <div>
-                <label htmlFor="language" className="block text-sm font-medium text-slate-300 mb-2">Language</label>
-                <select id="language" name="language" value={userData.language} onChange={handleUserChange} className={inputStyle}>
-                    {languages.map(lang => <option key={lang} value={lang}>{lang}</option>)}
-                </select>
+              <label className="block text-sm font-medium text-slate-300 mb-2">Document Type</label>
+              <div className="flex gap-2 rounded-md bg-slate-900 p-1">
+                <button type="button" onClick={() => setUserData(p => ({...p, documentType: 'letter'}))} className={`w-full py-2 text-sm rounded transition-colors ${userData.documentType === 'letter' ? 'bg-indigo-600 text-white shadow' : 'hover:bg-slate-700/50'}`}>Letter</button>
+                <button type="button" onClick={() => setUserData(p => ({...p, documentType: 'email'}))} className={`w-full py-2 text-sm rounded transition-colors ${userData.documentType === 'email' ? 'bg-indigo-600 text-white shadow' : 'hover:bg-slate-700/50'}`}>Email</button>
+              </div>
             </div>
-            <div className="md:col-span-2">
-                <label htmlFor="customInstruction" className="block text-sm font-medium text-slate-300 mb-2">Additional Instructions</label>
-                <textarea id="customInstruction" name="customInstruction" value={userData.customInstruction} onChange={handleUserChange} rows={3} className={inputStyle} placeholder="e.g., 'Mention my passion for their company culture.' or 'Keep the tone more formal.'"></textarea>
-            </div>
-            <div>
-                <label htmlFor="headerInfo" className="block text-sm font-medium text-slate-300 mb-2">Custom Header</label>
-                <textarea id="headerInfo" name="headerInfo" value={userData.headerInfo} onChange={handleUserChange} rows={4} className={inputStyle} placeholder="Your Name&#10;Your Address&#10;Your Contact Info"></textarea>
-            </div>
-            <div>
-                <label htmlFor="footerInfo" className="block text-sm font-medium text-slate-300 mb-2">Custom Footer</label>
-                <textarea id="footerInfo" name="footerInfo" value={userData.footerInfo} onChange={handleUserChange} rows={4} className={inputStyle} placeholder="e.g., Best regards," ></textarea>
+
+            {userData.documentType === 'email' && (
+              <div className="bg-blue-900/50 border border-blue-700 text-blue-300 text-sm rounded-lg p-3 flex items-start gap-3" role="alert">
+                <InfoIcon className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-semibold">Generate a high-quality email!</h4>
+                  <p className="leading-relaxed mt-1">For the best results, please ensure you've filled out the previous steps. Use the "Additional Instructions" box below to describe the purpose of the email (e.g., "Write a follow-up email asking about the status of my application.").</p>
+                </div>
+              </div>
+            )}
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label htmlFor="language" className="block text-sm font-medium text-slate-300 mb-2">Language</label>
+                    <select id="language" name="language" value={userData.language} onChange={handleUserChange} className={inputStyle}>
+                        {languages.map(lang => <option key={lang} value={lang}>{lang}</option>)}
+                    </select>
+                </div>
+                
+                {userData.letterType === 'university' && userData.documentType === 'email' && (
+                  <div>
+                    <label htmlFor="emailReason" className="block text-sm font-medium text-slate-300 mb-2">Common University Email Reasons</label>
+                    <select 
+                        id="emailReason" 
+                        name="emailReason" 
+                        onChange={(e) => {
+                            if (e.target.value) {
+                                setUserData(prev => ({ ...prev, customInstruction: e.target.value }));
+                            }
+                             e.target.value = ""; // Reset dropdown after selection
+                        }}
+                        className={inputStyle}
+                        aria-label="Select a common reason to pre-fill the instructions below"
+                    >
+                        <option value="">-- Select to auto-fill instructions --</option>
+                        {emailReasonsForUniversity.map((reason, index) => (
+                            <option key={index} value={reason}>{reason}</option>
+                        ))}
+                    </select>
+                  </div>
+                )}
+
+                <div className="md:col-span-2">
+                    <label htmlFor="customInstruction" className="block text-sm font-medium text-slate-300 mb-2">Additional Instructions</label>
+                    <textarea id="customInstruction" name="customInstruction" value={userData.customInstruction} onChange={handleUserChange} rows={3} className={inputStyle} placeholder="e.g., 'Mention my passion for their company culture.' or 'Keep the tone more formal.'"></textarea>
+                </div>
+                {userData.documentType === 'letter' && (
+                  <>
+                    <div>
+                        <label htmlFor="headerInfo" className="block text-sm font-medium text-slate-300 mb-2">Custom Header</label>
+                        <textarea id="headerInfo" name="headerInfo" value={userData.headerInfo} onChange={handleUserChange} rows={4} className={inputStyle} placeholder="Your Name&#10;Your Address&#10;Your Contact Info"></textarea>
+                    </div>
+                    <div>
+                        <label htmlFor="footerInfo" className="block text-sm font-medium text-slate-300 mb-2">Custom Footer</label>
+                        <textarea id="footerInfo" name="footerInfo" value={userData.footerInfo} onChange={handleUserChange} rows={4} className={inputStyle} placeholder="e.g., Best regards," ></textarea>
+                    </div>
+                  </>
+                )}
+                 {userData.documentType === 'email' && (
+                    <div className="md:col-span-2">
+                        <label htmlFor="footerInfo" className="block text-sm font-medium text-slate-300 mb-2">Custom Closing</label>
+                        <textarea id="footerInfo" name="footerInfo" value={userData.footerInfo} onChange={handleUserChange} rows={2} className={inputStyle} placeholder="e.g., Best regards," ></textarea>
+                    </div>
+                )}
             </div>
         </div>
       </section>
@@ -249,7 +382,7 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
       <div className="pt-6 border-t border-slate-700">
         <button type="submit" disabled={isLoading} className="w-full flex items-center justify-center gap-3 text-lg font-bold bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white py-3 px-6 rounded-lg shadow-lg transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed">
             {isLoading ? mainButtonSpinner : null}
-            {isLoading ? 'Generating...' : 'Generate Letter'}
+            {isLoading ? 'Generating...' : `Generate ${userData.documentType === 'letter' ? 'Letter' : 'Email'}`}
         </button>
       </div>
     </form>
