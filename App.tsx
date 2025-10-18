@@ -9,11 +9,13 @@ import SavedLettersDisplay from './components/SavedLettersDisplay';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
 import AboutUs from './components/AboutUs';
+import LandingPage from './components/LandingPage';
 
-type Page = '/' | '/privacy' | '/terms' | '/about';
+type Page = '/' | '/dashboard' | '/privacy' | '/terms' | '/about';
 
 const pagesInfo = {
-  '/': { title: 'AI Professional Letter Generator' },
+  '/': { title: 'AI Professional Letter Generator | Home' },
+  '/dashboard': { title: 'Generator Dashboard | AI Professional Letter Generator' },
   '/about': { title: 'About Us | AI Professional Letter Generator' },
   '/privacy': { title: 'Privacy Policy | AI Professional Letter Generator' },
   '/terms': { title: 'Terms of Service | AI Professional Letter Generator' },
@@ -166,6 +168,10 @@ function App() {
   
   const renderPage = () => {
     if (page === '/') {
+        return <LandingPage />;
+    }
+    
+    if (page === '/dashboard') {
       return (
          <div className="space-y-8">
           <div className="bg-slate-800/50 p-6 rounded-lg shadow-lg">
@@ -219,7 +225,8 @@ function App() {
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
                 <a href="/" className="text-2xl font-bold text-cyan-400">AI Letter Generator</a>
-                <nav className="flex space-x-4 text-sm font-medium">
+                <nav className="flex items-center space-x-4 text-sm font-medium">
+                    <a href="/dashboard" className="text-slate-300 hover:text-cyan-400 transition-colors">Dashboard</a>
                     <a href="/about" className="text-slate-400 hover:text-cyan-400 transition-colors">About</a>
                     <a href="/privacy" className="text-slate-400 hover:text-cyan-400 transition-colors">Privacy</a>
                     <a href="/terms" className="text-slate-400 hover:text-cyan-400 transition-colors">Terms</a>
