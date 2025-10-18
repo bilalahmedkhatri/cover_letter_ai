@@ -10,6 +10,8 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
 import AboutUs from './components/AboutUs';
 import LandingPage from './components/LandingPage';
+import Header from './components/Header';
+import Footer from './components/Footer';
 
 type Page = '/' | '/dashboard' | '/privacy' | '/terms' | '/about';
 
@@ -220,24 +222,14 @@ function App() {
   };
 
   return (
-    <div className="bg-slate-900 text-slate-300 min-h-screen font-sans">
-      <header className="sticky top-0 z-10 border-b border-slate-800 bg-slate-900/80 backdrop-blur-sm">
-        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-                <a href="/" className="text-2xl font-bold text-cyan-400">AI Letter Generator</a>
-                <nav className="flex items-center space-x-4 text-sm font-medium">
-                    <a href="/dashboard" className="text-slate-300 hover:text-cyan-400 transition-colors">Dashboard</a>
-                    <a href="/about" className="text-slate-400 hover:text-cyan-400 transition-colors">About</a>
-                    <a href="/privacy" className="text-slate-400 hover:text-cyan-400 transition-colors">Privacy</a>
-                    <a href="/terms" className="text-slate-400 hover:text-cyan-400 transition-colors">Terms</a>
-                </nav>
-            </div>
-        </div>
-      </header>
+    <div className="bg-slate-900 text-slate-300 min-h-screen font-sans flex flex-col">
+      <Header />
 
-      <main className="max-w-screen-xl mx-auto p-4 sm:p-6 lg:p-8">
+      <main className="flex-grow w-full max-w-screen-xl mx-auto p-4 sm:p-6 lg:p-8">
         {renderPage()}
       </main>
+
+      <Footer />
     </div>
   );
 }
