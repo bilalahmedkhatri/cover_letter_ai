@@ -91,6 +91,7 @@ export const generateCoverLetter = async (userData: UserData, jobDetails: JobDet
     footerInfo,
     universityUrl,
     courseName,
+    tone,
   } = userData;
 
   const parts: Part[] = [];
@@ -98,13 +99,14 @@ export const generateCoverLetter = async (userData: UserData, jobDetails: JobDet
   // Start with a clear instruction for the model.
   let prompt: string;
   const applicationContext = letterType === 'job' ? 'job application' : 'university admission letter';
+  
+  // High-priority instruction for tone.
+  const toneInstruction = `The tone of the document MUST be **${tone}**. This is a strict and primary instruction. Ensure the entire response consistently reflects this tone.`;
 
   if (documentType === 'email') {
-    prompt = `Please act as a professional career advisor and write a compelling and professional email in ${language} regarding a ${applicationContext}. The email's specific purpose should be derived from the user's "Additional Instructions". Deeply analyze all provided context about the user and the application to make the email as effective and relevant as possible.
-
-**Tone Control:** A key requirement is to control the tone of the email. Analyze the "Additional Instructions" for keywords related to tone (e.g., 'formal', 'enthusiastic', 'concise', 'friendly'). If a specific tone is requested, you MUST write the entire email in that tone. If no tone is specified, default to a standard professional and courteous tone.`;
+    prompt = `Please act as a professional career advisor and write a compelling and professional email in ${language} regarding a ${applicationContext}. ${toneInstruction} The email's specific purpose should be derived from the user's "Additional Instructions". Deeply analyze all provided context about the user and the application to make the email as effective and relevant as possible.`;
   } else { // default to 'letter'
-    prompt = `Please act as a professional career advisor and write a compelling ${applicationContext} in ${language}.`;
+    prompt = `Please act as a professional career advisor and write a compelling ${applicationContext} in ${language}. ${toneInstruction}`;
   }
   
   prompt += `\n\nHere is information about me:\n`;
@@ -187,7 +189,7 @@ export const generateCoverLetter = async (userData: UserData, jobDetails: JobDet
   if (documentType === 'email') {
     prompt += `\nIMPORTANT: The final output must be a complete email. It must start with a subject line (e.g., "Subject: Application Follow-up - ${name}"). Respond with only the email text, without any extra commentary or formatting.`;
   } else {
-    prompt += `\nThe final letter should be tailored specifically to the opportunity, well-structured, professional, and enthusiastically highlight my suitability. Respond with only the letter text, without any extra commentary or formatting.`;
+    prompt += `\nThe final letter should be tailored specifically to the opportunity, well-structured, and highlight my suitability in the requested **${tone}** tone. Respond with only the letter text, without any extra commentary or formatting.`;
   }
   
   parts.unshift({ text: prompt });

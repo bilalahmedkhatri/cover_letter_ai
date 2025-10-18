@@ -1,3 +1,5 @@
+export type LetterTone = 'Professional' | 'Formal' | 'Enthusiastic' | 'Concise';
+
 export interface UserData {
   name: string;
   skills: string;
@@ -12,6 +14,7 @@ export interface UserData {
   universityUrl: string;
   courseName: string;
   universityAnalysisInstruction: string;
+  tone: LetterTone;
 }
 
 export interface JobDetails {

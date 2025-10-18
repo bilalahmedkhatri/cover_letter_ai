@@ -305,85 +305,95 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
         <h2 className="text-xl font-bold text-cyan-300 mb-4 border-b border-border pb-2">Step 4: Customization (Optional)</h2>
         <div className="space-y-6 mt-4">
             <div>
-              <label className="block text-sm font-medium text-text-primary mb-2">Document Type</label>
-              <div className="flex gap-2 rounded-md bg-card-secondary p-1">
-                <button type="button" onClick={() => setUserData(p => ({...p, documentType: 'letter'}))} className={`w-full py-2 text-sm rounded transition-colors ${userData.documentType === 'letter' ? 'bg-indigo-600 text-white shadow' : 'hover:bg-button-secondary-hover-bg/50'}`}>Letter</button>
-                <button type="button" onClick={() => setUserData(p => ({...p, documentType: 'email'}))} className={`w-full py-2 text-sm rounded transition-colors ${userData.documentType === 'email' ? 'bg-indigo-600 text-white shadow' : 'hover:bg-button-secondary-hover-bg/50'}`}>Email</button>
+              <label className="block text-sm font-medium text-text-primary mb-2">Tone of Voice</label>
+              <div className="flex flex-wrap gap-2 rounded-md bg-card-secondary p-1">
+                {(['Professional', 'Formal', 'Enthusiastic', 'Concise'] as const).map(t => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setUserData(p => ({ ...p, tone: t }))}
+                    className={`flex-1 py-2 text-sm rounded transition-colors min-w-[100px] ${userData.tone === t ? 'bg-indigo-600 text-white shadow' : 'hover:bg-button-secondary-hover-bg/50'}`}
+                  >
+                    {t}
+                  </button>
+                ))}
               </div>
             </div>
-
-            {userData.documentType === 'email' && (
-              <div className="bg-blue-900/50 border border-blue-700 text-blue-300 text-sm rounded-lg p-3 flex items-start gap-3" role="alert">
-                <InfoIcon className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                <div>
-                  <h4 className="font-semibold">Generate a high-quality email!</h4>
-                  <p className="leading-relaxed mt-1">For the best results, please ensure you've filled out the previous steps. Use the "Additional Instructions" box below to describe the purpose of the email (e.g., "Write a follow-up email asking about the status of my application.").</p>
-                </div>
+            <div>
+              <label className="block text-sm font-medium text-text-primary mb-2">Document Format</label>
+              <div className="flex gap-2 rounded-md bg-card-secondary p-1">
+                  <button type="button" onClick={() => setUserData(p => ({...p, documentType: 'letter'}))} className={`w-full py-2 text-sm rounded transition-colors ${userData.documentType === 'letter' ? 'bg-indigo-600 text-white shadow' : 'hover:bg-button-secondary-hover-bg/50'}`}>Formal Letter</button>
+                  <button type="button" onClick={() => setUserData(p => ({...p, documentType: 'email'}))} className={`w-full py-2 text-sm rounded transition-colors ${userData.documentType === 'email' ? 'bg-indigo-600 text-white shadow' : 'hover:bg-button-secondary-hover-bg/50'}`}>Professional Email</button>
               </div>
-            )}
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label htmlFor="language" className="block text-sm font-medium text-text-primary mb-2">Language</label>
-                    <select id="language" name="language" value={userData.language} onChange={handleUserChange} className={inputStyle}>
-                        {languages.map(lang => <option key={lang} value={lang}>{lang}</option>)}
-                    </select>
-                </div>
-                
-                {userData.letterType === 'university' && userData.documentType === 'email' && (
-                  <div>
-                    <label htmlFor="emailReason" className="block text-sm font-medium text-text-primary mb-2">Common University Email Reasons</label>
-                    <select 
-                        id="emailReason" 
-                        name="emailReason" 
-                        onChange={(e) => {
-                            if (e.target.value) {
-                                setUserData(prev => ({ ...prev, customInstruction: e.target.value }));
-                            }
-                             e.target.value = ""; // Reset dropdown after selection
-                        }}
-                        className={inputStyle}
-                        aria-label="Select a common reason to pre-fill the instructions below"
-                    >
-                        <option value="">-- Select to auto-fill instructions --</option>
-                        {emailReasonsForUniversity.map((reason, index) => (
-                            <option key={index} value={reason}>{reason}</option>
-                        ))}
-                    </select>
-                  </div>
-                )}
-
-                <div className="md:col-span-2">
-                    <label htmlFor="customInstruction" className="block text-sm font-medium text-text-primary mb-2">Additional Instructions</label>
-                    <textarea id="customInstruction" name="customInstruction" value={userData.customInstruction} onChange={handleUserChange} rows={3} className={inputStyle} placeholder="e.g., 'Mention my passion for their company culture.' or 'Keep the tone more formal.'"></textarea>
-                </div>
-                {userData.documentType === 'letter' && (
-                  <>
-                    <div>
-                        <label htmlFor="headerInfo" className="block text-sm font-medium text-text-primary mb-2">Custom Header</label>
-                        <textarea id="headerInfo" name="headerInfo" value={userData.headerInfo} onChange={handleUserChange} rows={4} className={inputStyle} placeholder="Your Name&#10;Your Address&#10;Your Contact Info"></textarea>
-                    </div>
-                    <div>
-                        <label htmlFor="footerInfo" className="block text-sm font-medium text-text-primary mb-2">Custom Footer</label>
-                        <textarea id="footerInfo" name="footerInfo" value={userData.footerInfo} onChange={handleUserChange} rows={4} className={inputStyle} placeholder="e.g., Best regards," ></textarea>
-                    </div>
-                  </>
-                )}
-                 {userData.documentType === 'email' && (
-                    <div className="md:col-span-2">
-                        <label htmlFor="footerInfo" className="block text-sm font-medium text-text-primary mb-2">Custom Closing</label>
-                        <textarea id="footerInfo" name="footerInfo" value={userData.footerInfo} onChange={handleUserChange} rows={2} className={inputStyle} placeholder="e.g., Best regards," ></textarea>
-                    </div>
-                )}
+            </div>
+            <div>
+              <label htmlFor="language" className="block text-sm font-medium text-text-primary mb-2">Language</label>
+              <select id="language" name="language" value={userData.language} onChange={handleUserChange} className={inputStyle}>
+                {languages.map(lang => <option key={lang} value={lang}>{lang}</option>)}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="customInstruction" className="block text-sm font-medium text-text-primary mb-2">
+                Additional Instructions
+              </label>
+              <textarea
+                id="customInstruction"
+                name="customInstruction"
+                value={userData.customInstruction}
+                onChange={handleUserChange}
+                rows={4}
+                className={inputStyle}
+                placeholder={
+                  userData.documentType === 'email' && userData.letterType === 'university'
+                    ? "e.g., Select from common reasons or write your own...\n" + emailReasonsForUniversity.join('\n')
+                    : "e.g., 'Please highlight my experience with Agile methodologies.' or 'Keep the letter under 300 words.'"
+                }
+              />
+            </div>
+            <div>
+                <label htmlFor="headerInfo" className="block text-sm font-medium text-text-primary mb-2">
+                    {userData.documentType === 'email' ? 'Email Signature Details' : 'Letter Header/Contact Info'}
+                </label>
+                <textarea
+                    id="headerInfo"
+                    name="headerInfo"
+                    value={userData.headerInfo}
+                    onChange={handleUserChange}
+                    rows={3}
+                    className={inputStyle}
+                    placeholder={
+                        userData.documentType === 'email'
+                        ? "e.g.,\nPhone: (123) 456-7890\nLinkedIn: linkedin.com/in/yourprofile"
+                        : "e.g.,\n123 Main Street\nAnytown, USA 12345\n(123) 456-7890\njane.doe@email.com"
+                    }
+                />
+            </div>
+             <div>
+                <label htmlFor="footerInfo" className="block text-sm font-medium text-text-primary mb-2">
+                    {userData.documentType === 'email' ? 'Email Closing' : 'Letter Closing'}
+                </label>
+                <input
+                    type="text"
+                    id="footerInfo"
+                    name="footerInfo"
+                    value={userData.footerInfo}
+                    onChange={handleUserChange}
+                    className={inputStyle}
+                    placeholder={
+                        userData.documentType === 'email'
+                        ? "e.g., Best regards,"
+                        : "e.g., Sincerely,"
+                    }
+                />
             </div>
         </div>
       </section>
 
-      {/* Submit */}
+      {/* Submit Button */}
       <div className="pt-6 border-t border-border">
-        <button type="submit" disabled={isLoading} className="w-full flex items-center justify-center gap-3 text-lg font-bold bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white py-3 px-6 rounded-lg shadow-lg transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed">
-            {isLoading ? mainButtonSpinner : null}
-            {isLoading ? 'Generating...' : `Generate ${userData.documentType === 'letter' ? 'Letter' : 'Email'}`}
+        <button type="submit" disabled={isLoading} className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-700 hover:to-cyan-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg disabled:opacity-60 disabled:cursor-not-allowed transition-all">
+          {isLoading && mainButtonSpinner}
+          {isLoading ? 'Generating...' : 'Generate My Letter'}
         </button>
       </div>
     </form>

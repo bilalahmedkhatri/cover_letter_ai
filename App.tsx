@@ -133,6 +133,7 @@ function AppContent() {
     universityUrl: '',
     courseName: '',
     universityAnalysisInstruction: '',
+    tone: 'Professional',
   });
   const [jobDetails, setJobDetails] = useState<JobDetails>({
     url: '',
