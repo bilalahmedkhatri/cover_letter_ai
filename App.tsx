@@ -14,6 +14,7 @@ import LandingPage from './components/LandingPage';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import NotFoundPage from './components/NotFoundPage';
+import CookieConsentBanner from './components/CookieConsentBanner';
 import { themes } from './theme';
 
 // --- Theme Management ---
@@ -327,6 +328,7 @@ function AppContent() {
       </main>
 
       <Footer />
+      <CookieConsentBanner />
     </div>
   );
 }
