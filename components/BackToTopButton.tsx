@@ -34,7 +34,7 @@ const BackToTopButton: React.FC = () => {
       onClick={scrollToTop}
       aria-label={t('backToTop')}
       title={t('backToTop')}
-      className={`fixed bottom-20 right-6 z-40 bg-button-secondary-bg text-text-primary rounded-full p-3 shadow-lg hover:bg-button-secondary-hover-bg transition-all duration-300 ease-in-out transform hover:scale-110 ${
+      className={`fixed bottom-6 right-24 z-40 bg-button-secondary-bg text-text-primary rounded-full p-3 shadow-lg hover:bg-button-secondary-hover-bg transition-all duration-300 ease-in-out transform hover:scale-110 ${
         isVisible ? 'opacity-100' : 'opacity-0'
       } ${!isVisible && 'pointer-events-none'}`}
     >
