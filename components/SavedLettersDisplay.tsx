@@ -14,7 +14,7 @@ const SavedLettersDisplay: React.FC<SavedLettersDisplayProps> = ({ sessions, onR
 
   return (
     <div className="bg-card/50 p-6 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold text-cyan-300 mb-4">Saved Sessions</h2>
+      <h2 className="text-2xl font-bold text-accent mb-4">Saved Sessions</h2>
       <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
         {sessions.map((session) => (
           <div key={session.id} className="bg-card p-4 rounded-lg flex items-center justify-between gap-4">

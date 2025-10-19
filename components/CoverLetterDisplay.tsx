@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { FriendlyError } from '../services/errorService';
+import { loadScript } from '../services/scriptLoader';
 import LoadingSpinner from './icons/LoadingSpinner';
 import CopyIcon from './icons/CopyIcon';
 import CheckIcon from './icons/CheckIcon';
 import DownloadIcon from './icons/DownloadIcon';
 import ErrorIcon from './icons/ErrorIcon';
+
+const JSPDF_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
 
 // Fix: Corrected the global type for 'window.jspdf' to match the declaration in 'services/pdfService.ts', resolving a conflict where it was improperly typed as 'any'.
 declare namespace jspdf {
@@ -56,17 +59,23 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
     setCopied(true);
   };
 
-  const handleDownloadPdf = () => {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+  const handleDownloadPdf = async () => {
+    try {
+      await loadScript(JSPDF_URL);
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
 
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(11);
-    
-    const textLines = doc.splitTextToSize(coverLetter, 180); // 180mm width on A4 page
-    doc.text(textLines, 15, 20); // 15mm from left, 20mm from top
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(11);
+      
+      const textLines = doc.splitTextToSize(coverLetter, 180); // 180mm width on A4 page
+      doc.text(textLines, 15, 20); // 15mm from left, 20mm from top
 
-    doc.save('professional-letter.pdf');
+      doc.save('professional-letter.pdf');
+    } catch (e) {
+      console.error("Failed to download PDF:", e);
+      // Optionally, show an error to the user
+    }
   };
 
   const renderContent = () => {
@@ -141,7 +150,7 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
   
   return (
     <div className="flex flex-col h-[36rem] my-6">
-      <h2 className="text-2xl font-bold text-cyan-300 mb-6 flex-shrink-0">Generated Letter</h2>
+      <h2 className="text-2xl font-bold text-accent mb-6 flex-shrink-0">Generated Letter</h2>
       <div className="bg-card rounded-lg p-6 flex-grow flex flex-col">
         {renderContent()}
       </div>

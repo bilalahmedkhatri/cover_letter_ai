@@ -16,6 +16,7 @@ export const themes: Record<string, Record<string, string>> = {
     '--color-button-secondary-bg': '100 116 139', /* slate-500 */
     '--color-button-secondary-hover-bg': '148 163 184', /* slate-400 */
     '--color-header-bg': '51 65 85', /* slate-700 */
+    '--color-accent': '34 211 238', /* cyan-400 */
   },
   light: { // Muted light theme
     '--color-background': '243 244 246', /* gray-100 */
@@ -30,5 +31,6 @@ export const themes: Record<string, Record<string, string>> = {
     '--color-button-secondary-bg': '229 231 235', /* gray-200 */
     '--color-button-secondary-hover-bg': '209 213 219', /* gray-300 */
     '--color-header-bg': '255 255 255',
+    '--color-accent': '8 145 178', /* cyan-600 */
   },
 };

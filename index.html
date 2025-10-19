@@ -9,6 +9,7 @@
   <!-- Social Media Meta Tags -->
   <meta property="og:title" content="AI Professional Letter Generator">
   <meta property="og:description" content="Craft the perfect cover letter or university admission letter in seconds. Let our AI-powered advisor do the rest.">
+  <!-- For best performance, ensure og-image.png is a compressed WebP or PNG, ideally under 100KB. -->
   <meta property="og:image" content="/og-image.png">
   <meta property="og:url" content="https://ailettergen.com/">
   <meta name="twitter:card" content="summary_large_image">
@@ -25,21 +26,8 @@
   <!-- ahrefs web analytics tool -->
   <script src="https://analytics.ahrefs.com/analytics.js" data-key="ezqw438JpcXw7jFn8sKGwQ" async></script>
 
-  <!-- jsPDF for PDF generation (deferred to prevent render-blocking) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js" defer></script>
-  
-  <!-- Document Parsers (deferred to prevent render-blocking) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.7.0/mammoth.browser.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js" defer></script>
-  <script>
-    // Required worker for pdf.js. Wrapped to run after the deferred pdf.js script has loaded.
-    document.addEventListener('DOMContentLoaded', () => {
-      if (window.pdfjsLib) {
-        window.pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js`;
-      }
-    });
-  </script>
+  <!-- NOTE: jsPDF, mammoth, and pdf.js scripts have been removed from here. -->
+  <!-- They are now loaded dynamically via scriptLoader.ts to improve initial page load performance. -->
 
   <!-- Tailwind Config -->
   <script>
@@ -70,7 +58,8 @@
             },
             header: {
                 bg: 'rgb(var(--color-header-bg) / <alpha-value>)'
-            }
+            },
+            accent: 'rgb(var(--color-accent) / <alpha-value>)'
           },
           fontFamily: {
             sans: ['Inter', 'sans-serif'],

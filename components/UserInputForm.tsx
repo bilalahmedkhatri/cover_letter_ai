@@ -120,7 +120,7 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Step 1 */}
       <section>
-        <h2 className="text-xl font-bold text-cyan-300 mb-4 border-b border-border pb-2">Step 1: Your Information</h2>
+        <h2 className="text-xl font-bold text-accent mb-4 border-b border-border pb-2">Step 1: Your Information</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
           <div>
             <label className="block text-sm font-medium text-text-primary mb-2">What kind of letter do you need?</label>
@@ -138,7 +138,7 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
 
       {/* Step 2 */}
       <section>
-        <h2 className="text-xl font-bold text-cyan-300 mb-4 border-b border-border pb-2">Step 2: Your Background</h2>
+        <h2 className="text-xl font-bold text-accent mb-4 border-b border-border pb-2">Step 2: Your Background</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
           <div>
             <label htmlFor="skills" className="block text-sm font-medium text-text-primary mb-2">Key Skills (Optional)</label>
@@ -158,7 +158,7 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
       
       {/* Step 3 */}
       <section>
-        <h2 className="text-xl font-bold text-cyan-300 mb-4 border-b border-border pb-2">
+        <h2 className="text-xl font-bold text-accent mb-4 border-b border-border pb-2">
             Step 3: {userData.letterType === 'job' ? 'Job Details' : 'University Program Details'}
         </h2>
         {userData.letterType === 'job' ? (
@@ -237,7 +237,7 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
             {admissionInfo && (
                 <div className="mt-4 bg-card/50 p-4 rounded-lg border border-border space-y-4">
                     <div className="flex justify-between items-center">
-                      <h3 className="font-semibold text-lg text-cyan-400">Analysis Results</h3>
+                      <h3 className="font-semibold text-lg text-accent">Analysis Results</h3>
                       <button
                         type="button"
                         onClick={handleDownloadAnalysisPdf}
@@ -291,7 +291,7 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
             )}
             {foundCourses.length > 0 && !admissionInfo && (
                 <div className="mt-4 bg-card/50 p-4 rounded-lg border border-border">
-                    <h3 className="font-semibold text-lg text-cyan-400 mb-2">Found Courses</h3>
+                    <h3 className="font-semibold text-lg text-accent mb-2">Found Courses</h3>
                     <p className="text-sm text-text-secondary mb-2">We found multiple courses. Select one from your details or enter a name above and analyze again for specific details.</p>
                     <ul className="list-disc list-inside text-text-primary text-sm">{foundCourses.map(c => <li key={c}>{c}</li>)}</ul>
                 </div>
@@ -302,7 +302,7 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
 
       {/* Step 4 */}
       <section>
-        <h2 className="text-xl font-bold text-cyan-300 mb-4 border-b border-border pb-2">Step 4: Customization (Optional)</h2>
+        <h2 className="text-xl font-bold text-accent mb-4 border-b border-border pb-2">Step 4: Customization (Optional)</h2>
         <div className="space-y-6 mt-4">
             <div>
               <label className="block text-sm font-medium text-text-primary mb-2">Tone of Voice</label>

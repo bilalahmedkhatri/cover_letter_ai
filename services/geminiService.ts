@@ -1,6 +1,10 @@
 import { GoogleGenAI, Part } from "@google/genai";
 import { UserData, JobDetails, AdmissionInfo } from '../types';
-import { getFriendlyErrorMessage } from './errorService';
+import { loadScript } from './scriptLoader';
+
+const MAMMOTH_URL = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.7.0/mammoth.browser.min.js';
+const PDFJS_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js';
+const PDFJS_WORKER_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
 
 // Add mammoth and pdf.js to the window interface to avoid TypeScript errors
 declare global {
@@ -20,6 +24,7 @@ const ai = new GoogleGenAI({apiKey: process.env.API_KEY!});
  * @returns A promise that resolves to the extracted text.
  */
 const getTextFromDocx = async (file: File): Promise<string> => {
+  await loadScript(MAMMOTH_URL);
   const arrayBuffer = await file.arrayBuffer();
   const result = await window.mammoth.extractRawText({ arrayBuffer });
   return result.value;
@@ -31,6 +36,9 @@ const getTextFromDocx = async (file: File): Promise<string> => {
  * @returns A promise that resolves to the extracted text.
  */
 const getTextFromPdf = async (file: File): Promise<string> => {
+    await loadScript(PDFJS_URL);
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_URL;
+    
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     let text = '';

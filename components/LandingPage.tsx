@@ -39,7 +39,7 @@ const LandingPage: React.FC = () => {
             {/* --- Hero Section --- */}
             <section className="text-center pt-16 pb-8">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-text-primary tracking-tight">
-                    Craft Your Perfect Professional Letter, <span className="text-cyan-400">Instantly</span>.
+                    Craft Your Perfect Professional Letter, <span className="text-accent">Instantly</span>.
                 </h1>
                 <p className="mt-6 max-w-2xl mx-auto text-lg text-text-secondary">
                     Whether you're applying for your dream job or a university program, our AI-powered advisor analyzes your details and the opportunity to generate a tailored, professional letter in seconds.
@@ -54,7 +54,7 @@ const LandingPage: React.FC = () => {
             
             {/* --- How It Works Section --- */}
             <section>
-                <h2 className="text-3xl font-bold text-center text-cyan-300 mb-12">Just 3 Simple Steps</h2>
+                <h2 className="text-3xl font-bold text-center text-accent mb-12">Just 3 Simple Steps</h2>
                 <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-8 text-center">
                      <div className="relative flex flex-col items-center">
                         <div className="text-6xl font-extrabold text-card-secondary">01</div>
@@ -77,7 +77,7 @@ const LandingPage: React.FC = () => {
             {/* --- Features Section --- */}
             <section className="bg-card/50 p-8 rounded-lg shadow-lg">
                 <div className="max-w-5xl mx-auto">
-                    <h2 className="text-3xl font-bold text-center text-cyan-300 mb-12">A Smarter Way to Write</h2>
+                    <h2 className="text-3xl font-bold text-center text-accent mb-12">A Smarter Way to Write</h2>
                     <div className="grid md:grid-cols-3 gap-10 text-center">
                         <div className="flex flex-col items-center">
                             <FeatureIcon path="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -100,7 +100,7 @@ const LandingPage: React.FC = () => {
             
             {/* --- Who Is This For? --- */}
             <section>
-                <h2 className="text-3xl font-bold text-center text-cyan-300 mb-12">Perfect For Every Professional Need</h2>
+                <h2 className="text-3xl font-bold text-center text-accent mb-12">Perfect For Every Professional Need</h2>
                 <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8">
                     <div className="bg-card/50 p-6 rounded-lg shadow-lg border border-border">
                         <FeatureIcon path="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" className="bg-cyan-500" />
@@ -123,7 +123,7 @@ const LandingPage: React.FC = () => {
 
             {/* --- Testimonials Section --- */}
             <section>
-                <h2 className="text-3xl font-bold text-center text-cyan-300 mb-12">What Our Users Say</h2>
+                <h2 className="text-3xl font-bold text-center text-accent mb-12">What Our Users Say</h2>
                 <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     <div className="bg-card/50 p-6 rounded-lg shadow-lg">
                         <p className="text-text-primary">"This tool saved me hours. I pasted my resume and a job link, and it produced a fantastic, relevant cover letter that I barely had to edit. Landed an interview the next day!"</p>
@@ -142,7 +142,7 @@ const LandingPage: React.FC = () => {
 
              {/* --- FAQ Section --- */}
             <section>
-                <h2 className="text-3xl font-bold text-center text-cyan-300 mb-12">Frequently Asked Questions</h2>
+                <h2 className="text-3xl font-bold text-center text-accent mb-12">Frequently Asked Questions</h2>
                 <div className="max-w-3xl mx-auto">
                     <FaqItem question="Is my data safe and private?">
                         <p>Absolutely. Your privacy is our top priority. All the information you provide is processed in-memory for the sole purpose of generating your document. We do not store your personal data, resumes, or generated letters on our servers. Your session is private and ephemeral.</p>

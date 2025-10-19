@@ -1,4 +1,9 @@
 import { AdmissionInfo, DetailWithSource } from '../types';
+import { loadScript } from './scriptLoader';
+
+const JSPDF_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+const AUTOTABLE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js';
+
 
 // Fix: Add manual type declarations for jsPDF, which is loaded from a script tag.
 // This resolves TypeScript errors about the missing 'jspdf' namespace and its properties.
@@ -40,7 +45,11 @@ interface jsPDFWithAutoTable extends jspdf.jsPDF {
  * @param admissionInfo The structured details of the admission analysis.
  * @param foundCourses A list of course names found on the page.
  */
-export const generateAnalysisReportPdf = (admissionInfo: AdmissionInfo, foundCourses: string[]) => {
+export const generateAnalysisReportPdf = async (admissionInfo: AdmissionInfo, foundCourses: string[]) => {
+  // Dynamically load the PDF generation libraries only when this function is called.
+  await loadScript(JSPDF_URL);
+  await loadScript(AUTOTABLE_URL);
+
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF() as jsPDFWithAutoTable;
   
