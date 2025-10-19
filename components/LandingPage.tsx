@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ChevronDownIcon from './icons/ChevronDownIcon';
-
+import { useLocale } from '../contexts/LocaleContext';
 
 // --- Reusable Icon Component ---
 const FeatureIcon: React.FC<{ path: string; className?: string }> = ({ path, className }) => (
@@ -18,7 +18,7 @@ const FaqItem: React.FC<{ question: string; children: React.ReactNode }> = ({ qu
     return (
         <div className="border-b border-border">
             <button
-                className="flex justify-between items-center w-full py-5 text-left text-lg font-medium text-text-primary"
+                className="flex justify-between items-center w-full py-5 text-left rtl:text-right text-lg font-medium text-text-primary"
                 onClick={() => setIsOpen(!isOpen)}
                 aria-expanded={isOpen}
             >
@@ -34,42 +34,45 @@ const FaqItem: React.FC<{ question: string; children: React.ReactNode }> = ({ qu
 
 
 const LandingPage: React.FC = () => {
+    const { t } = useLocale();
+
     return (
         <div className="space-y-20 sm:space-y-32">
             {/* --- Hero Section --- */}
             <section className="text-center pt-16 pb-8">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-text-primary tracking-tight">
-                    Craft Your Perfect Professional Letter, <span className="text-accent">Instantly</span>.
+                    {t('landingHeroTitle').replace(t('landingHeroTitleAccent'), '')}
+                    <span className="text-accent">{t('landingHeroTitleAccent')}</span>.
                 </h1>
                 <p className="mt-6 max-w-2xl mx-auto text-lg text-text-secondary">
-                    Whether you're applying for your dream job or a university program, our AI-powered advisor analyzes your details and the opportunity to generate a tailored, professional letter in seconds.
+                    {t('landingHeroSubtitle')}
                 </p>
                 <div className="mt-8 flex justify-center">
                     <a href="/dashboard" className="inline-block bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 ease-in-out">
-                        Start Generating for Free
+                        {t('landingHeroButton')}
                     </a>
                 </div>
-                 <p className="mt-4 text-sm text-text-muted">Trusted by students and professionals worldwide.</p>
+                 <p className="mt-4 text-sm text-text-muted">{t('landingHeroHint')}</p>
             </section>
             
             {/* --- How It Works Section --- */}
             <section>
-                <h2 className="text-3xl font-bold text-center text-accent mb-12">Just 3 Simple Steps</h2>
+                <h2 className="text-3xl font-bold text-center text-accent mb-12">{t('landingStepsTitle')}</h2>
                 <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-8 text-center">
                      <div className="relative flex flex-col items-center">
                         <div className="text-6xl font-extrabold text-card-secondary">01</div>
-                        <h3 className="mt-2 text-xl font-semibold text-text-primary">Provide Your Details</h3>
-                        <p className="mt-2 text-text-secondary">Enter your name, skills, and experience. For best results, upload your resume (PDF, DOCX, or TXT).</p>
+                        <h3 className="mt-2 text-xl font-semibold text-text-primary">{t('landingStep1Title')}</h3>
+                        <p className="mt-2 text-text-secondary">{t('landingStep1Text')}</p>
                     </div>
                      <div className="relative flex flex-col items-center">
                         <div className="text-6xl font-extrabold text-card-secondary">02</div>
-                        <h3 className="mt-2 text-xl font-semibold text-text-primary">Add Context</h3>
-                        <p className="mt-2 text-text-secondary">Paste the URL to the job posting or university program page. Our AI will analyze it to find key details.</p>
+                        <h3 className="mt-2 text-xl font-semibold text-text-primary">{t('landingStep2Title')}</h3>
+                        <p className="mt-2 text-text-secondary">{t('landingStep2Text')}</p>
                     </div>
                      <div className="relative flex flex-col items-center">
                         <div className="text-6xl font-extrabold text-card-secondary">03</div>
-                        <h3 className="mt-2 text-xl font-semibold text-text-primary">Generate & Refine</h3>
-                        <p className="mt-2 text-text-secondary">Click generate! Your tailored letter appears in seconds. Edit it on the spot and download as a PDF.</p>
+                        <h3 className="mt-2 text-xl font-semibold text-text-primary">{t('landingStep3Title')}</h3>
+                        <p className="mt-2 text-text-secondary">{t('landingStep3Text')}</p>
                     </div>
                 </div>
             </section>
@@ -77,22 +80,22 @@ const LandingPage: React.FC = () => {
             {/* --- Features Section --- */}
             <section className="bg-card/50 p-8 rounded-lg shadow-lg">
                 <div className="max-w-5xl mx-auto">
-                    <h2 className="text-3xl font-bold text-center text-accent mb-12">A Smarter Way to Write</h2>
+                    <h2 className="text-3xl font-bold text-center text-accent mb-12">{t('landingFeaturesTitle')}</h2>
                     <div className="grid md:grid-cols-3 gap-10 text-center">
                         <div className="flex flex-col items-center">
                             <FeatureIcon path="M13 10V3L4 14h7v7l9-11h-7z" />
-                            <h3 className="mt-5 text-lg font-semibold text-text-primary">Beat The System</h3>
-                            <p className="mt-2 text-text-secondary">Our AI reads job descriptions to include relevant keywords, helping your application get past automated screening tools (ATS).</p>
+                            <h3 className="mt-5 text-lg font-semibold text-text-primary">{t('landingFeature1Title')}</h3>
+                            <p className="mt-2 text-text-secondary">{t('landingFeature1Text')}</p>
                         </div>
                         <div className="flex flex-col items-center">
                             <FeatureIcon path="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            <h3 className="mt-5 text-lg font-semibold text-text-primary">Instant Research Assistant</h3>
-                            <p className="mt-2 text-text-secondary">Provide a university program URL, and our AI finds admission requirements, deadlines, and contact emails for you.</p>
+                            <h3 className="mt-5 text-lg font-semibold text-text-primary">{t('landingFeature2Title')}</h3>
+                            <p className="mt-2 text-text-secondary">{t('landingFeature2Text')}</p>
                         </div>
                          <div className="flex flex-col items-center">
                             <FeatureIcon path="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0 3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                            <h3 className="mt-5 text-lg font-semibold text-text-primary">Total Control & Customization</h3>
-                            <p className="mt-2 text-text-secondary">Provide custom instructions, control the tone, switch between formal letters and professional emails, and edit the final output freely.</p>
+                            <h3 className="mt-5 text-lg font-semibold text-text-primary">{t('landingFeature3Title')}</h3>
+                            <p className="mt-2 text-text-secondary">{t('landingFeature3Text')}</p>
                         </div>
                     </div>
                 </div>
@@ -100,22 +103,22 @@ const LandingPage: React.FC = () => {
             
             {/* --- Who Is This For? --- */}
             <section>
-                <h2 className="text-3xl font-bold text-center text-accent mb-12">Perfect For Every Professional Need</h2>
+                <h2 className="text-3xl font-bold text-center text-accent mb-12">{t('landingForWhoTitle')}</h2>
                 <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8">
                     <div className="bg-card/50 p-6 rounded-lg shadow-lg border border-border">
                         <FeatureIcon path="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" className="bg-cyan-500" />
-                        <h3 className="mt-4 text-lg font-semibold text-text-primary">Job Seekers</h3>
-                        <p className="mt-2 text-text-secondary">Craft tailored cover letters that catch the eye of recruiters and highlight your unique qualifications for any role.</p>
+                        <h3 className="mt-4 text-lg font-semibold text-text-primary">{t('landingForJobSeekers')}</h3>
+                        <p className="mt-2 text-text-secondary">{t('landingForJobSeekersText')}</p>
                     </div>
                     <div className="bg-card/50 p-6 rounded-lg shadow-lg border border-border">
                          <FeatureIcon path="M12 6.253v11.494m-9-5.747h18" className="bg-cyan-500" />
-                        <h3 className="mt-4 text-lg font-semibold text-text-primary">Students</h3>
-                        <p className="mt-2 text-text-secondary">Write compelling admission letters, scholarship applications, and formal inquiries to university departments with ease.</p>
+                        <h3 className="mt-4 text-lg font-semibold text-text-primary">{t('landingForStudents')}</h3>
+                        <p className="mt-2 text-text-secondary">{t('landingForStudentsText')}</p>
                     </div>
                     <div className="bg-card/50 p-6 rounded-lg shadow-lg border border-border">
                          <FeatureIcon path="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" className="bg-cyan-500" />
-                        <h3 className="mt-4 text-lg font-semibold text-text-primary">Professionals</h3>
-                        <p className="mt-2 text-text-secondary">Quickly draft professional emails for networking, follow-ups, inquiries, or any formal communication you need.</p>
+                        <h3 className="mt-4 text-lg font-semibold text-text-primary">{t('landingForProfessionals')}</h3>
+                        <p className="mt-2 text-text-secondary">{t('landingForProfessionalsText')}</p>
                     </div>
                 </div>
             </section>
@@ -123,48 +126,48 @@ const LandingPage: React.FC = () => {
 
             {/* --- Testimonials Section --- */}
             <section>
-                <h2 className="text-3xl font-bold text-center text-accent mb-12">What Our Users Say</h2>
+                <h2 className="text-3xl font-bold text-center text-accent mb-12">{t('landingTestimonialsTitle')}</h2>
                 <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     <div className="bg-card/50 p-6 rounded-lg shadow-lg">
-                        <p className="text-text-primary">"This tool saved me hours. I pasted my resume and a job link, and it produced a fantastic, relevant cover letter that I barely had to edit. Landed an interview the next day!"</p>
-                        <p className="mt-4 font-bold text-text-primary">- Alex J., Software Engineer</p>
+                        <p className="text-text-primary">{t('landingTestimonial1')}</p>
+                        <p className="mt-4 font-bold text-text-primary">{t('landingTestimonial1Author')}</p>
                     </div>
                     <div className="bg-card/50 p-6 rounded-lg shadow-lg">
-                        <p className="text-text-primary">"The university analysis feature is a game-changer. It pulled all the application deadlines and requirements from a messy website in seconds. Highly recommend for any student."</p>
-                        <p className="mt-4 font-bold text-text-primary">- Priya K., Prospective Student</p>
+                        <p className="text-text-primary">{t('landingTestimonial2')}</p>
+                        <p className="mt-4 font-bold text-text-primary">{t('landingTestimonial2Author')}</p>
                     </div>
                      <div className="bg-card/50 p-6 rounded-lg shadow-lg">
-                        <p className="text-text-primary">"As a freelancer, I need to send professional emails constantly. The email generation feature is amazing for drafting quick, well-worded inquiries and follow-ups. A huge time-saver."</p>
-                        <p className="mt-4 font-bold text-text-primary">- Marco R., Freelance Designer</p>
+                        <p className="text-text-primary">{t('landingTestimonial3')}</p>
+                        <p className="mt-4 font-bold text-text-primary">{t('landingTestimonial3Author')}</p>
                     </div>
                 </div>
             </section>
 
              {/* --- FAQ Section --- */}
             <section>
-                <h2 className="text-3xl font-bold text-center text-accent mb-12">Frequently Asked Questions</h2>
+                <h2 className="text-3xl font-bold text-center text-accent mb-12">{t('landingFAQTitle')}</h2>
                 <div className="max-w-3xl mx-auto">
-                    <FaqItem question="Is my data safe and private?">
-                        <p>Absolutely. Your privacy is our top priority. All the information you provide is processed in-memory for the sole purpose of generating your document. We do not store your personal data, resumes, or generated letters on our servers. Your session is private and ephemeral.</p>
+                    <FaqItem question={t('landingFAQ1Title')}>
+                        <p>{t('landingFAQ1Text')}</p>
                     </FaqItem>
-                    <FaqItem question="Is this service really free?">
-                        <p>Yes, the AI Letter Generator is completely free to use. Our goal is to provide a powerful tool that is accessible to everyone, from students to seasoned professionals.</p>
+                    <FaqItem question={t('landingFAQ2Title')}>
+                        <p>{t('landingFAQ2Text')}</p>
                     </FaqItem>
-                    <FaqItem question="How accurate is the AI-generated content?">
-                        <p>Our tool uses a state-of-the-art AI model to generate highly relevant and well-written content. However, it's an assistant, not a replacement for human oversight. We strongly recommend you review and personalize the generated letter to ensure it perfectly reflects your voice and meets the specific requirements of your application.</p>
+                    <FaqItem question={t('landingFAQ3Title')}>
+                        <p>{t('landingFAQ3Text')}</p>
                     </FaqItem>
-                    <FaqItem question="What file types can I upload for my resume?">
-                        <p>For the best analysis, you can upload your resume in .pdf, .docx, or .txt format. This allows our AI to extract the text and use it to tailor your letter with the highest accuracy.</p>
+                    <FaqItem question={t('landingFAQ4Title')}>
+                        <p>{t('landingFAQ4Text')}</p>
                     </FaqItem>
                 </div>
             </section>
 
             {/* --- Final CTA Section --- */}
             <section className="text-center py-16">
-                <h2 className="text-3xl font-bold text-text-primary">Ready to Elevate Your Application?</h2>
-                <p className="mt-4 max-w-xl mx-auto text-text-secondary">Stop staring at a blank page. Let our AI be your personal career and admissions assistant.</p>
+                <h2 className="text-3xl font-bold text-text-primary">{t('landingCTATitle')}</h2>
+                <p className="mt-4 max-w-xl mx-auto text-text-secondary">{t('landingCTASubtitle')}</p>
                 <a href="/dashboard" className="mt-8 inline-block bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 ease-in-out">
-                    Create My Letter Now
+                    {t('landingCTAButton')}
                 </a>
             </section>
         </div>

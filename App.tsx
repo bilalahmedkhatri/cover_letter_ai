@@ -17,6 +17,8 @@ import NotFoundPage from './components/NotFoundPage';
 import CookieConsentBanner from './components/CookieConsentBanner';
 import { themes } from './theme';
 import WhatsAppJoin from './components/WhatsAppJoin';
+import BackToTopButton from './components/BackToTopButton';
+import { LocaleProvider, useLocale } from './contexts/LocaleContext';
 
 // --- Theme Management ---
 type Theme = 'light' | 'dark';
@@ -108,17 +110,20 @@ export const useTheme = (): ThemeContextType => {
 
 type Page = '/' | '/dashboard' | '/privacy' | '/terms' | '/about' | '/404';
 
-const pagesInfo = {
-  '/': { title: 'AI Professional Letter Generator | Home' },
-  '/dashboard': { title: 'Generator Dashboard | AI Professional Letter Generator' },
-  '/about': { title: 'About Us | AI Professional Letter Generator' },
-  '/privacy': { title: 'Privacy Policy | AI Professional Letter Generator' },
-  '/terms': { title: 'Terms of Service | AI Professional Letter Generator' },
-  '/404': { title: 'Page Not Found | AI Professional Letter Generator' },
-};
-
 
 function AppContent() {
+  const { t } = useLocale();
+
+  const pagesInfo = {
+    '/': { title: t('titleHome') },
+    '/dashboard': { title: t('titleDashboard') },
+    '/about': { title: t('titleAbout') },
+    '/privacy': { title: t('titlePrivacy') },
+    '/terms': { title: t('titleTerms') },
+    '/404': { title: t('title404') },
+  };
+
+
   // State for current page/route
   const [page, setPage] = useState<Page>('/');
 
@@ -170,7 +175,6 @@ function AppContent() {
       const path = window.location.pathname as Page;
       const newPage = pagesInfo[path] ? path : '/404';
       setPage(newPage);
-      document.title = pagesInfo[newPage].title;
     };
 
     window.addEventListener('popstate', handleLocationChange);
@@ -178,6 +182,11 @@ function AppContent() {
 
     return () => window.removeEventListener('popstate', handleLocationChange);
   }, []);
+
+  // Update document title when page or language changes
+  useEffect(() => {
+      document.title = pagesInfo[page].title;
+  }, [page, t]);
   
   // Effect for SPA link handling
   useEffect(() => {
@@ -195,7 +204,6 @@ function AppContent() {
           if (path !== window.location.pathname) {
             window.history.pushState({}, '', path);
             setPage(path);
-            document.title = pagesInfo[path].title;
             window.scrollTo(0, 0);
           }
         }
@@ -309,12 +317,12 @@ function AppContent() {
       content = <TermsOfService />;
     } else if (page === '/about') {
       content = <AboutUs />;
-    // } else {
-    //   content = <LandingPage />;
-    // }
     } else {
-      content = <NotFoundPage />;
+      content = <LandingPage />;
     }
+    // } else {
+    //   content = <NotFoundPage />;
+    // }
 
     return (
        <div className="bg-card/50 p-8 rounded-lg shadow-lg">
@@ -333,6 +341,7 @@ function AppContent() {
 
       <Footer />
       <WhatsAppJoin />
+      <BackToTopButton />
       <CookieConsentBanner />
     </div>
   );
@@ -342,7 +351,9 @@ function AppContent() {
 function App() {
   return (
     <ThemeProvider>
-      <AppContent />
+      <LocaleProvider>
+        <AppContent />
+      </LocaleProvider>
     </ThemeProvider>
   );
 }

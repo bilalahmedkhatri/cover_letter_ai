@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useLocale } from '../contexts/LocaleContext';
 
 const COOKIE_CONSENT_KEY = 'cookie_consent_status';
 
 const CookieConsentBanner: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const { t } = useLocale();
 
   useEffect(() => {
     const consentStatus = localStorage.getItem(COOKIE_CONSENT_KEY);
@@ -30,7 +32,7 @@ const CookieConsentBanner: React.FC = () => {
     >
       <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
         <p className="text-sm text-slate-200 text-center sm:text-left">
-          We use cookies to enhance your browsing experience and analyze our traffic. By clicking "Accept", you consent to our use of cookies.
+          {t('cookieBannerText')}
           {' '}
           <a
             href="https://policies.google.com/technologies/cookies"
@@ -38,7 +40,7 @@ const CookieConsentBanner: React.FC = () => {
             rel="noopener noreferrer"
             className="font-semibold underline hover:text-cyan-400 transition-colors"
           >
-            Learn more
+            {t('cookieLearnMore')}
           </a>.
         </p>
         <div className="flex-shrink-0 flex gap-3">
@@ -47,14 +49,14 @@ const CookieConsentBanner: React.FC = () => {
             className="px-4 py-2 text-sm font-medium rounded-md bg-slate-600 hover:bg-slate-500 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white"
             aria-label="Reject non-essential cookies"
           >
-            Reject
+            {t('cookieReject')}
           </button>
           <button
             onClick={() => handleConsent('accepted')}
             className="px-4 py-2 text-sm font-medium rounded-md bg-indigo-600 hover:bg-indigo-500 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-indigo-500"
             aria-label="Accept all cookies"
           >
-            Accept
+            {t('cookieAccept')}
           </button>
         </div>
       </div>

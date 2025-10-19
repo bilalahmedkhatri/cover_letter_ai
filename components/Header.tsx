@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../App';
+import { useLocale } from '../contexts/LocaleContext';
 import MenuIcon from './icons/MenuIcon';
 import XIcon from './icons/XIcon';
 import SunIcon from './icons/SunIcon';
 import MoonIcon from './icons/MoonIcon';
+import LanguageSelector from './LanguageSelector';
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { theme, setTheme } = useTheme();
+  const { t } = useLocale();
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
@@ -41,10 +44,10 @@ const Header: React.FC = () => {
 
   const navLinks = (
       <>
-        <a href="/dashboard" className="text-text-primary hover:text-accent transition-colors">Dashboard</a>
-        <a href="/about" className="text-text-secondary hover:text-accent transition-colors">About</a>
-        <a href="/privacy" className="text-text-secondary hover:text-accent transition-colors">Privacy</a>
-        <a href="/terms" className="text-text-secondary hover:text-accent transition-colors">Terms</a>
+        <a href="/dashboard" className="text-text-primary hover:text-accent transition-colors">{t('dashboard')}</a>
+        <a href="/about" className="text-text-secondary hover:text-accent transition-colors">{t('about')}</a>
+        <a href="/privacy" className="text-text-secondary hover:text-accent transition-colors">{t('privacy')}</a>
+        <a href="/terms" className="text-text-secondary hover:text-accent transition-colors">{t('terms')}</a>
       </>
   );
 
@@ -64,10 +67,12 @@ const Header: React.FC = () => {
             <button
               onClick={toggleTheme}
               className="text-text-secondary hover:text-accent transition-colors"
-              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+              aria-label={t('themeSwitch', { theme: theme === 'dark' ? 'light' : 'dark' })}
             >
               {theme === 'dark' ? <SunIcon className="w-6 h-6" /> : <MoonIcon className="w-6 h-6" />}
             </button>
+            
+            <LanguageSelector />
 
             {/* Mobile Menu Button */}
             <div className="md:hidden">

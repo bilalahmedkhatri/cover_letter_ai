@@ -1,5 +1,6 @@
 import { AdmissionInfo, DetailWithSource } from '../types';
 import { loadScript } from './scriptLoader';
+import { TranslationKeys } from './translations';
 
 const JSPDF_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
 const AUTOTABLE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js';
@@ -44,8 +45,13 @@ interface jsPDFWithAutoTable extends jspdf.jsPDF {
  * Generates and downloads a PDF report from the university analysis results.
  * @param admissionInfo The structured details of the admission analysis.
  * @param foundCourses A list of course names found on the page.
+ * @param t The translation function.
  */
-export const generateAnalysisReportPdf = async (admissionInfo: AdmissionInfo, foundCourses: string[]) => {
+export const generateAnalysisReportPdf = async (
+    admissionInfo: AdmissionInfo, 
+    foundCourses: string[],
+    t: (key: TranslationKeys) => string
+) => {
   // Dynamically load the PDF generation libraries only when this function is called.
   await loadScript(JSPDF_URL);
   await loadScript(AUTOTABLE_URL);
@@ -85,14 +91,14 @@ export const generateAnalysisReportPdf = async (admissionInfo: AdmissionInfo, fo
     }]);
   };
 
-  addContentToBody('Admission Requirements', admissionInfo.admissionRequirements);
-  addContentToBody('Application Deadlines', admissionInfo.deadlines);
-  addContentToBody('Scholarships', admissionInfo.scholarships);
+  addContentToBody(t('formRequirements'), admissionInfo.admissionRequirements);
+  addContentToBody(t('formDeadlines'), admissionInfo.deadlines);
+  addContentToBody(t('formScholarships'), admissionInfo.scholarships);
 
   // Add emails section if available.
   if (admissionInfo.emails && admissionInfo.emails.list.length > 0) {
     const emailText = admissionInfo.emails.list.map(e => `${e.address} (${e.description})`).join('\n');
-    addContentToBody('Contact Emails', { text: emailText, sourceUrl: admissionInfo.emails.sourceUrl });
+    addContentToBody(t('formContactEmails'), { text: emailText, sourceUrl: admissionInfo.emails.sourceUrl });
   }
 
   // --- Render the main content table ---
@@ -109,7 +115,7 @@ export const generateAnalysisReportPdf = async (admissionInfo: AdmissionInfo, fo
     doc.autoTable({
       // autoTable will automatically place this after the previous table.
       // A top margin can be added via styles if needed, but the flow is automatic.
-      head: [['Found Courses on Page']],
+      head: [[t('formFoundCourses')]],
       body: foundCourses.map(course => [course]),
       theme: 'grid',
       headStyles: { fillColor: [22, 78, 99] }, // A deep cyan color

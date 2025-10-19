@@ -1,4 +1,5 @@
 export type LetterTone = 'Professional' | 'Formal' | 'Enthusiastic' | 'Concise';
+export type Locale = 'en' | 'es' | 'fr' | 'ru' | 'nl' | 'pt' | 'ar';
 
 export interface UserData {
   name: string;

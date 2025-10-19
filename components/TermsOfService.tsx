@@ -1,9 +1,12 @@
 import React from 'react';
+import { useLocale } from '../contexts/LocaleContext';
 
 const TermsOfService: React.FC = () => {
+  const { t, locale } = useLocale();
   return (
     <div className="space-y-4 text-text-primary">
-      <h1 className="text-3xl font-bold text-accent mb-4">Terms of Service</h1>
+      <h1 className="text-3xl font-bold text-accent mb-4">{t('terms')}</h1>
+      {locale !== 'en' && <p className="p-3 bg-amber-900/50 border border-amber-700 text-amber-300 text-sm rounded-lg italic">{t('legalDisclaimer')}</p>}
       <p>Last updated: {new Date().toLocaleDateString()}</p>
 
       <h2 className="text-xl font-semibold text-accent pt-4">1. Acceptance of Terms</h2>
@@ -38,7 +41,7 @@ const TermsOfService: React.FC = () => {
 
       <div className="mt-8 pt-6 border-t border-border text-center">
         <a href="/dashboard" className="inline-block px-6 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-md transition-colors font-medium">
-            Back to Generator
+            {t('backToGenerator')}
         </a>
       </div>
     </div>
