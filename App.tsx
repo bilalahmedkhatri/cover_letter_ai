@@ -13,6 +13,7 @@ import AboutUs from './components/AboutUs';
 import LandingPage from './components/LandingPage';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import NotFoundPage from './components/NotFoundPage';
 import { themes } from './theme';
 
 // --- Theme Management ---
@@ -103,7 +104,7 @@ export const useTheme = (): ThemeContextType => {
 // --- End Theme Management ---
 
 
-type Page = '/' | '/dashboard' | '/privacy' | '/terms' | '/about';
+type Page = '/' | '/dashboard' | '/privacy' | '/terms' | '/about' | '/404';
 
 const pagesInfo = {
   '/': { title: 'AI Professional Letter Generator | Home' },
@@ -111,6 +112,7 @@ const pagesInfo = {
   '/about': { title: 'About Us | AI Professional Letter Generator' },
   '/privacy': { title: 'Privacy Policy | AI Professional Letter Generator' },
   '/terms': { title: 'Terms of Service | AI Professional Letter Generator' },
+  '/404': { title: 'Page Not Found | AI Professional Letter Generator' },
 };
 
 
@@ -164,7 +166,7 @@ function AppContent() {
   useEffect(() => {
     const handleLocationChange = () => {
       const path = window.location.pathname as Page;
-      const newPage = pagesInfo[path] ? path : '/';
+      const newPage = pagesInfo[path] ? path : '/404';
       setPage(newPage);
       document.title = pagesInfo[newPage].title;
     };
@@ -258,7 +260,7 @@ function AppContent() {
   
   const renderPage = () => {
     if (page === '/') {
-        return <LandingPage />;
+      return <LandingPage />;
     }
     
     if (page === '/dashboard') {
@@ -299,9 +301,15 @@ function AppContent() {
     }
 
     let content;
-    if (page === '/privacy') content = <PrivacyPolicy />;
-    if (page === '/terms') content = <TermsOfService />;
-    if (page === '/about') content = <AboutUs />;
+    if (page === '/privacy') {
+      content = <PrivacyPolicy />;
+    } else if (page === '/terms') {
+      content = <TermsOfService />;
+    } else if (page === '/about') {
+      content = <AboutUs />;
+    } else {
+      content = <NotFoundPage />;
+    }
 
     return (
        <div className="bg-card/50 p-8 rounded-lg shadow-lg">
