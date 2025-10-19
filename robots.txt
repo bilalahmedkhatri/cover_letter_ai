@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://cover-letter-ai-xi.vercel.app/sitemap.xml
+Sitemap: https://ailettergen.com/sitemap.xml
