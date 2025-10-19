@@ -304,19 +304,26 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
       <section>
         <h2 className="text-xl font-bold text-accent mb-4 border-b border-border pb-2">Step 4: Customization (Optional)</h2>
         <div className="space-y-6 mt-4">
-            <div>
-              <label className="block text-sm font-medium text-text-primary mb-2">Tone of Voice</label>
-              <div className="flex flex-wrap gap-2 rounded-md bg-card-secondary p-1">
-                {(['Professional', 'Formal', 'Enthusiastic', 'Concise'] as const).map(t => (
-                  <button
-                    key={t}
-                    type="button"
-                    onClick={() => setUserData(p => ({ ...p, tone: t }))}
-                    className={`flex-1 py-2 text-sm rounded transition-colors min-w-[100px] ${userData.tone === t ? 'bg-indigo-600 text-white shadow' : 'hover:bg-button-secondary-hover-bg/50'}`}
-                  >
-                    {t}
-                  </button>
-                ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="tone" className="block text-sm font-medium text-text-primary mb-2">Tone of Voice</label>
+                <select
+                  id="tone"
+                  name="tone"
+                  value={userData.tone}
+                  onChange={handleUserChange}
+                  className={inputStyle}
+                >
+                  {(['Professional', 'Formal', 'Enthusiastic', 'Concise'] as const).map(t => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="language" className="block text-sm font-medium text-text-primary mb-2">Language</label>
+                <select id="language" name="language" value={userData.language} onChange={handleUserChange} className={inputStyle}>
+                  {languages.map(lang => <option key={lang} value={lang}>{lang}</option>)}
+                </select>
               </div>
             </div>
             <div>
@@ -325,12 +332,6 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
                   <button type="button" onClick={() => setUserData(p => ({...p, documentType: 'letter'}))} className={`w-full py-2 text-sm rounded transition-colors ${userData.documentType === 'letter' ? 'bg-indigo-600 text-white shadow' : 'hover:bg-button-secondary-hover-bg/50'}`}>Formal Letter</button>
                   <button type="button" onClick={() => setUserData(p => ({...p, documentType: 'email'}))} className={`w-full py-2 text-sm rounded transition-colors ${userData.documentType === 'email' ? 'bg-indigo-600 text-white shadow' : 'hover:bg-button-secondary-hover-bg/50'}`}>Professional Email</button>
               </div>
-            </div>
-            <div>
-              <label htmlFor="language" className="block text-sm font-medium text-text-primary mb-2">Language</label>
-              <select id="language" name="language" value={userData.language} onChange={handleUserChange} className={inputStyle}>
-                {languages.map(lang => <option key={lang} value={lang}>{lang}</option>)}
-              </select>
             </div>
             <div>
               <label htmlFor="customInstruction" className="block text-sm font-medium text-text-primary mb-2">
