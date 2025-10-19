@@ -224,7 +224,17 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
               {isAnalyzing && <SmallLoadingSpinner />}
               {isAnalyzing ? 'Analyzing...' : 'Analyze URL for Admission Info'}
             </button>
-            {analysisError && <p className="text-sm text-red-400 mt-4">{analysisError.message}</p>}
+            {analysisError && (
+              <div className="mt-4 bg-red-900/50 border border-red-700 text-red-300 text-sm rounded-lg p-3" role="alert">
+                <p className="font-semibold">Analysis Failed</p>
+                <p className="mt-1">{analysisError.message}</p>
+                {analysisError.message.includes("couldn't structure the information") && (
+                  <p className="mt-2 text-red-200">
+                    <strong>Tip:</strong> Try to find a direct link to the program page or the main admissions overview page. Avoid generic homepage URLs.
+                  </p>
+                )}
+              </div>
+            )}
             {analysisNotes && !analysisError && (
               <div className="mt-4 bg-amber-900/50 border border-amber-700 text-amber-300 text-sm rounded-lg p-3 flex items-start gap-3" role="alert">
                 <InfoIcon className="w-5 h-5 flex-shrink-0 mt-0.5" />

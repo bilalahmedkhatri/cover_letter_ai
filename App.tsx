@@ -16,6 +16,7 @@ import Footer from './components/Footer';
 import NotFoundPage from './components/NotFoundPage';
 import CookieConsentBanner from './components/CookieConsentBanner';
 import { themes } from './theme';
+import WhatsAppJoin from './components/WhatsAppJoin';
 
 // --- Theme Management ---
 type Theme = 'light' | 'dark';
@@ -308,6 +309,9 @@ function AppContent() {
       content = <TermsOfService />;
     } else if (page === '/about') {
       content = <AboutUs />;
+    // } else {
+    //   content = <LandingPage />;
+    // }
     } else {
       content = <NotFoundPage />;
     }
@@ -328,6 +332,7 @@ function AppContent() {
       </main>
 
       <Footer />
+      <WhatsAppJoin />
       <CookieConsentBanner />
     </div>
   );
