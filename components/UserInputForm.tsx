@@ -22,6 +22,11 @@ interface UserInputFormProps {
   admissionInfo: AdmissionInfo | null;
   foundCourses: string[];
   analysisNotes: string;
+  onExtractKeywords: () => void;
+  isExtractingKeywords: boolean;
+  keywordError: FriendlyError | null;
+  extractedKeywords: string;
+  setExtractedKeywords: (keywords: string) => void;
 }
 
 const UserInputForm: React.FC<UserInputFormProps> = ({
@@ -37,6 +42,11 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
   admissionInfo,
   foundCourses,
   analysisNotes,
+  onExtractKeywords,
+  isExtractingKeywords,
+  keywordError,
+  extractedKeywords,
+  setExtractedKeywords,
 }) => {
   const { t } = useLocale();
 
@@ -151,14 +161,58 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
             {userData.letterType === 'job' ? t('formStep3Job') : t('formStep3University')}
         </h2>
         {userData.letterType === 'job' ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-            <div>
-                <label htmlFor="url" className="block text-sm font-medium text-text-primary mb-2">{t('formJobURL')}</label>
-                <input type="url" id="url" name="url" value={jobDetails.url} onChange={handleJobChange} className={inputStyle} placeholder={t('formJobURLPlaceholder')} />
+          <div className="space-y-4 mt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                  <label htmlFor="url" className="block text-sm font-medium text-text-primary mb-2">{t('formJobURL')}</label>
+                  <input type="url" id="url" name="url" value={jobDetails.url} onChange={handleJobChange} className={inputStyle} placeholder={t('formJobURLPlaceholder')} />
+              </div>
+              <div>
+                  <label htmlFor="screenshot" className="block text-sm font-medium text-text-primary mb-2">{t('formJobScreenshot')}</label>
+                  <input type="file" id="screenshot" name="screenshot" onChange={handleScreenshotChange} accept="image/*" className={inputFileStyle} />
+              </div>
             </div>
-            <div>
-                <label htmlFor="screenshot" className="block text-sm font-medium text-text-primary mb-2">{t('formJobScreenshot')}</label>
-                <input type="file" id="screenshot" name="screenshot" onChange={handleScreenshotChange} accept="image/*" className={inputFileStyle} />
+
+            {/* NEW KEYWORD EXTRACTION SECTION */}
+            <div className="bg-card/50 p-4 rounded-lg border border-border">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <h3 className="font-semibold text-text-primary">{t('formKeywordsTitle')}</h3>
+                  <p className="text-sm text-text-secondary">{t('formKeywordsDescription')}</p>
+                </div>
+                <button 
+                  type="button" 
+                  onClick={onExtractKeywords} 
+                  disabled={isExtractingKeywords || (!jobDetails.url && !jobDetails.screenshot)}
+                  className="flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-md transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isExtractingKeywords && <SmallLoadingSpinner />}
+                  {isExtractingKeywords ? t('formKeywordsExtracting') : t('formKeywordsExtract')}
+                </button>
+              </div>
+
+              {keywordError && (
+                <div className="mt-4 bg-red-900/50 border border-red-700 text-red-300 text-sm rounded-lg p-3" role="alert">
+                  <p className="font-semibold">{t('formKeywordsError')}</p>
+                  <p className="mt-1">{keywordError.message}</p>
+                </div>
+              )}
+              
+              {(extractedKeywords || isExtractingKeywords) && !keywordError && (
+                <div className="mt-4">
+                  <label htmlFor="extractedKeywords" className="block text-sm font-medium text-text-primary mb-2">{t('formKeywordsExtracted')}</label>
+                  <textarea
+                    id="extractedKeywords"
+                    name="extractedKeywords"
+                    value={extractedKeywords}
+                    onChange={(e) => setExtractedKeywords(e.target.value)}
+                    rows={3}
+                    className={inputStyle}
+                    placeholder={t('formKeywordsPlaceholder')}
+                    readOnly={isExtractingKeywords}
+                  />
+                </div>
+              )}
             </div>
           </div>
         ) : (
@@ -292,6 +346,7 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
                 <div className="mt-4 bg-card/50 p-4 rounded-lg border border-border">
                     <h3 className="font-semibold text-lg text-accent mb-2">{t('formFoundCourses')}</h3>
                     <p className="text-sm text-text-secondary mb-2">{t('formFoundCoursesHint')}</p>
+
                     <ul className="list-disc list-inside text-text-primary text-sm">{foundCourses.map(c => <li key={c}>{c}</li>)}</ul>
                 </div>
             )}

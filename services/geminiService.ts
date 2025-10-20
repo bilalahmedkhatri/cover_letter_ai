@@ -80,12 +80,63 @@ const fileToGenerativePart = async (file: File): Promise<Part> => {
 };
 
 /**
+ * Extracts relevant keywords from a job description URL or screenshot.
+ * @param jobDetails The details of the job, including URL and/or screenshot.
+ * @returns A promise that resolves to a comma-separated string of keywords.
+ */
+export const extractKeywordsFromJob = async (jobDetails: JobDetails): Promise<string> => {
+  if (!jobDetails.url && !jobDetails.screenshot) {
+    return '';
+  }
+
+  const parts: Part[] = [];
+  let prompt = `Act as an expert recruitment consultant. Your task is to analyze the provided job description and extract a concise list of the most important keywords. These keywords should represent key skills, technologies, qualifications, and responsibilities mentioned in the posting.
+
+Return the keywords as a single, comma-separated string. For example: "Project Management, Agile, Scrum, Jira, Team Leadership, Budgeting".
+Do not include any other text, explanation, or formatting.
+
+Analyze the following job description:\n`;
+
+  if (jobDetails.url) {
+    prompt += `- Job Posting URL: ${jobDetails.url}\n`;
+  }
+  if (jobDetails.screenshot) {
+    prompt += `A screenshot of the job description is also provided for context.\n`;
+    parts.push({
+      inlineData: {
+        mimeType: 'image/jpeg', // Assuming jpeg, but this handles various image types from file input
+        data: jobDetails.screenshot
+      }
+    });
+  }
+
+  parts.unshift({ text: prompt });
+
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-pro',
+      contents: { parts: parts },
+      config: {
+        // Use googleSearch tool if a URL is provided to help the model access the page content.
+        tools: jobDetails.url ? [{ googleSearch: {} }] : undefined,
+      }
+    });
+    return response.text.trim();
+  } catch (error) {
+    console.error("Error extracting keywords:", error);
+    throw error;
+  }
+};
+
+
+/**
  * Generates a cover letter using the Gemini API based on user-provided data.
  * @param userData The user's personal and professional information.
  * @param jobDetails The details of the job application.
+ * @param keywords A string of comma-separated keywords extracted from the job description.
  * @returns A promise that resolves to the generated cover letter string.
  */
-export const generateCoverLetter = async (userData: UserData, jobDetails: JobDetails): Promise<string> => {
+export const generateCoverLetter = async (userData: UserData, jobDetails: JobDetails, keywords: string): Promise<string> => {
   const {
     name,
     skills,
@@ -133,6 +184,9 @@ export const generateCoverLetter = async (userData: UserData, jobDetails: JobDet
             data: jobDetails.screenshot
         }
       });
+    }
+     if (keywords) {
+      prompt += `\n**Critical Requirement:** To ensure my application is optimized for Applicant Tracking Systems (ATS) and highly relevant, please strategically and naturally incorporate the following keywords throughout the letter: **${keywords}**. Do not just list them; weave them into the narrative of my skills and experience.\n`;
     }
   } else { // university
     prompt += `\nI am applying for admission to a university. Here are the details:\n`;

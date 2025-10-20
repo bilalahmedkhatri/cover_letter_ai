@@ -30,7 +30,7 @@ const CookieConsentBanner: React.FC = () => {
       aria-live="polite"
       aria-label="Cookie Consent Banner"
     >
-      <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="container mx-auto flex flex-col sm:flex-row items-center sm:justify-between gap-4">
         <p className="text-sm text-slate-200 text-center sm:text-left">
           {t('cookieBannerText')}
           {' '}

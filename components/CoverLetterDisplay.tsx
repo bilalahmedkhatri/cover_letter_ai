@@ -118,10 +118,10 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
               className="w-full flex-grow bg-transparent border-none outline-none resize-none text-text-primary font-sans text-base leading-relaxed whitespace-pre-wrap overflow-y-auto p-2 -m-2"
               aria-label="Editable cover letter content"
             />
-          <div className="flex justify-end gap-4 mt-4 flex-shrink-0">
+          <div className="flex flex-col sm:flex-row sm:justify-end gap-3 mt-4 flex-shrink-0">
             <button 
               onClick={handleCopy}
-              className="flex items-center gap-2 px-4 py-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-md transition-colors text-sm font-medium"
+              className="flex items-center justify-center gap-2 px-4 py-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-md transition-colors text-sm font-medium w-full sm:w-auto"
               aria-label="Copy to clipboard"
             >
               {copied ? <CheckIcon className="w-5 h-5 text-green-400" /> : <CopyIcon className="w-5 h-5 text-text-primary" />}
@@ -129,7 +129,7 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
             </button>
              <button 
               onClick={handleDownloadPdf}
-              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-md transition-colors text-sm font-medium"
+              className="flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-md transition-colors text-sm font-medium w-full sm:w-auto"
               aria-label="Download as PDF"
             >
               <DownloadIcon className="w-5 h-5" />
@@ -151,7 +151,7 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
   };
   
   return (
-    <div className="flex flex-col h-[36rem] my-6">
+    <div className="flex flex-col min-h-[30rem] my-6">
       <h2 className="text-2xl font-bold text-accent mb-6 flex-shrink-0">{t('displayTitle')}</h2>
       <div className="bg-card rounded-lg p-6 flex-grow flex flex-col">
         {renderContent()}

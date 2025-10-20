@@ -1,7 +1,7 @@
 // Fix: Replaced placeholder content with a functional App component to structure the application, manage state, and handle logic.
 import React, { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { UserData, JobDetails, AdmissionInfo, SavedSession } from './types';
-import { generateCoverLetter, analyzeUniversityPage } from './services/geminiService';
+import { generateCoverLetter, analyzeUniversityPage, extractKeywordsFromJob } from './services/geminiService';
 import * as storageService from './services/storageService';
 import { getFriendlyErrorMessage, FriendlyError } from './services/errorService';
 import UserInputForm from './components/UserInputForm';
@@ -161,6 +161,11 @@ function AppContent() {
   const [foundCourses, setFoundCourses] = useState<string[]>([]);
   const [analysisNotes, setAnalysisNotes] = useState('');
 
+  // State for keyword extraction
+  const [extractedKeywords, setExtractedKeywords] = useState<string>('');
+  const [isExtractingKeywords, setIsExtractingKeywords] = useState(false);
+  const [keywordError, setKeywordError] = useState<FriendlyError | null>(null);
+
   // State for saved letters
   const [savedSessions, setSavedSessions] = useState<SavedSession[]>([]);
 
@@ -220,7 +225,7 @@ function AppContent() {
     setError(null);
     setCoverLetter('');
     try {
-      const letter = await generateCoverLetter(userData, jobDetails);
+      const letter = await generateCoverLetter(userData, jobDetails, extractedKeywords);
       setCoverLetter(letter);
       const updatedSessions = storageService.saveSession(userData, jobDetails, letter);
       setSavedSessions(updatedSessions);
@@ -255,6 +260,22 @@ function AppContent() {
     }
   };
 
+  const handleExtractKeywords = async () => {
+    if (!jobDetails.url && !jobDetails.screenshot) return;
+    setIsExtractingKeywords(true);
+    setKeywordError(null);
+    setExtractedKeywords('');
+    try {
+      const keywords = await extractKeywordsFromJob(jobDetails);
+      setExtractedKeywords(keywords);
+    } catch (e) {
+      setKeywordError(getFriendlyErrorMessage(e));
+    } finally {
+      setIsExtractingKeywords(false);
+    }
+  };
+
+
   const handleRestoreSession = (session: SavedSession) => {
     setUserData(session.userData);
     setJobDetails(session.jobDetails);
@@ -276,7 +297,7 @@ function AppContent() {
     if (page === '/dashboard') {
       return (
          <div className="space-y-8">
-          <div className="bg-card/50 p-6 rounded-lg shadow-lg">
+          <div className="bg-card/50 p-4 sm:p-6 rounded-lg shadow-lg">
              <UserInputForm
               userData={userData}
               setUserData={setUserData}
@@ -290,9 +311,14 @@ function AppContent() {
               admissionInfo={admissionInfo}
               foundCourses={foundCourses}
               analysisNotes={analysisNotes}
+              onExtractKeywords={handleExtractKeywords}
+              isExtractingKeywords={isExtractingKeywords}
+              keywordError={keywordError}
+              extractedKeywords={extractedKeywords}
+              setExtractedKeywords={setExtractedKeywords}
             />
           </div>
-          <div id="cover-letter-display" className="bg-card/50 p-6 rounded-lg shadow-lg">
+          <div id="cover-letter-display" className="bg-card/50 p-4 sm:p-6 rounded-lg shadow-lg">
             <CoverLetterDisplay
               coverLetter={coverLetter}
               setCoverLetter={setCoverLetter}
@@ -325,7 +351,7 @@ function AppContent() {
     // }
 
     return (
-       <div className="bg-card/50 p-8 rounded-lg shadow-lg">
+       <div className="bg-card/50 p-6 sm:p-8 rounded-lg shadow-lg">
         {content}
       </div>
     );
