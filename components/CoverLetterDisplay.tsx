@@ -7,6 +7,10 @@ import CopyIcon from './icons/CopyIcon';
 import CheckIcon from './icons/CheckIcon';
 import DownloadIcon from './icons/DownloadIcon';
 import ErrorIcon from './icons/ErrorIcon';
+import LinkedInIcon from './icons/LinkedInIcon';
+import TwitterIcon from './icons/TwitterIcon';
+import FacebookIcon from './icons/FacebookIcon';
+import ShareIcon from './icons/ShareIcon';
 
 const JSPDF_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
 
@@ -47,7 +51,14 @@ interface CoverLetterDisplayProps {
 
 const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, setCoverLetter, isLoading, error, onSubmit }) => {
   const [copied, setCopied] = useState(false);
+  const [isShareSupported, setIsShareSupported] = useState(false);
   const { t } = useLocale();
+  
+  useEffect(() => {
+    if (navigator.share) {
+      setIsShareSupported(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (copied) {
@@ -77,6 +88,41 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
     } catch (e) {
       console.error("Failed to download PDF:", e);
       // Optionally, show an error to the user
+    }
+  };
+  
+  const handleSocialShare = (platform: 'linkedin' | 'twitter' | 'facebook') => {
+    const url = 'https://ailettergen.com';
+    let shareUrl = '';
+
+    switch (platform) {
+      case 'twitter':
+        const twitterText = encodeURIComponent(`Just crafted a professional cover letter in seconds using AI Letter Generator! This tool is a game-changer for job applications. #AICoverLetter #JobSearch #CareerTech`);
+        shareUrl = `https://twitter.com/intent/tweet?text=${twitterText}&url=${url}`;
+        break;
+      case 'linkedin':
+        const linkedInText = encodeURIComponent(`I highly recommend AI Letter Generator for creating professional, ATS-friendly cover letters. It saved me a ton of time and helped me create a compelling application. A must-have for any job seeker!`);
+        // Note: LinkedIn summary is often ignored. Sharing the URL is the main goal.
+        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+        break;
+      case 'facebook':
+        const facebookQuote = encodeURIComponent(`This AI tool for writing cover letters is incredible! It helped me create a polished and professional letter tailored to the job description in just minutes. If you're job hunting, you have to try this.`);
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${facebookQuote}`;
+        break;
+    }
+
+    window.open(shareUrl, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleWebShare = async () => {
+    try {
+        await navigator.share({
+            title: 'AI Letter Generator',
+            text: 'Check out this awesome AI tool for creating professional cover letters! It helped me write mine in minutes.',
+            url: 'https://ailettergen.com',
+        });
+    } catch (error) {
+        console.error('Error sharing:', error);
     }
   };
 
@@ -118,6 +164,32 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
               className="w-full flex-grow bg-transparent border-none outline-none resize-none text-text-primary font-sans text-base leading-relaxed whitespace-pre-wrap overflow-y-auto p-2 -m-2"
               aria-label="Editable cover letter content"
             />
+          
+            {/* Share Section */}
+            <div className="mt-4 pt-4 border-t border-border">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                <p className="text-sm font-medium text-text-secondary">{t('displayShareSuccess')}</p>
+                <div className="flex items-center gap-3">
+                  {isShareSupported ? (
+                    <button
+                      onClick={handleWebShare}
+                      className="flex items-center justify-center gap-2 px-4 py-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-md transition-colors text-sm font-medium"
+                      aria-label={t('displayShare')}
+                    >
+                      <ShareIcon className="w-5 h-5" />
+                      <span>{t('displayShare')}</span>
+                    </button>
+                  ) : (
+                    <>
+                      <button onClick={() => handleSocialShare('linkedin')} title={t('displayShareOnLinkedIn')} aria-label={t('displayShareOnLinkedIn')} className="p-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-full transition-colors"><LinkedInIcon className="w-5 h-5 text-text-primary" /></button>
+                      <button onClick={() => handleSocialShare('twitter')} title={t('displayShareOnTwitter')} aria-label={t('displayShareOnTwitter')} className="p-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-full transition-colors"><TwitterIcon className="w-5 h-5 text-text-primary" /></button>
+                      <button onClick={() => handleSocialShare('facebook')} title={t('displayShareOnFacebook')} aria-label={t('displayShareOnFacebook')} className="p-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-full transition-colors"><FacebookIcon className="w-5 h-5 text-text-primary" /></button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+
           <div className="flex flex-col sm:flex-row sm:justify-end gap-3 mt-4 flex-shrink-0">
             <button 
               onClick={handleCopy}
