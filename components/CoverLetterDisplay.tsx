@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FriendlyError } from '../services/errorService';
 import { loadScript } from '../services/scriptLoader';
 import { useLocale } from '../contexts/LocaleContext';
@@ -53,7 +53,8 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
   const [copied, setCopied] = useState(false);
   const [isShareSupported, setIsShareSupported] = useState(false);
   const { t } = useLocale();
-  
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
   useEffect(() => {
     if (navigator.share) {
       setIsShareSupported(true);
@@ -66,6 +67,19 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
       return () => clearTimeout(timer);
     }
   }, [copied]);
+
+  // This effect will automatically resize the textarea based on its content.
+  useEffect(() => {
+    if (textareaRef.current) {
+      // We reset the height to 'auto' to ensure the scrollHeight is calculated correctly
+      // based on the content, not the current height.
+      textareaRef.current.style.height = 'auto';
+      // We then set the height to the scrollHeight, which is the minimum height required
+      // to display the content without a scrollbar.
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [coverLetter]); // This effect runs whenever the coverLetter content changes.
+
 
   const handleCopy = () => {
     navigator.clipboard.writeText(coverLetter);
@@ -159,10 +173,12 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
       return (
         <div className="flex flex-col h-full">
             <textarea
+              ref={textareaRef}
               value={coverLetter}
               onChange={(e) => setCoverLetter(e.target.value)}
-              className="w-full flex-grow bg-transparent border-none outline-none resize-none text-text-primary font-sans text-base leading-relaxed whitespace-pre-wrap overflow-y-auto p-2 -m-2"
+              className="w-full bg-transparent border-none outline-none resize-none text-text-primary font-sans text-base leading-relaxed whitespace-pre-wrap overflow-hidden p-2 -m-2"
               aria-label="Editable cover letter content"
+              rows={1}
             />
           
             {/* Share Section */}
