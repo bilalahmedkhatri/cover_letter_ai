@@ -10,7 +10,6 @@ import ErrorIcon from './icons/ErrorIcon';
 import LinkedInIcon from './icons/LinkedInIcon';
 import TwitterIcon from './icons/TwitterIcon';
 import FacebookIcon from './icons/FacebookIcon';
-import ShareIcon from './icons/ShareIcon';
 
 const JSPDF_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
 
@@ -51,15 +50,8 @@ interface CoverLetterDisplayProps {
 
 const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, setCoverLetter, isLoading, error, onSubmit }) => {
   const [copied, setCopied] = useState(false);
-  const [isShareSupported, setIsShareSupported] = useState(false);
   const { t } = useLocale();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    if (navigator.share) {
-      setIsShareSupported(true);
-    }
-  }, []);
 
   useEffect(() => {
     if (copied) {
@@ -128,18 +120,6 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
     window.open(shareUrl, '_blank', 'noopener,noreferrer');
   };
 
-  const handleWebShare = async () => {
-    try {
-        await navigator.share({
-            title: 'AI Letter Generator',
-            text: 'Check out this awesome AI tool for creating professional cover letters! It helped me write mine in minutes.',
-            url: 'https://ailettergen.com',
-        });
-    } catch (error) {
-        console.error('Error sharing:', error);
-    }
-  };
-
   const renderContent = () => {
     if (isLoading) {
       return (
@@ -186,22 +166,9 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
                 <p className="text-sm font-medium text-text-secondary">{t('displayShareSuccess')}</p>
                 <div className="flex items-center gap-3">
-                  {isShareSupported ? (
-                    <button
-                      onClick={handleWebShare}
-                      className="flex items-center justify-center gap-2 px-4 py-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-md transition-colors text-sm font-medium"
-                      aria-label={t('displayShare')}
-                    >
-                      <ShareIcon className="w-5 h-5" />
-                      <span>{t('displayShare')}</span>
-                    </button>
-                  ) : (
-                    <>
-                      <button onClick={() => handleSocialShare('linkedin')} title={t('displayShareOnLinkedIn')} aria-label={t('displayShareOnLinkedIn')} className="p-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-full transition-colors"><LinkedInIcon className="w-5 h-5 text-text-primary" /></button>
-                      <button onClick={() => handleSocialShare('twitter')} title={t('displayShareOnTwitter')} aria-label={t('displayShareOnTwitter')} className="p-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-full transition-colors"><TwitterIcon className="w-5 h-5 text-text-primary" /></button>
-                      <button onClick={() => handleSocialShare('facebook')} title={t('displayShareOnFacebook')} aria-label={t('displayShareOnFacebook')} className="p-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-full transition-colors"><FacebookIcon className="w-5 h-5 text-text-primary" /></button>
-                    </>
-                  )}
+                  <button onClick={() => handleSocialShare('linkedin')} title={t('displayShareOnLinkedIn')} aria-label={t('displayShareOnLinkedIn')} className="p-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-full transition-colors"><LinkedInIcon className="w-5 h-5 text-text-primary" /></button>
+                  <button onClick={() => handleSocialShare('twitter')} title={t('displayShareOnTwitter')} aria-label={t('displayShareOnTwitter')} className="p-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-full transition-colors"><TwitterIcon className="w-5 h-5 text-text-primary" /></button>
+                  <button onClick={() => handleSocialShare('facebook')} title={t('displayShareOnFacebook')} aria-label={t('displayShareOnFacebook')} className="p-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-full transition-colors"><FacebookIcon className="w-5 h-5 text-text-primary" /></button>
                 </div>
               </div>
             </div>
