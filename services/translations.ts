@@ -177,6 +177,11 @@ const en = {
   // Legal page disclaimer
   legalDisclaimer: "This is a courtesy translation. The original English version is the legally binding document.",
   backToGenerator: "Back to Generator",
+
+  // Storage Warning
+  storageWarningTitle: "Work in Progress",
+  storageWarningBody: "We're constantly improving the app. Please note that data for saved sessions is stored in your browser's local storage and may be cleared during updates. We appreciate your understanding!",
+  storageWarningDismiss: "Dismiss",
 };
 
 export type TranslationKeys = keyof typeof en;
@@ -338,6 +343,9 @@ export const translations: Record<Locale, Record<TranslationKeys, string>> = {
     backToTop: "Volver arriba",
     legalDisclaimer: "Esta es una traducción de cortesía. La versión original en inglés es el documento legalmente vinculante.",
     backToGenerator: "Volver al Generador",
+    storageWarningTitle: "Trabajo en Progreso",
+    storageWarningBody: "Estamos mejorando constantemente la aplicación. Ten en cuenta que los datos de las sesiones guardadas se almacenan en el almacenamiento local de tu navegador y pueden borrarse durante las actualizaciones. ¡Agradecemos tu comprensión!",
+    storageWarningDismiss: "Descartar",
   },
   fr: {
     dashboard: "Tableau de bord",
@@ -494,6 +502,9 @@ export const translations: Record<Locale, Record<TranslationKeys, string>> = {
     backToTop: "Retour en haut",
     legalDisclaimer: "Ceci est une traduction de courtoisie. La version originale en anglais est le document juridiquement contraignant.",
     backToGenerator: "Retour au Générateur",
+    storageWarningTitle: "Travaux en cours",
+    storageWarningBody: "Nous améliorons constamment l'application. Veuillez noter que les données des sessions enregistrées sont stockées dans le stockage local de votre navigateur et peuvent être effacées lors des mises à jour. Nous vous remercions de votre compréhension !",
+    storageWarningDismiss: "Rejeter",
   },
   ru: {
     dashboard: "Панель",
@@ -650,6 +661,9 @@ export const translations: Record<Locale, Record<TranslationKeys, string>> = {
     backToTop: "Наверх",
     legalDisclaimer: "Это неофициальный перевод. Оригинальная английская версия является юридически обязывающим документом.",
     backToGenerator: "Вернуться к генератору",
+    storageWarningTitle: "В разработке",
+    storageWarningBody: "Мы постоянно улучшаем приложение. Обратите внимание, что данные для сохраненных сессий хранятся в локальном хранилище вашего браузера и могут быть очищены во время обновлений. Благодарим за понимание!",
+    storageWarningDismiss: "Закрыть",
   },
   nl: {
     dashboard: "Dashboard",
@@ -806,6 +820,9 @@ export const translations: Record<Locale, Record<TranslationKeys, string>> = {
     backToTop: "Terug naar boven",
     legalDisclaimer: "Dit is een hoffelijkheidvertaling. De originele Engelse versie is het wettelijk bindende document.",
     backToGenerator: "Terug naar de Generator",
+    storageWarningTitle: "Werk in uitvoering",
+    storageWarningBody: "We verbeteren de app voortdurend. Houd er rekening mee dat gegevens voor opgeslagen sessies worden opgeslagen in de lokale opslag van je browser en kunnen worden gewist tijdens updates. We stellen je begrip op prijs!",
+    storageWarningDismiss: "Sluiten",
   },
   pt: {
     dashboard: "Painel",
@@ -962,6 +979,9 @@ export const translations: Record<Locale, Record<TranslationKeys, string>> = {
     backToTop: "Voltar ao topo",
     legalDisclaimer: "Esta é uma tradução de cortesia. A versão original em inglês é o documento legalmente vinculativo.",
     backToGenerator: "Voltar ao Gerador",
+    storageWarningTitle: "Trabalho em Andamento",
+    storageWarningBody: "Estamos constantemente aprimorando o aplicativo. Observe que os dados das sessões salvas são armazenados no armazenamento local do seu navegador e podem ser apagados durante as atualizações. Agradecemos a sua compreensão!",
+    storageWarningDismiss: "Dispensar",
   },
   ar: {
     dashboard: "لوحة التحكم",
@@ -1118,5 +1138,8 @@ export const translations: Record<Locale, Record<TranslationKeys, string>> = {
     backToTop: "العودة إلى الأعلى",
     legalDisclaimer: "هذه ترجمة مجانية. النسخة الإنجليزية الأصلية هي الوثيقة الملزمة قانونًا.",
     backToGenerator: "العودة إلى المولد",
+    storageWarningTitle: "قيد التطوير",
+    storageWarningBody: "نحن نعمل باستمرار على تحسين التطبيق. يرجى ملاحظة أن بيانات الجلسات المحفوظة يتم تخزينها في التخزين المحلي للمتصفح الخاص بك وقد يتم مسحها أثناء التحديثات. نحن نقدر تفهمكم!",
+    storageWarningDismiss: "إغلاق",
   },
 };

@@ -19,6 +19,8 @@ import { themes } from './theme';
 import WhatsAppJoin from './components/WhatsAppJoin';
 import BackToTopButton from './components/BackToTopButton';
 import { LocaleProvider, useLocale } from './contexts/LocaleContext';
+import InfoIcon from './components/icons/InfoIcon';
+import XIcon from './components/icons/XIcon';
 
 // --- Theme Management ---
 type Theme = 'light' | 'dark';
@@ -169,6 +171,9 @@ function AppContent() {
   // State for saved letters
   const [savedSessions, setSavedSessions] = useState<SavedSession[]>([]);
 
+  // State for UI elements
+  const [showStorageWarning, setShowStorageWarning] = useState(true);
+
   // Effect for loading saved letters on mount
   useEffect(() => {
     setSavedSessions(storageService.getSavedSessions());
@@ -277,12 +282,39 @@ function AppContent() {
 
 
   const handleRestoreSession = (session: SavedSession) => {
-    setUserData(session.userData);
-    setJobDetails(session.jobDetails);
-    setCoverLetter(session.coverLetter);
+    const { structuredUserData, coverLetter } = session;
+    const { step1, step2, step3, step4 } = structuredUserData;
+
+    // Flatten the structured data back into the app's state format
+    const restoredUserData: UserData = {
+      // Step 1
+      letterType: step1.letterType,
+      name: step1.name,
+      // Step 2
+      skills: step2.skills,
+      experience: step2.experience,
+      resume: null, // Resume is not saved in localStorage
+      // Step 3 (University)
+      universityUrl: step3.universityDetails.url,
+      courseName: step3.universityDetails.courseName,
+      universityAnalysisInstruction: step3.universityDetails.analysisInstruction,
+      // Step 4
+      tone: step4.tone,
+      language: step4.language,
+      documentType: step4.documentType,
+      customInstruction: step4.customInstruction,
+      headerInfo: step4.headerInfo,
+      footerInfo: step4.footerInfo,
+    };
+
+    setUserData(restoredUserData);
+    setJobDetails(step3.jobDetails); // Step 3 (Job)
+    setCoverLetter(coverLetter);
+
     // Scroll to the top of the form for better UX
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
 
   const handleRemoveSession = (id: number) => {
     const updatedSessions = storageService.removeSession(id);
@@ -297,6 +329,20 @@ function AppContent() {
     if (page === '/dashboard') {
       return (
          <div className="space-y-8">
+            {showStorageWarning && (
+            <div className="bg-amber-900/50 border border-amber-700 text-amber-300 text-sm rounded-lg p-4 flex justify-between items-start gap-4">
+                <div className="flex items-start gap-3">
+                    <InfoIcon className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                    <div>
+                        <h4 className="font-semibold">{t('storageWarningTitle')}</h4>
+                        <p className="leading-relaxed mt-1">{t('storageWarningBody')}</p>
+                    </div>
+                </div>
+                <button onClick={() => setShowStorageWarning(false)} className="text-amber-200 hover:text-white" aria-label={t('storageWarningDismiss')}>
+                    <XIcon className="w-5 h-5" />
+                </button>
+            </div>
+            )}
           <div className="bg-card/50 p-4 sm:p-6 rounded-lg shadow-lg">
              <UserInputForm
               userData={userData}

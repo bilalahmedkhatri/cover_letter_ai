@@ -39,10 +39,46 @@ export interface AdmissionInfo {
 }
 
 
+// New interfaces for structured, savable user data
+export interface SavedStep1 {
+  letterType: 'job' | 'university';
+  name: string;
+}
+
+export interface SavedStep2 {
+  skills: string;
+  experience: string;
+}
+
+export interface SavedStep3 {
+  jobDetails: JobDetails;
+  universityDetails: {
+    url: string;
+    courseName: string;
+    analysisInstruction: string;
+  };
+}
+
+export interface SavedStep4 {
+  tone: LetterTone;
+  language: string;
+  documentType: 'letter' | 'email';
+  customInstruction: string;
+  headerInfo: string;
+  footerInfo: string;
+}
+
+export interface StructuredUserData {
+    step1: SavedStep1;
+    step2: SavedStep2;
+    step3: SavedStep3;
+    step4: SavedStep4;
+}
+
+// Updated SavedSession to use the new structured format
 export interface SavedSession {
   id: number;
-  userData: UserData;
-  jobDetails: JobDetails;
+  structuredUserData: StructuredUserData;
   coverLetter: string;
   date: string;
 }
