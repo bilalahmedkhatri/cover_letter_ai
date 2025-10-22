@@ -322,13 +322,13 @@ function AppContent() {
   };
   
   const renderPage = () => {
-    if (page === '/') {
-      return <LandingPage />;
-    }
-    
-    if (page === '/dashboard') {
-      return (
-         <div className="space-y-8">
+    switch (page) {
+      case '/':
+        return <LandingPage />;
+
+      case '/dashboard':
+        return (
+          <div className="space-y-8">
             {showStorageWarning && (
             <div className="bg-amber-900/50 border border-amber-700 text-amber-300 text-sm rounded-lg p-4 flex justify-between items-start gap-4">
                 <div className="flex items-start gap-3">
@@ -379,28 +379,36 @@ function AppContent() {
             onRemove={handleRemoveSession}
           />
         </div>
-      );
-    }
+        );
 
-    let content;
-    if (page === '/privacy') {
-      content = <PrivacyPolicy />;
-    } else if (page === '/terms') {
-      content = <TermsOfService />;
-    } else if (page === '/about') {
-      content = <AboutUs />;
-    } else {
-      content = <LandingPage />;
-    }
-    // } else {
-    //   content = <NotFoundPage />;
-    // }
+      case '/privacy':
+        return (
+          <div className="bg-card/50 p-6 sm:p-8 rounded-lg shadow-lg">
+            <PrivacyPolicy />
+          </div>
+        );
+      
+      case '/terms':
+        return (
+          <div className="bg-card/50 p-6 sm:p-8 rounded-lg shadow-lg">
+            <TermsOfService />
+          </div>
+        );
+      
+      case '/about':
+        return (
+          <div className="bg-card/50 p-6 sm:p-8 rounded-lg shadow-lg">
+            <AboutUs />
+          </div>
+        );
+      
+      case '/404':
+        return <NotFoundPage />;
 
-    return (
-       <div className="bg-card/50 p-6 sm:p-8 rounded-lg shadow-lg">
-        {content}
-      </div>
-    );
+      default:
+        // Fallback for any unknown route, though routing effect should handle it.
+        return <NotFoundPage />;
+    }
   };
 
   return (

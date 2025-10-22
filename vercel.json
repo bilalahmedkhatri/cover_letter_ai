@@ -1,7 +1,13 @@
 {
   "rewrites": [
     {
-      "source": "/:path((?!.*\\.).*)",
+      "source": "/:path*",
+      "missing": [
+        {
+          "type": "file",
+          "value": ":path*"
+        }
+      ],
       "destination": "/index.html"
     }
   ],
@@ -11,7 +17,7 @@
       "headers": [
         {
           "key": "Content-Type",
-          "value": "application/xml; charset=utf-8"
+          "value": "application/xml"
         }
       ]
     }
