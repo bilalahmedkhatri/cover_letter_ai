@@ -72,10 +72,10 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     // Ensure we don't add it if it's already there
     const existingStyleElement = document.getElementById('app-theme-styles');
     if (existingStyleElement) {
-        existingStyleElement.innerHTML = themeCss;
+      existingStyleElement.innerHTML = themeCss;
     } else {
-        styleElement.innerHTML = themeCss;
-        document.head.appendChild(styleElement);
+      styleElement.innerHTML = themeCss;
+      document.head.appendChild(styleElement);
     }
   }, []);
 
@@ -182,8 +182,8 @@ function AppContent() {
   // Effect for handling routing
   useEffect(() => {
     const handleLocationChange = () => {
-      const path = window.location.pathname as Page;
-      const newPage = pagesInfo[path] ? path : '/404';
+      const path = window.location.pathname;
+      const newPage = (path in pagesInfo) ? (path as Page) : '/404';
       setPage(newPage);
     };
 
@@ -191,13 +191,13 @@ function AppContent() {
     handleLocationChange(); // Handle initial load
 
     return () => window.removeEventListener('popstate', handleLocationChange);
-  }, []);
+  }, [pagesInfo]);
 
   // Update document title when page or language changes
   useEffect(() => {
-      document.title = pagesInfo[page].title;
+    document.title = pagesInfo[page].title;
   }, [page, t]);
-  
+
   // Effect for SPA link handling
   useEffect(() => {
     const handleLinkClick = (e: MouseEvent) => {
@@ -205,15 +205,15 @@ function AppContent() {
       const anchor = target.closest('a');
 
       if (anchor && anchor.target !== '_blank' && anchor.origin === window.location.origin) {
-        const path = anchor.pathname as Page;
+        const path = anchor.pathname;
         // Check if the link is a valid internal route.
-        if (pagesInfo[path]) {
+        if (path in pagesInfo) {
           // Always prevent the default browser navigation for internal routes.
           e.preventDefault();
           // Only push to history and update state if the path is different.
           if (path !== window.location.pathname) {
             window.history.pushState({}, '', path);
-            setPage(path);
+            setPage(path as Page);
             window.scrollTo(0, 0);
           }
         }
@@ -222,7 +222,7 @@ function AppContent() {
 
     document.addEventListener('click', handleLinkClick);
     return () => document.removeEventListener('click', handleLinkClick);
-  }, []);
+  }, [pagesInfo]);
 
 
   const handleSubmit = async () => {
@@ -320,7 +320,7 @@ function AppContent() {
     const updatedSessions = storageService.removeSession(id);
     setSavedSessions(updatedSessions);
   };
-  
+
   const renderPage = () => {
     switch (page) {
       case '/':
@@ -330,78 +330,72 @@ function AppContent() {
         return (
           <div className="space-y-8">
             {showStorageWarning && (
-            <div className="bg-amber-900/50 border border-amber-700 text-amber-300 text-sm rounded-lg p-4 flex justify-between items-start gap-4">
+              <div className="bg-amber-900/50 border border-amber-700 text-amber-300 text-sm rounded-lg p-4 flex justify-between items-start gap-4">
                 <div className="flex items-start gap-3">
-                    <InfoIcon className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                    <div>
-                        <h4 className="font-semibold">{t('storageWarningTitle')}</h4>
-                        <p className="leading-relaxed mt-1">{t('storageWarningBody')}</p>
-                    </div>
+                  <InfoIcon className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold">{t('storageWarningTitle')}</h4>
+                    <p className="leading-relaxed mt-1">{t('storageWarningBody')}</p>
+                  </div>
                 </div>
                 <button onClick={() => setShowStorageWarning(false)} className="text-amber-200 hover:text-white" aria-label={t('storageWarningDismiss')}>
-                    <XIcon className="w-5 h-5" />
+                  <XIcon className="w-5 h-5" />
                 </button>
-            </div>
+              </div>
             )}
-          <div className="bg-card/50 p-4 sm:p-6 rounded-lg shadow-lg">
-             <UserInputForm
-              userData={userData}
-              setUserData={setUserData}
-              jobDetails={jobDetails}
-              setJobDetails={setJobDetails}
-              onSubmit={handleSubmit}
-              isLoading={isLoading}
-              onAnalyzeUrl={handleAnalyzeUrl}
-              isAnalyzing={isAnalyzing}
-              analysisError={analysisError}
-              admissionInfo={admissionInfo}
-              foundCourses={foundCourses}
-              analysisNotes={analysisNotes}
-              onExtractKeywords={handleExtractKeywords}
-              isExtractingKeywords={isExtractingKeywords}
-              keywordError={keywordError}
-              extractedKeywords={extractedKeywords}
-              setExtractedKeywords={setExtractedKeywords}
+            <div className="bg-card/50 p-4 sm:p-6 rounded-lg shadow-lg">
+              <UserInputForm
+                userData={userData}
+                setUserData={setUserData}
+                jobDetails={jobDetails}
+                setJobDetails={setJobDetails}
+                onSubmit={handleSubmit}
+                isLoading={isLoading}
+                onAnalyzeUrl={handleAnalyzeUrl}
+                isAnalyzing={isAnalyzing}
+                analysisError={analysisError}
+                admissionInfo={admissionInfo}
+                foundCourses={foundCourses}
+                analysisNotes={analysisNotes}
+                onExtractKeywords={handleExtractKeywords}
+                isExtractingKeywords={isExtractingKeywords}
+                keywordError={keywordError}
+                extractedKeywords={extractedKeywords}
+                setExtractedKeywords={setExtractedKeywords}
+              />
+            </div>
+            <div id="cover-letter-display" className="bg-card/50 p-4 sm:p-6 rounded-lg shadow-lg">
+              <CoverLetterDisplay
+                coverLetter={coverLetter}
+                setCoverLetter={setCoverLetter}
+                isLoading={isLoading}
+                error={error}
+                onSubmit={handleSubmit}
+              />
+            </div>
+            <SavedLettersDisplay
+              sessions={savedSessions}
+              onRestore={handleRestoreSession}
+              onRemove={handleRemoveSession}
             />
           </div>
-          <div id="cover-letter-display" className="bg-card/50 p-4 sm:p-6 rounded-lg shadow-lg">
-            <CoverLetterDisplay
-              coverLetter={coverLetter}
-              setCoverLetter={setCoverLetter}
-              isLoading={isLoading}
-              error={error}
-              onSubmit={handleSubmit}
-            />
-          </div>
-          <SavedLettersDisplay
-            sessions={savedSessions}
-            onRestore={handleRestoreSession}
-            onRemove={handleRemoveSession}
-          />
-        </div>
         );
 
       case '/privacy':
         return (
-          <div className="bg-card/50 p-6 sm:p-8 rounded-lg shadow-lg">
-            <PrivacyPolicy />
-          </div>
+          <PrivacyPolicy />
         );
-      
+
       case '/terms':
         return (
-          <div className="bg-card/50 p-6 sm:p-8 rounded-lg shadow-lg">
-            <TermsOfService />
-          </div>
+          <TermsOfService />
         );
-      
+
       case '/about':
         return (
-          <div className="bg-card/50 p-6 sm:p-8 rounded-lg shadow-lg">
-            <AboutUs />
-          </div>
+          <AboutUs />
         );
-      
+
       case '/404':
         return <NotFoundPage />;
 
