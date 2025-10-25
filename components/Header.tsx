@@ -6,6 +6,7 @@ import XIcon from './icons/XIcon';
 import SunIcon from './icons/SunIcon';
 import MoonIcon from './icons/MoonIcon';
 import LanguageSelector from './LanguageSelector';
+import LogoIcon from './icons/LogoIcon';
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,7 +56,9 @@ const Header: React.FC = () => {
     <header className={`sticky top-0 z-20 transition-all duration-300 ${isScrolled ? 'bg-header-bg/80 backdrop-blur-sm border-b border-border' : 'bg-header-bg'}`}>
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <a href="/" className="text-xl sm:text-2xl font-bold text-accent">AI Letter Generator</a>
+          <a href="/" aria-label="AI Letter Generator Homepage">
+            <LogoIcon />
+          </a>
           
           <div className="flex items-center gap-4">
             {/* Desktop Navigation */}
