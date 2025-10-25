@@ -1,6 +1,6 @@
 // Fix: Replaced placeholder content with a functional App component to structure the application, manage state, and handle logic.
 import React, { useState, useEffect, createContext, useContext, ReactNode, useRef } from 'react';
-import { UserData, JobDetails, AdmissionInfo, SavedSession, Locale } from './types';
+import { UserData, JobDetails, AdmissionInfo, SavedSession, Locale, ExtractedKeyword } from './types';
 import { generateCoverLetter, analyzeUniversityPage, extractKeywordsFromJob } from './services/geminiService';
 import * as storageService from './services/storageService';
 import { getFriendlyErrorMessage, FriendlyError } from './services/errorService';
@@ -184,7 +184,7 @@ function AppContent() {
   const [analysisNotes, setAnalysisNotes] = useState('');
 
   // State for keyword extraction
-  const [extractedKeywords, setExtractedKeywords] = useState<string>('');
+  const [extractedKeywords, setExtractedKeywords] = useState<ExtractedKeyword[]>([]);
   const [isExtractingKeywords, setIsExtractingKeywords] = useState(false);
   const [keywordError, setKeywordError] = useState<FriendlyError | null>(null);
 
@@ -287,7 +287,8 @@ function AppContent() {
     setError(null);
     setCoverLetter('');
     try {
-      const letter = await generateCoverLetter(userData, jobDetails, extractedKeywords);
+      const keywordsString = extractedKeywords.map(k => k.keyword).join(', ');
+      const letter = await generateCoverLetter(userData, jobDetails, keywordsString);
       if (!isMounted.current) return;
       setCoverLetter(letter);
       const updatedSessions = storageService.saveSession(userData, jobDetails, letter);
@@ -332,7 +333,7 @@ function AppContent() {
     if (!jobDetails.url && !jobDetails.screenshot) return;
     setIsExtractingKeywords(true);
     setKeywordError(null);
-    setExtractedKeywords('');
+    setExtractedKeywords([]);
     try {
       const keywords = await extractKeywordsFromJob(jobDetails);
       if (!isMounted.current) return;

@@ -1,5 +1,5 @@
-import { GoogleGenAI, Part } from "@google/genai";
-import { UserData, JobDetails, AdmissionInfo } from '../types';
+import { GoogleGenAI, Part, Type } from "@google/genai";
+import { UserData, JobDetails, AdmissionInfo, ExtractedKeyword } from '../types';
 import { loadScript } from './scriptLoader';
 
 const MAMMOTH_URL = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.7.0/mammoth.browser.min.js';
@@ -80,18 +80,26 @@ const fileToGenerativePart = async (file: File): Promise<Part> => {
 /**
  * Extracts relevant keywords from a job description URL or screenshot.
  * @param jobDetails The details of the job, including URL and/or screenshot.
- * @returns A promise that resolves to a comma-separated string of keywords.
+ * @returns A promise that resolves to an array of keyword objects with explanations.
  */
-export const extractKeywordsFromJob = async (jobDetails: JobDetails): Promise<string> => {
+export const extractKeywordsFromJob = async (jobDetails: JobDetails): Promise<ExtractedKeyword[]> => {
   if (!jobDetails.url && !jobDetails.screenshot) {
-    return '';
+    return [];
   }
 
   const parts: Part[] = [];
-  let prompt = `Act as an expert recruitment consultant. Your task is to analyze the provided job description and extract a concise list of the most important keywords. These keywords should represent key skills, technologies, qualifications, and responsibilities mentioned in the posting.
+  let prompt = `Act as an expert recruitment consultant. Your task is to analyze the provided job description and extract a concise list of the most important keywords. These keywords should represent key skills, technologies, qualifications, and responsibilities mentioned.
 
-Return the keywords as a single, comma-separated string. For example: "Project Management, Agile, Scrum, Jira, Team Leadership, Budgeting".
-Do not include any other text, explanation, or formatting.
+For each keyword, provide a brief, insightful explanation for why it was chosen, citing which aspect of the job description it relates to (e.g., "core responsibility", "required skill", "preferred qualification").
+
+Return the result as a single, valid JSON array of objects. Do not include any text, explanation, or markdown formatting like \`\`\`json\`\`\` before or after the JSON. Each object in the array must have two keys: "keyword" and "explanation".
+
+Example format:
+[
+  { "keyword": "Project Management", "explanation": "Identified as a core responsibility for overseeing project timelines and deliverables." },
+  { "keyword": "Agile", "explanation": "The job description specifies experience with Agile methodologies as a key requirement." },
+  { "keyword": "Data Analysis", "explanation": "Listed under 'preferred qualifications', indicating a valuable skill for this role." }
+]
 
 Analyze the following job description:\n`;
 
@@ -102,7 +110,7 @@ Analyze the following job description:\n`;
     prompt += `A screenshot of the job description is also provided for context.\n`;
     parts.push({
       inlineData: {
-        mimeType: 'image/jpeg', // Assuming jpeg, but this handles various image types from file input
+        mimeType: 'image/jpeg',
         data: jobDetails.screenshot
       }
     });
@@ -115,13 +123,40 @@ Analyze the following job description:\n`;
       model: 'gemini-2.5-pro',
       contents: { parts: parts },
       config: {
-        // Use googleSearch tool if a URL is provided to help the model access the page content.
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.ARRAY,
+          items: {
+            type: Type.OBJECT,
+            properties: {
+              keyword: { 
+                type: Type.STRING,
+                description: 'A key skill, technology, or qualification.'
+              },
+              explanation: { 
+                type: Type.STRING,
+                description: 'A brief explanation of why this keyword is important for the job.'
+              }
+            },
+            required: ['keyword', 'explanation']
+          }
+        },
         tools: jobDetails.url ? [{ googleSearch: {} }] : undefined,
       }
     });
-    return response.text.trim();
+    
+    let jsonString = response.text.trim();
+    // It's good practice to sanitize, even with schema, in case of minor non-compliance.
+    const firstBracket = jsonString.indexOf('[');
+    const lastBracket = jsonString.lastIndexOf(']');
+    if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
+        jsonString = jsonString.substring(firstBracket, lastBracket + 1);
+    }
+    
+    return JSON.parse(jsonString);
   } catch (error) {
     console.error("Error extracting keywords:", error);
+    // Re-throw to be handled by the UI layer
     throw error;
   }
 };

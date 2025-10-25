@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { UserData, JobDetails, AdmissionInfo } from '../types';
+import { UserData, JobDetails, AdmissionInfo, ExtractedKeyword } from '../types';
 import { getFriendlyErrorMessage, FriendlyError } from '../services/errorService';
 import { generateAnalysisReportPdf } from '../services/pdfService';
 import { useLocale } from '../contexts/LocaleContext';
@@ -8,6 +8,7 @@ import InfoIcon from './icons/InfoIcon';
 import DownloadIcon from './icons/DownloadIcon';
 import ExternalLinkIcon from './icons/ExternalLinkIcon';
 import SparklesIcon from './icons/SparklesIcon';
+import XIcon from './icons/XIcon';
 import { TranslationKeys } from '../services/translations';
 
 
@@ -27,8 +28,8 @@ interface UserInputFormProps {
   onExtractKeywords: () => void;
   isExtractingKeywords: boolean;
   keywordError: FriendlyError | null;
-  extractedKeywords: string;
-  setExtractedKeywords: (keywords: string) => void;
+  extractedKeywords: ExtractedKeyword[];
+  setExtractedKeywords: (keywords: ExtractedKeyword[]) => void;
 }
 
 const languages = [
@@ -60,6 +61,7 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
   const isMounted = useRef(true);
   const [showTemplates, setShowTemplates] = useState(false);
   const templatesRef = useRef<HTMLDivElement>(null);
+  const [customKeyword, setCustomKeyword] = useState('');
 
 
   const promptTemplates = [
@@ -139,6 +141,17 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
         if (isMounted.current) {
           setPdfError(getFriendlyErrorMessage(e));
         }
+    }
+  };
+
+  const handleRemoveKeyword = (indexToRemove: number) => {
+    setExtractedKeywords(extractedKeywords.filter((_, index) => index !== indexToRemove));
+  };
+  
+  const handleAddKeyword = () => {
+    if (customKeyword.trim() !== '' && !extractedKeywords.some(kw => kw.keyword.toLowerCase() === customKeyword.trim().toLowerCase())) {
+      setExtractedKeywords([...extractedKeywords, { keyword: customKeyword.trim(), explanation: 'Manually added by user.' }]);
+      setCustomKeyword('');
     }
   };
   
@@ -242,19 +255,59 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
                 </div>
               )}
               
-              {(extractedKeywords || isExtractingKeywords) && !keywordError && (
-                <div className="mt-4">
-                  <label htmlFor="extractedKeywords" className="block text-sm font-medium text-text-primary mb-2">{t('formKeywordsExtracted')}</label>
-                  <textarea
-                    id="extractedKeywords"
-                    name="extractedKeywords"
-                    value={extractedKeywords}
-                    onChange={(e) => setExtractedKeywords(e.target.value)}
-                    rows={3}
-                    className={inputStyle}
-                    placeholder={t('formKeywordsPlaceholder')}
-                    readOnly={isExtractingKeywords}
-                  />
+              {(extractedKeywords.length > 0 || isExtractingKeywords) && !keywordError && (
+                 <div className="mt-4">
+                    <label className="block text-sm font-medium text-text-primary mb-2">{t('formKeywordsExtracted')}</label>
+                    <div className="p-3 bg-input-bg border border-border rounded-md min-h-[100px]">
+                        {isExtractingKeywords ? (
+                             <div className="flex items-center justify-center h-full text-text-secondary">
+                                <SmallLoadingSpinner /> <span className="ms-2">{t('formKeywordsExtracting')}</span>
+                            </div>
+                        ) : (
+                             <div className="flex flex-wrap gap-2">
+                                {extractedKeywords.map((kw, index) => (
+                                    <div key={index} className="group relative">
+                                        <span className="flex items-center bg-indigo-600/30 text-indigo-200 text-sm font-medium ps-3 pe-2 py-1 rounded-full">
+                                            {kw.keyword}
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemoveKeyword(index)}
+                                                className="ms-2 -me-1 text-indigo-200 hover:text-white"
+                                                aria-label={`Remove ${kw.keyword}`}
+                                            >
+                                                <XIcon className="w-4 h-4" />
+                                            </button>
+                                        </span>
+                                        {kw.explanation && (
+                                            <div className="absolute bottom-full mb-2 w-64 p-2 bg-card text-text-secondary text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 border border-border">
+                                                <div className="flex items-start gap-2">
+                                                    <InfoIcon className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
+                                                    <p>{kw.explanation}</p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                    <div className="mt-2 flex gap-2">
+                        <input
+                            type="text"
+                            value={customKeyword}
+                            onChange={(e) => setCustomKeyword(e.target.value)}
+                            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddKeyword(); } }}
+                            className={inputStyle + " flex-grow"}
+                            placeholder={t('formKeywordsAddPlaceholder')}
+                        />
+                        <button
+                            type="button"
+                            onClick={handleAddKeyword}
+                            className="px-4 py-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-md transition-colors text-sm font-medium"
+                        >
+                            {t('formKeywordsAddButton')}
+                        </button>
+                    </div>
                 </div>
               )}
             </div>

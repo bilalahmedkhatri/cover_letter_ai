@@ -23,6 +23,11 @@ export interface JobDetails {
   screenshot: string | null; // base64 encoded string
 }
 
+export interface ExtractedKeyword {
+  keyword: string;
+  explanation: string;
+}
+
 export interface DetailWithSource {
   text: string;
   sourceUrl?: string;
