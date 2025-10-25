@@ -1038,7 +1038,7 @@ export const translations: Record<Locale, Record<TranslationKeys, string>> = {
     formContactEmails: "E-mails de Contato",
     formInfoNotFound: "Informação não encontrada",
     formFoundCourses: "Cursos Encontrados",
-    formFoundCoursesHint: "Encontramos vários cursos. Selecione um ou insira um nome e analise novamente para detalhes específicos.",
+    formFoundCoursesHint: "Encontramos varios cursos. Selecione um ou insira um nome e analise novamente para detalhes específicos.",
     formKeywordsTitle: "Palavras-chave ATS",
     formKeywordsDescription: "Extraia palavras-chave para melhorar a compatibilidade com ATS. Passe o mouse sobre uma palavra-chave para ver a explicação da IA.",
     formKeywordsExtract: "Extrair Palavras-chave",
