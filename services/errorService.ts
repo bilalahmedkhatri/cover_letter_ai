@@ -24,6 +24,14 @@ export const getFriendlyErrorMessage = (error: unknown): FriendlyError => {
   if (error instanceof Error) {
     const message = error.message.toLowerCase();
     
+    // Custom error for LinkedIn parsing
+    if (message.includes('could not process the linkedin pdf')) {
+        return {
+            message: error.message, // This message is already user-friendly
+            isRetryable: true,
+        };
+    }
+
     // Location-based errors
     if (message.includes('user location is not supported')) {
       return {

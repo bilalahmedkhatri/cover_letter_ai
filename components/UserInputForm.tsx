@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { UserData, JobDetails, AdmissionInfo, ExtractedKeyword } from '../types';
 import { getFriendlyErrorMessage, FriendlyError } from '../services/errorService';
 import { generateAnalysisReportPdf } from '../services/pdfService';
+import { importLinkedInProfile } from '../services/geminiService';
 import { useLocale } from '../contexts/LocaleContext';
 import SmallLoadingSpinner from './icons/SmallLoadingSpinner';
 import InfoIcon from './icons/InfoIcon';
@@ -9,6 +10,7 @@ import DownloadIcon from './icons/DownloadIcon';
 import ExternalLinkIcon from './icons/ExternalLinkIcon';
 import SparklesIcon from './icons/SparklesIcon';
 import XIcon from './icons/XIcon';
+import LinkedInIcon from './icons/LinkedInIcon';
 import { TranslationKeys } from '../services/translations';
 
 
@@ -62,7 +64,9 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
   const [showTemplates, setShowTemplates] = useState(false);
   const templatesRef = useRef<HTMLDivElement>(null);
   const [customKeyword, setCustomKeyword] = useState('');
-
+  const [isImportingLinkedIn, setIsImportingLinkedIn] = useState(false);
+  const [linkedInImportError, setLinkedInImportError] = useState<FriendlyError | null>(null);
+  const linkedInFileInputRef = useRef<HTMLInputElement>(null);
 
   const promptTemplates = [
     { titleKey: 'promptTemplateCareerChangeTitle', contentKey: 'promptTemplateCareerChangeContent' },
@@ -111,6 +115,34 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
       }
     }
   };
+  
+  const handleLinkedInFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsImportingLinkedIn(true);
+    setLinkedInImportError(null);
+
+    try {
+        const { skills, experience } = await importLinkedInProfile(file);
+        if (isMounted.current) {
+            setUserData(prev => ({ ...prev, skills, experience }));
+        }
+    } catch (err) {
+        if (isMounted.current) {
+            setLinkedInImportError(getFriendlyErrorMessage(err));
+        }
+    } finally {
+        if (isMounted.current) {
+            setIsImportingLinkedIn(false);
+        }
+    }
+    // Reset file input value to allow re-uploading the same file
+    if (e.target) {
+        e.target.value = '';
+    }
+  };
+
 
   const handleScreenshotChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -194,8 +226,44 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
 
       {/* Step 2 */}
       <section>
-        <h2 className="text-xl font-bold text-accent mb-4 border-b border-border pb-2">{t('formStep2')}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+        <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold text-accent border-b border-border pb-2 flex-grow">{t('formStep2')}</h2>
+            <div className="relative group flex-shrink-0">
+                <input 
+                    type="file" 
+                    ref={linkedInFileInputRef} 
+                    onChange={handleLinkedInFileSelect} 
+                    className="hidden" 
+                    accept=".pdf"
+                    disabled={isImportingLinkedIn}
+                />
+                <button 
+                    type="button" 
+                    onClick={() => linkedInFileInputRef.current?.click()} 
+                    disabled={isImportingLinkedIn}
+                    className="flex items-center gap-2 ml-4 px-3 py-1.5 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-md transition-colors text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    {isImportingLinkedIn ? <SmallLoadingSpinner /> : <LinkedInIcon className="w-4 h-4" />}
+                    <span>{isImportingLinkedIn ? t('formLinkedInImporting') : t('formLinkedInImport')}</span>
+                </button>
+                <div className="absolute bottom-full right-0 mb-2 w-72 p-3 bg-card text-text-secondary text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 border border-border">
+                    <h4 className="font-bold text-sm text-text-primary mb-2">{t('formLinkedInInstructionsTitle')}</h4>
+                    <ol className="list-decimal list-inside space-y-1">
+                        <li>{t('formLinkedInInstructionsStep1')}</li>
+                        <li>{t('formLinkedInInstructionsStep2')}</li>
+                        <li>{t('formLinkedInInstructionsStep3')}</li>
+                        <li>{t('formLinkedInInstructionsStep4')}</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+         {linkedInImportError && (
+            <div className="mb-4 bg-red-900/50 border border-red-700 text-red-300 text-sm rounded-lg p-3" role="alert">
+                <p className="font-semibold">{t('formLinkedInImportError')}</p>
+                <p className="mt-1">{linkedInImportError.message}</p>
+            </div>
+        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label htmlFor="skills" className="block text-sm font-medium text-text-primary mb-2">{t('formSkills')}</label>
             <textarea id="skills" name="skills" value={userData.skills} onChange={handleUserChange} rows={5} className={inputStyle} placeholder={t('formSkillsPlaceholder')}></textarea>

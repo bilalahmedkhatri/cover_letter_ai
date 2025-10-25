@@ -78,6 +78,67 @@ const fileToGenerativePart = async (file: File): Promise<Part> => {
 };
 
 /**
+ * Parses a LinkedIn profile PDF to extract skills and work experience.
+ * @param file The PDF file of the LinkedIn profile.
+ * @returns A promise that resolves to an object containing skills and experience strings.
+ */
+export const importLinkedInProfile = async (file: File): Promise<{ skills: string; experience:string; }> => {
+    const profileText = await getTextFromPdf(file);
+    
+    const prompt = `You are an expert HR data processor. Your task is to parse the unstructured text from a LinkedIn profile PDF and extract key information. The user wants to populate their 'skills' and 'experience' fields.
+
+Analyze the following text and return a single, valid JSON object with two keys: "skills" and "experience".
+
+1.  **skills**: Create a single comma-separated string of all the skills listed in the "Skills" section of the profile.
+2.  **experience**: Create a well-formatted string summarizing the work experience. For each job, include the title, company, dates, and a brief summary of responsibilities or achievements. Use new lines to separate different job entries.
+
+Do not include any text, explanation, or markdown formatting like \`\`\`json\`\`\` before or after the JSON.
+
+Text to parse:
+---
+${profileText}
+---
+`;
+    try {
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-pro',
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: Type.OBJECT,
+                    properties: {
+                        skills: { 
+                            type: Type.STRING,
+                            description: 'A comma-separated string of skills.'
+                        },
+                        experience: { 
+                            type: Type.STRING,
+                            description: 'A summary of work experience, with new lines separating job entries.'
+                        }
+                    },
+                    required: ['skills', 'experience']
+                }
+            }
+        });
+        
+        let jsonString = response.text.trim();
+        // Basic sanitization
+        const firstBrace = jsonString.indexOf('{');
+        const lastBrace = jsonString.lastIndexOf('}');
+        if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+            jsonString = jsonString.substring(firstBrace, lastBrace + 1);
+        }
+        
+        return JSON.parse(jsonString);
+    } catch (error) {
+        console.error("Error parsing LinkedIn profile:", error);
+        throw new Error("The AI could not process the LinkedIn PDF. Please ensure it is a standard LinkedIn profile export and try again.");
+    }
+};
+
+
+/**
  * Extracts relevant keywords from a job description URL or screenshot.
  * @param jobDetails The details of the job, including URL and/or screenshot.
  * @returns A promise that resolves to an array of keyword objects with explanations.
