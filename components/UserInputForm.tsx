@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { UserData, JobDetails, AdmissionInfo } from '../types';
-import { FriendlyError } from '../services/errorService';
+import { getFriendlyErrorMessage, FriendlyError } from '../services/errorService';
 import { generateAnalysisReportPdf } from '../services/pdfService';
 import { useLocale } from '../contexts/LocaleContext';
 import SmallLoadingSpinner from './icons/SmallLoadingSpinner';
@@ -49,6 +49,7 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
   setExtractedKeywords,
 }) => {
   const { t } = useLocale();
+  const [pdfError, setPdfError] = useState<FriendlyError | null>(null);
 
   const handleUserChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -88,9 +89,15 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
     onSubmit();
   };
 
-  const handleDownloadAnalysisPdf = () => {
+  const handleDownloadAnalysisPdf = async () => {
     if (!admissionInfo) return;
-    generateAnalysisReportPdf(admissionInfo, foundCourses, t);
+    setPdfError(null);
+    try {
+        await generateAnalysisReportPdf(admissionInfo, foundCourses, t);
+    } catch (e) {
+        console.error("PDF Generation Error:", e);
+        setPdfError(getFriendlyErrorMessage(e));
+    }
   };
   
   const renderBulletedText = (text: string) => {
@@ -291,15 +298,20 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
                 <div className="mt-4 bg-card/50 p-4 rounded-lg border border-border space-y-4">
                     <div className="flex justify-between items-center">
                       <h3 className="font-semibold text-lg text-accent">{t('formAnalysisResults')}</h3>
-                      <button
-                        type="button"
-                        onClick={handleDownloadAnalysisPdf}
-                        className="flex items-center gap-2 px-3 py-1 bg-indigo-600 hover:bg-indigo-500 rounded-md transition-colors text-xs font-medium"
-                        aria-label="Download analysis as PDF"
-                      >
-                        <DownloadIcon className="w-4 h-4" />
-                        <span>{t('formDownloadPDF')}</span>
-                      </button>
+                      <div className="text-right">
+                        <button
+                          type="button"
+                          onClick={handleDownloadAnalysisPdf}
+                          className="flex items-center gap-2 px-3 py-1 bg-indigo-600 hover:bg-indigo-500 rounded-md transition-colors text-xs font-medium"
+                          aria-label="Download analysis as PDF"
+                        >
+                          <DownloadIcon className="w-4 h-4" />
+                          <span>{t('formDownloadPDF')}</span>
+                        </button>
+                         {pdfError && (
+                            <p className="text-xs text-red-400 mt-1">{pdfError.message}</p>
+                         )}
+                      </div>
                     </div>
                     <div>
                         <strong className="font-medium text-text-primary flex items-center gap-2 mb-1">

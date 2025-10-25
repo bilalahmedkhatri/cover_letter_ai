@@ -8,14 +8,24 @@ const CookieConsentBanner: React.FC = () => {
   const { t } = useLocale();
 
   useEffect(() => {
-    const consentStatus = localStorage.getItem(COOKIE_CONSENT_KEY);
-    if (!consentStatus) {
+    try {
+      const consentStatus = localStorage.getItem(COOKIE_CONSENT_KEY);
+      if (!consentStatus) {
+        setIsVisible(true);
+      }
+    } catch (error) {
+      console.warn("Could not read cookie consent status from localStorage.", error);
+      // Default to showing the banner if storage is inaccessible
       setIsVisible(true);
     }
   }, []);
 
   const handleConsent = (consent: 'accepted' | 'rejected') => {
-    localStorage.setItem(COOKIE_CONSENT_KEY, consent);
+    try {
+      localStorage.setItem(COOKIE_CONSENT_KEY, consent);
+    } catch (error) {
+      console.warn("Could not save cookie consent status to localStorage.", error);
+    }
     setIsVisible(false);
   };
 

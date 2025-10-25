@@ -25,7 +25,11 @@ export const LocaleProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
   // Effect to update everything when the locale changes
   useEffect(() => {
-    localStorage.setItem('locale', locale);
+    try {
+        localStorage.setItem('locale', locale);
+    } catch (error) {
+        console.warn("Could not save locale to localStorage.", error);
+    }
     document.documentElement.lang = locale;
     // Set text direction for RTL languages like Arabic
     if (locale === 'ar') {

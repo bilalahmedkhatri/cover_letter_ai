@@ -3,19 +3,27 @@ import { SavedSession, UserData, JobDetails, StructuredUserData } from '../types
 const STORAGE_KEY = 'ai-letter-generator-saved-sessions';
 
 /**
- * Retrieves all saved sessions from localStorage.
- * Now includes robust error handling for corrupted data.
- * @returns An array of SavedSession objects.
+ * Retrieves all saved sessions from localStorage with robust error handling.
+ * @returns An array of SavedSession objects, or an empty array if storage is inaccessible or corrupted.
  */
 export const getSavedSessions = (): SavedSession[] => {
   try {
     const savedItems = localStorage.getItem(STORAGE_KEY);
-    // The new structure doesn't contain non-serializable objects like File.
-    return savedItems ? JSON.parse(savedItems) : [];
+    if (savedItems) {
+      // The parse call can also fail if data is corrupted
+      return JSON.parse(savedItems);
+    }
+    return [];
   } catch (error) {
-    console.error("Failed to parse saved sessions from localStorage. Clearing corrupted data.", error);
-    // If parsing fails, it's safer to clear it to prevent the app from freezing.
-    localStorage.removeItem(STORAGE_KEY);
+    console.warn("Could not access or parse localStorage. Saved sessions will not be available.", error);
+    // If the error is due to corrupted data, try to clear it.
+    if (error instanceof SyntaxError) {
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (removeError) {
+        console.warn("Also failed to remove corrupted item from localStorage.", removeError);
+      }
+    }
     return [];
   }
 };
@@ -71,7 +79,7 @@ export const saveSession = (userData: UserData, jobDetails: JobDetails, coverLet
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSessions));
   } catch (error) {
-    console.error("Failed to save session to localStorage", error);
+    console.warn("Failed to save session to localStorage. Session will not persist.", error);
   }
 
   return updatedSessions;
@@ -89,7 +97,7 @@ export const removeSession = (id: number): SavedSession[] => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSessions));
   } catch (error) {
-    console.error("Failed to remove session from localStorage", error);
+    console.warn("Failed to update sessions in localStorage after removal. Change will not persist.", error);
   }
 
   return updatedSessions;

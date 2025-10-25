@@ -84,13 +84,21 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     const root = window.document.documentElement;
     root.classList.remove('theme-light', 'theme-dark');
     root.classList.add(`theme-${theme}`);
-    localStorage.setItem('theme', theme);
+    try {
+      localStorage.setItem('theme', theme);
+    } catch (error) {
+      console.warn("Could not save theme to localStorage.", error);
+    }
   }, [theme]);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as Theme | null;
-    if (savedTheme && ['light', 'dark'].includes(savedTheme)) {
-      setTheme(savedTheme);
+    try {
+      const savedTheme = localStorage.getItem('theme') as Theme | null;
+      if (savedTheme && ['light', 'dark'].includes(savedTheme)) {
+        setTheme(savedTheme);
+      }
+    } catch (error) {
+      console.warn("Could not retrieve theme from localStorage.", error);
     }
   }, []);
 
@@ -200,7 +208,13 @@ function AppContent() {
             setPage(newPage);
         } else {
             // No locale in path, we must redirect.
-            const savedLocale = localStorage.getItem('locale') as Locale;
+            let savedLocale: Locale | null = null;
+            try {
+              savedLocale = localStorage.getItem('locale') as Locale;
+            } catch (error) {
+              console.warn("Could not access localStorage for locale.", error);
+            }
+
             const browserLang = navigator.language.split('-')[0] as Locale;
             const targetLocale = 
                 (savedLocale && locales.some(l => l.code === savedLocale)) ? savedLocale 

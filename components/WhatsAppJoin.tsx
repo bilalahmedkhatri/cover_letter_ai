@@ -4,8 +4,9 @@ import { useLocale } from '../contexts/LocaleContext';
 
 const WhatsAppJoin: React.FC = () => {
   const { t } = useLocale();
-  // IMPORTANT: Replace this with your actual WhatsApp group invite link
-  const whatsAppGroupLink = 'https://chat.whatsapp.com/AI-Letter-Generator';
+  // IMPORTANT: Replace this with your actual WhatsApp group invite link.
+  // The link below is an example of a valid format.
+  const whatsAppGroupLink = 'https://chat.whatsapp.com/HWLfCa7ZJHE0hpTJ0wC3RI';
 
   return (
     <a

@@ -24,7 +24,7 @@ export const generateAnalysisReportPdf = async (
   const doc = new jsPDF();
   
   // --- PDF Header ---
-  doc.setFont('ariel', 'bold');
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(16);
   doc.text('University Program Analysis Report', 14, 22);
 
@@ -44,14 +44,14 @@ export const generateAnalysisReportPdf = async (
     // Add the title row with specific styling.
     tableBody.push([{
       content: title,
-      styles: { font: 'ariel', fontStyle: 'bold', fontSize: 12 }
+      styles: { font: 'helvetica', fontStyle: 'bold', fontSize: 12 }
     }]);
     
     // Add the content row with its styling.
     const content = detail.text.replace(/\\n/g, '\n');
     tableBody.push([{
       content: content,
-      styles: { font: 'ariel', fontSize: 10 }
+      styles: { font: 'helvetica', fontSize: 10 }
     }]);
   };
 
