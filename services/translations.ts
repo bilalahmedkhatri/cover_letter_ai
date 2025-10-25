@@ -888,7 +888,7 @@ export const translations: Record<Locale, Record<TranslationKeys, string>> = {
     formExperience: "Resumo da Experiência Profissional (Opcional)",
     formExperiencePlaceholder: "Resuma suas principais funções e conquistas.",
     formResume: "Carregar Currículo (Opcional)",
-    formResumeHint: "Fornecer um currículo ajuda a IA a personalizar a carta com mais precisão.",
+    formResumeHint: "Fornecer um currículo ayuda a IA a personalizar a carta com mais precisão.",
     formStep3Job: "Passo 3: Detalhes da Vaga",
     formStep3University: "Passo 3: Detalhes do Programa Universitário",
     formJobURL: "URL da Vaga de Emprego (Opcional)",
