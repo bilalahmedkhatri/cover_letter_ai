@@ -176,34 +176,38 @@ Analyze the following job description:\n`;
       }
     });
   }
-
+  
   parts.unshift({ text: prompt });
+
+  const responseSchema = {
+    type: Type.ARRAY,
+    items: {
+      type: Type.OBJECT,
+      properties: {
+        keyword: { 
+          type: Type.STRING,
+          description: 'A key skill, technology, or qualification.'
+        },
+        explanation: { 
+          type: Type.STRING,
+          description: 'A brief explanation of why this keyword is important for the job.'
+        }
+      },
+      required: ['keyword', 'explanation']
+    }
+  };
+
+  const useGoogleSearch = !!jobDetails.url;
+
+  const config = useGoogleSearch
+    ? { tools: [{ googleSearch: {} }] }
+    : { responseMimeType: "application/json", responseSchema: responseSchema };
 
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-pro',
       contents: { parts: parts },
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.ARRAY,
-          items: {
-            type: Type.OBJECT,
-            properties: {
-              keyword: { 
-                type: Type.STRING,
-                description: 'A key skill, technology, or qualification.'
-              },
-              explanation: { 
-                type: Type.STRING,
-                description: 'A brief explanation of why this keyword is important for the job.'
-              }
-            },
-            required: ['keyword', 'explanation']
-          }
-        },
-        tools: jobDetails.url ? [{ googleSearch: {} }] : undefined,
-      }
+      config: config
     });
     
     let jsonString = response.text.trim();
