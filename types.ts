@@ -100,6 +100,8 @@ interface jsPDF {
   };
   splitTextToSize(text: string, maxWidth: number): string[];
   addPage(): this;
+  // Fix: Added the addImage method to the jsPDF interface to match the library's API.
+  addImage(imageData: string, format: string, x: number, y: number, width: number, height: number): this;
   text(text: string | string[], x: number, y: number, options?: any): this;
   setFont(fontName: string, fontStyle: string): this;
   setFontSize(size: number): this;

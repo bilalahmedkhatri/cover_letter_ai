@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FriendlyError } from '../services/errorService';
 import { loadScript } from '../services/scriptLoader';
 import { useLocale } from '../contexts/LocaleContext';
+import { UserData, JobDetails } from '../types';
 import LoadingSpinner from './icons/LoadingSpinner';
 import CopyIcon from './icons/CopyIcon';
 import CheckIcon from './icons/CheckIcon';
@@ -21,10 +22,21 @@ interface CoverLetterDisplayProps {
   isLoading: boolean;
   error: FriendlyError | null;
   onSubmit: () => void;
+  userData: UserData;
+  jobDetails: JobDetails;
 }
 
-const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, setCoverLetter, isLoading, error, onSubmit }) => {
+const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ 
+  coverLetter, 
+  setCoverLetter, 
+  isLoading, 
+  error, 
+  onSubmit, 
+  userData,
+  jobDetails,
+}) => {
   const [copied, setCopied] = useState(false);
+  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [sharingPlatform, setSharingPlatform] = useState<null | 'linkedin' | 'twitter' | 'facebook'>(null);
   const [imageGenError, setImageGenError] = useState<string | null>(null);
@@ -46,46 +58,123 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
     }
   }, [copied]);
 
-  // This effect will automatically resize the textarea based on its content.
   useEffect(() => {
     if (textareaRef.current) {
-      // We reset the height to 'auto' to ensure the scrollHeight is calculated correctly
-      // based on the content, not the current height.
       textareaRef.current.style.height = 'auto';
-      // We then set the height to the scrollHeight, which is the minimum height required
-      // to display the content without a scrollbar.
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
-  }, [coverLetter]); // This effect runs whenever the coverLetter content changes.
-
+  }, [coverLetter]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(coverLetter);
     setCopied(true);
   };
 
+  const generateLetterImage = async (contextUrl?: string): Promise<HTMLCanvasElement> => {
+    await loadScript(HTML2CANVAS_URL);
+    if (!window.html2canvas) {
+      throw new Error("Image generation library failed to load. Please refresh and try again.");
+    }
+
+    const container = document.createElement('div');
+    container.style.position = 'absolute';
+    container.style.left = '-9999px';
+    container.style.width = '794px'; // A4 width at 96 DPI
+    container.style.minHeight = '1123px'; // A4 height at 96 DPI
+    container.style.padding = '75px'; // Approx 2cm margins
+    container.style.boxSizing = 'border-box';
+    container.style.backgroundColor = 'white';
+    container.style.fontFamily = 'Inter, sans-serif';
+    container.style.color = 'black';
+    container.style.display = 'flex';
+    container.style.flexDirection = 'column';
+
+    const content = document.createElement('div');
+    content.style.flexGrow = '1';
+    content.style.lineHeight = '1.6';
+    content.style.fontSize = '15px';
+    content.style.whiteSpace = 'pre-wrap';
+    content.style.wordWrap = 'break-word';
+    content.innerText = coverLetter;
+
+    const footer = document.createElement('div');
+    footer.style.marginTop = 'auto';
+    footer.style.paddingTop = '40px';
+    footer.style.fontSize = '12px';
+    footer.style.color = '#666';
+    footer.style.textAlign = 'center';
+    footer.style.flexShrink = '0';
+    
+    const siteText = document.createElement('p');
+    siteText.innerText = `Generated with AI Letter Generator - ailettergen.com`;
+    footer.appendChild(siteText);
+
+    if (contextUrl) {
+      const contextText = document.createElement('p');
+      contextText.innerText = `In reference to: ${contextUrl}`;
+      contextText.style.marginTop = '4px';
+      contextText.style.fontSize = '10px';
+      contextText.style.wordBreak = 'break-all';
+      footer.appendChild(contextText);
+    }
+    
+    container.appendChild(content);
+    container.appendChild(footer);
+    
+    document.body.appendChild(container);
+
+    const canvas = await window.html2canvas(container, {
+      scale: 2,
+      useCORS: true, // This is crucial for handling cross-origin resources like fonts
+    });
+
+    document.body.removeChild(container);
+    return canvas;
+  };
+
   const handleDownloadPdf = async () => {
+    setIsDownloadingPdf(true);
     setPdfError(null);
     try {
+      const canvas = await generateLetterImage();
+      const imgData = canvas.toDataURL('image/png');
+      
       await loadScript(JSPDF_URL);
       if (!window.jspdf || !window.jspdf.jsPDF) {
         throw new Error("PDF library failed to load. Please refresh and try again.");
       }
       const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(11);
       
-      const textLines = doc.splitTextToSize(coverLetter, 180); // 180mm width on A4 page
-      doc.text(textLines, 15, 20); // 15mm from left, 20mm from top
+      // Fix: Updated the jsPDF constructor to pass an options object, matching the expected signature.
+      const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+      // Fix: Switched from getWidth()/getHeight() methods to direct property access to align with the type definition.
+      const pdfWidth = pdf.internal.pageSize.width;
+      const pdfHeight = pdf.internal.pageSize.height;
+      
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+      const ratio = canvasWidth / canvasHeight;
+      
+      let imgWidth = pdfWidth;
+      let imgHeight = imgWidth / ratio;
+      
+      if (imgHeight > pdfHeight) {
+          imgHeight = pdfHeight;
+          imgWidth = imgHeight * ratio;
+      }
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      pdf.save('professional-letter.pdf');
 
-      doc.save('professional-letter.pdf');
     } catch (e) {
       console.error("Failed to download PDF:", e);
       const message = e instanceof Error ? e.message : "An unknown error occurred.";
       if (isMounted.current) {
         setPdfError(message);
+      }
+    } finally {
+      if (isMounted.current) {
+        setIsDownloadingPdf(false);
       }
     }
   };
@@ -94,77 +183,59 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
     setSharingPlatform(platform);
     setImageGenError(null);
     try {
-      await loadScript(HTML2CANVAS_URL);
-      if (!window.html2canvas) {
-        throw new Error("Image generation library failed to load. Please refresh and try again.");
-      }
-  
-      // Create a temporary, off-screen element for rendering
-      const container = document.createElement('div');
-      container.style.position = 'absolute';
-      container.style.left = '-9999px';
-      container.style.width = '794px'; // A4 width at 96 DPI
-      container.style.minHeight = '1123px'; // A4 height at 96 DPI
-      container.style.padding = '75px'; // Approx 2cm margins
-      container.style.boxSizing = 'border-box';
-      container.style.backgroundColor = 'white';
-      container.style.fontFamily = 'Inter, sans-serif';
-      container.style.color = 'black';
-      container.style.lineHeight = '1.6';
-      container.style.fontSize = '15px';
-      container.style.whiteSpace = 'pre-wrap';
-      container.style.wordWrap = 'break-word';
-      container.innerText = coverLetter;
-  
-      // Add a footer with branding
-      const footer = document.createElement('p');
-      footer.innerText = `Generated with AI Letter Generator - ailettergen.com`;
-      footer.style.position = 'absolute';
-      footer.style.bottom = '30px';
-      footer.style.width = '100%';
-      footer.style.left = '0';
-      footer.style.fontSize = '12px';
-      footer.style.color = '#666';
-      footer.style.textAlign = 'center';
-      container.appendChild(footer);
-  
-      document.body.appendChild(container);
-  
-      const canvas = await window.html2canvas(container, { scale: 2 }); // Scale for higher resolution
-  
-      document.body.removeChild(container); // Clean up the temporary element
-  
-      canvas.toBlob(async (blob) => {
-        if (!blob) {
-          throw new Error("Failed to create image blob from canvas.");
+        let contextUrl = '';
+        if (userData.letterType === 'job' && jobDetails.url) {
+            contextUrl = jobDetails.url;
+        } else if (userData.letterType === 'university' && userData.universityUrl) {
+            contextUrl = userData.universityUrl;
         }
-        const file = new File([blob], 'professional-letter.png', { type: 'image/png' });
-        
-        const shareData = {
-          files: [file],
-          title: t('displayTitle'),
-          text: t('shareTwitter'), // Use a generic, engaging text for sharing
-        };
-  
-        if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
-          try {
-            await navigator.share(shareData);
-          } catch (shareError) {
-            // Not a true error if the user cancels the share dialog.
-            console.log("Share action was cancelled or failed by the user.", shareError);
-          }
-        } else {
-          // Fallback for unsupported browsers: download the image.
-          const link = document.createElement('a');
-          link.href = URL.createObjectURL(blob);
-          link.download = 'professional-letter.png';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          URL.revokeObjectURL(link.href);
+
+        // Generate the image with the context URL in the footer
+        const canvas = await generateLetterImage(contextUrl);
+
+        // Automatically download the image for the user
+        canvas.toBlob((blob) => {
+            if (!blob) {
+                throw new Error("Failed to create image blob from canvas.");
+            }
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'professional-letter.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+        }, 'image/png');
+
+        // Allow a brief moment for the download to initiate before opening the new tab
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        const siteUrl = "https://ailettergen.com";
+        let shareUrl = '';
+
+        const encodedSiteUrl = encodeURIComponent(siteUrl);
+
+        switch (platform) {
+            case 'twitter': {
+                const text = t('shareTwitter');
+                const encodedText = encodeURIComponent(text);
+                shareUrl = `https://twitter.com/intent/tweet?url=${encodedSiteUrl}&text=${encodedText}`;
+                break;
+            }
+            case 'facebook': {
+                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedSiteUrl}`;
+                break;
+            }
+            case 'linkedin': {
+                shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedSiteUrl}`;
+                break;
+            }
         }
-      }, 'image/png');
-  
+
+        if (shareUrl) {
+            window.open(shareUrl, '_blank', 'noopener,noreferrer');
+        }
+
     } catch (err) {
       console.error("Failed to generate or share image:", err);
       const message = err instanceof Error ? err.message : "An unknown error occurred.";
@@ -177,6 +248,7 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
       }
     }
   };
+
 
   const renderContent = () => {
     if (isLoading) {
@@ -247,11 +319,12 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
             <div className="w-full sm:w-auto">
               <button 
                 onClick={handleDownloadPdf}
-                className="flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-md transition-colors text-sm font-medium w-full"
+                disabled={isDownloadingPdf}
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-md transition-colors text-sm font-medium w-full disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Download as PDF"
               >
-                <DownloadIcon className="w-5 h-5" />
-                <span>{t('displayDownload')}</span>
+                {isDownloadingPdf ? <SmallLoadingSpinner /> : <DownloadIcon className="w-5 h-5" />}
+                <span>{isDownloadingPdf ? t('formGeneratingButton') : t('displayDownload')}</span>
               </button>
               {pdfError && <p className="text-xs text-red-400 mt-1 sm:text-right">{pdfError}</p>}
             </div>

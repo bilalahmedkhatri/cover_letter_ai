@@ -438,6 +438,8 @@ function AppContent() {
                 isLoading={isLoading}
                 error={error}
                 onSubmit={handleSubmit}
+                userData={userData}
+                jobDetails={jobDetails}
               />
             </div>
             <SavedLettersDisplay
