@@ -7,6 +7,8 @@ import SmallLoadingSpinner from './icons/SmallLoadingSpinner';
 import InfoIcon from './icons/InfoIcon';
 import DownloadIcon from './icons/DownloadIcon';
 import ExternalLinkIcon from './icons/ExternalLinkIcon';
+import SparklesIcon from './icons/SparklesIcon';
+import { TranslationKeys } from '../services/translations';
 
 
 interface UserInputFormProps {
@@ -56,11 +58,36 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
   const { t } = useLocale();
   const [pdfError, setPdfError] = useState<FriendlyError | null>(null);
   const isMounted = useRef(true);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const templatesRef = useRef<HTMLDivElement>(null);
+
+
+  const promptTemplates = [
+    { titleKey: 'promptTemplateCareerChangeTitle', contentKey: 'promptTemplateCareerChangeContent' },
+    { titleKey: 'promptTemplateRemoteJobTitle', contentKey: 'promptTemplateRemoteJobContent' },
+    { titleKey: 'promptTemplateInfoInterviewTitle', contentKey: 'promptTemplateInfoInterviewContent' },
+    { titleKey: 'promptTemplateEntryLevelTitle', contentKey: 'promptTemplateEntryLevelContent' },
+    { titleKey: 'promptTemplateSoftSkillsTitle', contentKey: 'promptTemplateSoftSkillsContent' },
+    { titleKey: 'promptTemplateFollowUpTitle', contentKey: 'promptTemplateFollowUpContent' },
+  ];
+
+  const handleTemplateSelect = (contentKey: TranslationKeys) => {
+    setUserData(prev => ({ ...prev, customInstruction: t(contentKey) }));
+    setShowTemplates(false);
+  };
+
 
   useEffect(() => {
     isMounted.current = true;
+    const handleClickOutside = (event: MouseEvent) => {
+      if (templatesRef.current && !templatesRef.current.contains(event.target as Node)) {
+        setShowTemplates(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
       isMounted.current = false;
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
@@ -414,9 +441,41 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
               </div>
             </div>
             <div>
-              <label htmlFor="customInstruction" className="block text-sm font-medium text-text-primary mb-2">
-                {t('formInstructions')}
-              </label>
+              <div className="flex justify-between items-center mb-2">
+                <label htmlFor="customInstruction" className="block text-sm font-medium text-text-primary">
+                  {t('formInstructions')}
+                </label>
+                <div className="relative" ref={templatesRef}>
+                  <button
+                    type="button"
+                    onClick={() => setShowTemplates(prev => !prev)}
+                    className="flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-indigo-300 bg-indigo-600/20 hover:bg-indigo-600/30 rounded-md transition-colors"
+                    title={t('formPromptTemplatesTooltip')}
+                    aria-haspopup="true"
+                    aria-expanded={showTemplates}
+                  >
+                    <SparklesIcon className="w-4 h-4" />
+                    <span>{t('formPromptTemplates')}</span>
+                  </button>
+                  {showTemplates && (
+                    <div className="absolute end-0 mt-2 w-72 bg-card rounded-md shadow-lg z-10 border border-border origin-top-right animate-dropdown-enter">
+                      <ul className="py-1 max-h-60 overflow-y-auto">
+                        {promptTemplates.map(template => (
+                          <li key={template.titleKey}>
+                            <button
+                              type="button"
+                              onClick={() => handleTemplateSelect(template.contentKey as TranslationKeys)}
+                              className="w-full text-left rtl:text-right px-3 py-2 text-sm text-text-primary hover:bg-card-secondary transition-colors"
+                            >
+                              {t(template.titleKey as TranslationKeys)}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
               <textarea
                 id="customInstruction"
                 name="customInstruction"
