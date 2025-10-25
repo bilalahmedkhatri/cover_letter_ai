@@ -38,6 +38,13 @@ export const LocaleProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   // The translation function
   const t = (key: TranslationKeys, replacements?: Record<string, string>): string => {
     let translation = translations[locale][key] || translations['en'][key];
+    
+    // If no translation is found even in the fallback, return the key itself to avoid crashing.
+    if (!translation) {
+        console.warn(`Translation for key "${key}" not found.`);
+        return key;
+    }
+    
     if (replacements) {
         Object.keys(replacements).forEach(rKey => {
             translation = translation.replace(`{{${rKey}}}`, replacements[rKey]);

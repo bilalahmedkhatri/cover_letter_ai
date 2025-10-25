@@ -82,3 +82,38 @@ export interface SavedSession {
   coverLetter: string;
   date: string;
 }
+
+// --- Global Type Declarations for CDN Scripts ---
+
+// This interface defines the shape of a jsPDF *instance*.
+interface jsPDF {
+  internal: {
+    pageSize: {
+      height: number;
+      width: number;
+    };
+  };
+  splitTextToSize(text: string, maxWidth: number): string[];
+  addPage(): this;
+  text(text: string | string[], x: number, y: number, options?: any): this;
+  setFont(fontName: string, fontStyle: string): this;
+  setFontSize(size: number): this;
+  save(filename: string): void;
+  autoTable: (options: any) => this; // For jspdf-autotable plugin
+}
+
+// This interface defines the jsPDF *constructor*.
+interface jsPDFConstructor {
+    new(options?: any): jsPDF;
+}
+
+// Global window interface for all dynamically loaded scripts
+declare global {
+  interface Window {
+    mammoth: any; // From mammoth.js for .docx parsing
+    pdfjsLib: any; // From pdf.js for .pdf parsing
+    jspdf: {
+      jsPDF: jsPDFConstructor;
+    };
+  }
+}

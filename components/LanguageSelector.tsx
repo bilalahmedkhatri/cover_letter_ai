@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useLocale, locales } from '../contexts/LocaleContext';
-import LanguageIcon from './icons/LanguageIcon';
+import GlobeIcon from './icons/GlobeIcon';
 import CheckIcon from './icons/CheckIcon';
 import { Locale } from '../types';
 
@@ -47,7 +47,7 @@ const LanguageSelector: React.FC = () => {
                 aria-haspopup="true"
                 aria-expanded={isOpen}
             >
-                <LanguageIcon className="w-6 h-6" />
+                <GlobeIcon className="w-6 h-6" />
                 <span className="text-sm font-medium uppercase">{locale}</span>
             </button>
             {isOpen && (

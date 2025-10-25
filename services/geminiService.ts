@@ -6,14 +6,6 @@ const MAMMOTH_URL = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.7.0/mammot
 const PDFJS_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js';
 const PDFJS_WORKER_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js';
 
-// Add mammoth and pdf.js to the window interface to avoid TypeScript errors
-declare global {
-  interface Window {
-    mammoth: any;
-    pdfjsLib: any;
-  }
-}
-
 // NOTE: Your API key should be securely managed and not hardcoded.
 // This implementation assumes the API key is available in the environment variables.
 const ai = new GoogleGenAI({apiKey: process.env.API_KEY!});

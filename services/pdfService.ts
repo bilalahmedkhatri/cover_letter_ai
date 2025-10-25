@@ -5,42 +5,6 @@ import { TranslationKeys } from './translations';
 const JSPDF_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
 const AUTOTABLE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js';
 
-
-// Fix: Add manual type declarations for jsPDF, which is loaded from a script tag.
-// This resolves TypeScript errors about the missing 'jspdf' namespace and its properties.
-declare namespace jspdf {
-  class jsPDF {
-    constructor(options?: any);
-    internal: {
-      pageSize: {
-        height: number;
-        width: number;
-      };
-    };
-    splitTextToSize(text: string, maxWidth: number): string[];
-    addPage(): jsPDF;
-    text(text: string | string[], x: number, y: number, options?: any): jsPDF;
-    setFont(fontName: string, fontStyle: string): jsPDF;
-    setFontSize(size: number): jsPDF;
-    save(filename: string): void;
-  }
-}
-
-declare global {
-  interface Window {
-    jspdf: {
-      jsPDF: new (options?: any) => jspdf.jsPDF;
-    };
-  }
-}
-
-
-// The jsPDF and autoTable types are inferred from the global scripts loaded in index.html.
-// We cast the jsPDF instance to include the autoTable method for type-safety within this module.
-interface jsPDFWithAutoTable extends jspdf.jsPDF {
-  autoTable: (options: any) => jspdf.jsPDF;
-}
-
 /**
  * Generates and downloads a PDF report from the university analysis results.
  * @param admissionInfo The structured details of the admission analysis.
@@ -57,7 +21,7 @@ export const generateAnalysisReportPdf = async (
   await loadScript(AUTOTABLE_URL);
 
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF() as jsPDFWithAutoTable;
+  const doc = new jsPDF();
   
   // --- PDF Header ---
   doc.setFont('ariel', 'bold');

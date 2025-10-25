@@ -13,33 +13,6 @@ import FacebookIcon from './icons/FacebookIcon';
 
 const JSPDF_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
 
-// Fix: Corrected the global type for 'window.jspdf' to match the declaration in 'services/pdfService.ts', resolving a conflict where it was improperly typed as 'any'.
-declare namespace jspdf {
-  class jsPDF {
-    constructor(options?: any);
-    internal: {
-      pageSize: {
-        height: number;
-        width: number;
-      };
-    };
-    splitTextToSize(text: string, maxWidth: number): string[];
-    addPage(): jsPDF;
-    text(text: string | string[], x: number, y: number, options?: any): jsPDF;
-    setFont(fontName: string, fontStyle: string): jsPDF;
-    setFontSize(size: number): jsPDF;
-    save(filename: string): void;
-  }
-}
-
-declare global {
-  interface Window {
-    jspdf: {
-      jsPDF: new (options?: any) => jspdf.jsPDF;
-    };
-  }
-}
-
 interface CoverLetterDisplayProps {
   coverLetter: string;
   setCoverLetter: (value: string) => void;
@@ -103,16 +76,16 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
 
     switch (platform) {
       case 'twitter':
-        const twitterText = encodeURIComponent(`Just crafted a professional cover letter in seconds using AI Letter Generator! This tool is a game-changer for job applications. #AICoverLetter #JobSearch #CareerTech`);
+        const twitterText = encodeURIComponent(t('shareTwitter'));
         shareUrl = `https://twitter.com/intent/tweet?text=${twitterText}&url=${url}`;
         break;
       case 'linkedin':
-        const linkedInText = encodeURIComponent(`I highly recommend AI Letter Generator for creating professional, ATS-friendly cover letters. It saved me a ton of time and helped me create a compelling application. A must-have for any job seeker!`);
-        // Note: LinkedIn summary is often ignored. Sharing the URL is the main goal.
+        // LinkedIn does not reliably use the 'summary' parameter, so we don't include it.
+        // The main goal is sharing the URL.
         shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
         break;
       case 'facebook':
-        const facebookQuote = encodeURIComponent(`This AI tool for writing cover letters is incredible! It helped me create a polished and professional letter tailored to the job description in just minutes. If you're job hunting, you have to try this.`);
+        const facebookQuote = encodeURIComponent(t('shareFacebook'));
         shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${facebookQuote}`;
         break;
     }
