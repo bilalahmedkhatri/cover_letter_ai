@@ -323,20 +323,24 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
                          )}
                       </div>
                     </div>
-                    <div>
-                        <strong className="font-medium text-text-primary flex items-center gap-2 mb-1">
-                           {t('formRequirements')}
-                           {admissionInfo.admissionRequirements.sourceUrl && <a href={admissionInfo.admissionRequirements.sourceUrl} target="_blank" rel="noopener noreferrer" title="View Source" className="text-indigo-400 hover:text-indigo-300"><ExternalLinkIcon className="w-4 h-4" /></a>}
-                        </strong> 
-                        {renderBulletedText(admissionInfo.admissionRequirements.text)}
-                    </div>
-                    <div>
-                        <strong className="font-medium text-text-primary flex items-center gap-2 mb-1">
-                            {t('formDeadlines')}
-                            {admissionInfo.deadlines.sourceUrl && <a href={admissionInfo.deadlines.sourceUrl} target="_blank" rel="noopener noreferrer" title="View Source" className="text-indigo-400 hover:text-indigo-300"><ExternalLinkIcon className="w-4 h-4" /></a>}
-                        </strong> 
-                        {renderBulletedText(admissionInfo.deadlines.text)}
-                    </div>
+                    {admissionInfo.admissionRequirements && (
+                      <div>
+                          <strong className="font-medium text-text-primary flex items-center gap-2 mb-1">
+                            {t('formRequirements')}
+                            {admissionInfo.admissionRequirements.sourceUrl && <a href={admissionInfo.admissionRequirements.sourceUrl} target="_blank" rel="noopener noreferrer" title="View Source" className="text-indigo-400 hover:text-indigo-300"><ExternalLinkIcon className="w-4 h-4" /></a>}
+                          </strong> 
+                          {renderBulletedText(admissionInfo.admissionRequirements.text)}
+                      </div>
+                    )}
+                    {admissionInfo.deadlines && (
+                      <div>
+                          <strong className="font-medium text-text-primary flex items-center gap-2 mb-1">
+                              {t('formDeadlines')}
+                              {admissionInfo.deadlines.sourceUrl && <a href={admissionInfo.deadlines.sourceUrl} target="_blank" rel="noopener noreferrer" title="View Source" className="text-indigo-400 hover:text-indigo-300"><ExternalLinkIcon className="w-4 h-4" /></a>}
+                          </strong> 
+                          {renderBulletedText(admissionInfo.deadlines.text)}
+                      </div>
+                    )}
                     {admissionInfo.scholarships && (
                       <div>
                         <strong className="font-medium text-text-primary flex items-center gap-2 mb-1">
