@@ -20,8 +20,15 @@ export const generateAnalysisReportPdf = async (
   await loadScript(JSPDF_URL);
   await loadScript(AUTOTABLE_URL);
 
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    throw new Error("PDF library failed to load. Please refresh the page and try again.");
+  }
+  
+  const doc = new window.jspdf.jsPDF();
+
+  if (typeof doc.autoTable !== 'function') {
+      throw new Error("PDF table plugin failed to load. Please refresh the page and try again.");
+  }
   
   // --- PDF Header ---
   doc.setFont('helvetica', 'bold');

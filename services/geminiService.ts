@@ -17,6 +17,9 @@ const ai = new GoogleGenAI({apiKey: process.env.API_KEY!});
  */
 const getTextFromDocx = async (file: File): Promise<string> => {
   await loadScript(MAMMOTH_URL);
+  if (!window.mammoth) {
+    throw new Error("Document parser library failed to load. Please try a different file format or refresh the page.");
+  }
   const arrayBuffer = await file.arrayBuffer();
   const result = await window.mammoth.extractRawText({ arrayBuffer });
   return result.value;
@@ -29,6 +32,9 @@ const getTextFromDocx = async (file: File): Promise<string> => {
  */
 const getTextFromPdf = async (file: File): Promise<string> => {
     await loadScript(PDFJS_URL);
+    if (!window.pdfjsLib) {
+      throw new Error("PDF parser library failed to load. Please try a different file format or refresh the page.");
+    }
     window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_URL;
     
     const arrayBuffer = await file.arrayBuffer();

@@ -23,8 +23,17 @@ interface CoverLetterDisplayProps {
 
 const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, setCoverLetter, isLoading, error, onSubmit }) => {
   const [copied, setCopied] = useState(false);
+  const [pdfError, setPdfError] = useState<string | null>(null);
   const { t } = useLocale();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (copied) {
@@ -52,8 +61,12 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
   };
 
   const handleDownloadPdf = async () => {
+    setPdfError(null);
     try {
       await loadScript(JSPDF_URL);
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        throw new Error("PDF library failed to load. Please refresh and try again.");
+      }
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
 
@@ -66,7 +79,10 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
       doc.save('professional-letter.pdf');
     } catch (e) {
       console.error("Failed to download PDF:", e);
-      // Optionally, show an error to the user
+      const message = e instanceof Error ? e.message : "An unknown error occurred.";
+      if (isMounted.current) {
+        setPdfError(message);
+      }
     }
   };
   
@@ -155,14 +171,17 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ coverLetter, se
               {copied ? <CheckIcon className="w-5 h-5 text-green-400" /> : <CopyIcon className="w-5 h-5 text-text-primary" />}
               <span>{copied ? t('displayCopied') : t('displayCopy')}</span>
             </button>
-             <button 
-              onClick={handleDownloadPdf}
-              className="flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-md transition-colors text-sm font-medium w-full sm:w-auto"
-              aria-label="Download as PDF"
-            >
-              <DownloadIcon className="w-5 h-5" />
-              <span>{t('displayDownload')}</span>
-            </button>
+            <div className="w-full sm:w-auto">
+              <button 
+                onClick={handleDownloadPdf}
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-md transition-colors text-sm font-medium w-full"
+                aria-label="Download as PDF"
+              >
+                <DownloadIcon className="w-5 h-5" />
+                <span>{t('displayDownload')}</span>
+              </button>
+              {pdfError && <p className="text-xs text-red-400 mt-1 sm:text-right">{pdfError}</p>}
+            </div>
           </div>
         </div>
       );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { UserData, JobDetails, AdmissionInfo } from '../types';
 import { getFriendlyErrorMessage, FriendlyError } from '../services/errorService';
 import { generateAnalysisReportPdf } from '../services/pdfService';
@@ -29,6 +29,11 @@ interface UserInputFormProps {
   setExtractedKeywords: (keywords: string) => void;
 }
 
+const languages = [
+  "English", "Bulgarian", "Hungarian", "Spanish", "French", 
+  "Arabic", "Dutch", "Russian", "Portuguese", "Slovak", "Polish"
+];
+
 const UserInputForm: React.FC<UserInputFormProps> = ({
   userData,
   setUserData,
@@ -50,6 +55,14 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
 }) => {
   const { t } = useLocale();
   const [pdfError, setPdfError] = useState<FriendlyError | null>(null);
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   const handleUserChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -75,7 +88,7 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
       const file = e.target.files[0];
       const reader = new FileReader();
       reader.onloadend = () => {
-        if (typeof reader.result === 'string') {
+        if (isMounted.current && typeof reader.result === 'string') {
             const base64String = reader.result.split(',')[1];
             setJobDetails(prev => ({ ...prev, screenshot: base64String }));
         }
@@ -96,7 +109,9 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
         await generateAnalysisReportPdf(admissionInfo, foundCourses, t);
     } catch (e) {
         console.error("PDF Generation Error:", e);
-        setPdfError(getFriendlyErrorMessage(e));
+        if (isMounted.current) {
+          setPdfError(getFriendlyErrorMessage(e));
+        }
     }
   };
   
@@ -111,11 +126,6 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
       </ul>
     );
   };
-
-  const languages = [
-    "English", "Bulgarian", "Hungarian", "Spanish", "French", 
-    "Arabic", "Dutch", "Russian", "Portuguese", "Slovak", "Polish"
-  ];
 
   const inputStyle = "w-full bg-input-bg border border-border rounded-md px-3 py-2 text-text-primary placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors";
   const inputFileStyle = "w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600/20 file:text-indigo-300 hover:file:bg-indigo-600/30 cursor-pointer";

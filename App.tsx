@@ -1,5 +1,5 @@
 // Fix: Replaced placeholder content with a functional App component to structure the application, manage state, and handle logic.
-import React, { useState, useEffect, createContext, useContext, ReactNode } from 'react';
+import React, { useState, useEffect, createContext, useContext, ReactNode, useRef } from 'react';
 import { UserData, JobDetails, AdmissionInfo, SavedSession, Locale } from './types';
 import { generateCoverLetter, analyzeUniversityPage, extractKeywordsFromJob } from './services/geminiService';
 import * as storageService from './services/storageService';
@@ -119,8 +119,22 @@ export const useTheme = (): ThemeContextType => {
 // --- End Theme Management ---
 
 
+// Custom hook to track mounted state, preventing state updates on unmounted components
+const useIsMounted = () => {
+  const isMountedRef = useRef(true);
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+  return isMountedRef;
+};
+
+
 function AppContent() {
   const { locale, setLocale, t } = useLocale();
+  const isMounted = useIsMounted();
 
   const pageTitleKeys: Record<string, TranslationKeys> = {
     '/': 'titleHome',
@@ -274,12 +288,15 @@ function AppContent() {
     setCoverLetter('');
     try {
       const letter = await generateCoverLetter(userData, jobDetails, extractedKeywords);
+      if (!isMounted.current) return;
       setCoverLetter(letter);
       const updatedSessions = storageService.saveSession(userData, jobDetails, letter);
       setSavedSessions(updatedSessions);
     } catch (e) {
+      if (!isMounted.current) return;
       setError(getFriendlyErrorMessage(e));
     } finally {
+      if (!isMounted.current) return;
       setIsLoading(false);
     }
   };
@@ -296,14 +313,17 @@ function AppContent() {
         userData.courseName,
         userData.universityAnalysisInstruction
       );
+      if (!isMounted.current) return;
       setAdmissionInfo(result.details);
       setFoundCourses(result.courses);
       if (result.notes) {
         setAnalysisNotes(result.notes);
       }
     } catch (e) {
+      if (!isMounted.current) return;
       setAnalysisError(getFriendlyErrorMessage(e));
     } finally {
+      if (!isMounted.current) return;
       setIsAnalyzing(false);
     }
   };
@@ -315,10 +335,13 @@ function AppContent() {
     setExtractedKeywords('');
     try {
       const keywords = await extractKeywordsFromJob(jobDetails);
+      if (!isMounted.current) return;
       setExtractedKeywords(keywords);
     } catch (e) {
+      if (!isMounted.current) return;
       setKeywordError(getFriendlyErrorMessage(e));
     } finally {
+      if (!isMounted.current) return;
       setIsExtractingKeywords(false);
     }
   };
