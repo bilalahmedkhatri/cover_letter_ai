@@ -2,9 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useLocale, locales } from '../contexts/LocaleContext';
 import LanguageIcon from './icons/LanguageIcon';
 import CheckIcon from './icons/CheckIcon';
+import { Locale } from '../types';
 
 const LanguageSelector: React.FC = () => {
-    const { locale, setLocale } = useLocale();
+    const { locale } = useLocale();
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -17,6 +18,25 @@ const LanguageSelector: React.FC = () => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    const handleLocaleChange = (newLocale: Locale) => {
+        setIsOpen(false);
+        const pathParts = window.location.pathname.split('/').filter(Boolean);
+        const hasLocale = locales.some(l => l.code === pathParts[0]);
+    
+        const pagePath = hasLocale ? '/' + pathParts.slice(1).join('/') : window.location.pathname;
+    
+        // handle base path case (e.g. /en -> /fr)
+        const finalPagePath = pagePath === '/' ? '' : pagePath;
+    
+        const newUrl = `/${newLocale}${finalPagePath}`;
+    
+        if (newUrl !== window.location.pathname) {
+          window.history.pushState({}, '', newUrl);
+          // dispatch popstate to trigger the router in App.tsx
+          window.dispatchEvent(new PopStateEvent('popstate'));
+        }
+    };
 
     return (
         <div className="relative" ref={dropdownRef}>
@@ -36,10 +56,7 @@ const LanguageSelector: React.FC = () => {
                         {locales.map(lang => (
                             <li key={lang.code}>
                                 <button
-                                    onClick={() => {
-                                        setLocale(lang.code);
-                                        setIsOpen(false);
-                                    }}
+                                    onClick={() => handleLocaleChange(lang.code)}
                                     className="w-full text-left rtl:text-right px-4 py-2 text-sm text-text-primary hover:bg-card-secondary flex items-center justify-between"
                                     role="menuitem"
                                 >

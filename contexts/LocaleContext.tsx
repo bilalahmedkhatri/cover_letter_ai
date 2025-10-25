@@ -14,29 +14,14 @@ export const locales: { code: Locale; name: string }[] = [
 
 interface LocaleContextType {
   locale: Locale;
-  setLocale: (locale: Locale) => void;
+  setLocale: React.Dispatch<React.SetStateAction<Locale>>;
   t: (key: TranslationKeys, replacements?: Record<string, string>) => string;
 }
 
 const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
 
 export const LocaleProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Default to English, but check for a saved locale
   const [locale, setLocale] = useState<Locale>('en');
-
-  useEffect(() => {
-    // Check for a saved locale in localStorage on initial load
-    const savedLocale = localStorage.getItem('locale') as Locale;
-    if (savedLocale && locales.some(l => l.code === savedLocale)) {
-      setLocale(savedLocale);
-    } else {
-        // Fallback to browser language if no preference is saved
-        const browserLang = navigator.language.split('-')[0] as Locale;
-        if(locales.some(l => l.code === browserLang)) {
-            setLocale(browserLang);
-        }
-    }
-  }, []);
 
   // Effect to update everything when the locale changes
   useEffect(() => {

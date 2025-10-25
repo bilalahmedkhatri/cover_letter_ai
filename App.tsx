@@ -1,6 +1,6 @@
 // Fix: Replaced placeholder content with a functional App component to structure the application, manage state, and handle logic.
 import React, { useState, useEffect, createContext, useContext, ReactNode } from 'react';
-import { UserData, JobDetails, AdmissionInfo, SavedSession } from './types';
+import { UserData, JobDetails, AdmissionInfo, SavedSession, Locale } from './types';
 import { generateCoverLetter, analyzeUniversityPage, extractKeywordsFromJob } from './services/geminiService';
 import * as storageService from './services/storageService';
 import { getFriendlyErrorMessage, FriendlyError } from './services/errorService';
@@ -18,9 +18,10 @@ import CookieConsentBanner from './components/CookieConsentBanner';
 import { themes } from './theme';
 import WhatsAppJoin from './components/WhatsAppJoin';
 import BackToTopButton from './components/BackToTopButton';
-import { LocaleProvider, useLocale } from './contexts/LocaleContext';
+import { LocaleProvider, useLocale, locales } from './contexts/LocaleContext';
 import InfoIcon from './components/icons/InfoIcon';
 import XIcon from './components/icons/XIcon';
+import { TranslationKeys } from './services/translations';
 
 // --- Theme Management ---
 type Theme = 'light' | 'dark';
@@ -110,24 +111,21 @@ export const useTheme = (): ThemeContextType => {
 // --- End Theme Management ---
 
 
-type Page = '/' | '/dashboard' | '/privacy' | '/terms' | '/about' | '/404';
-
-
 function AppContent() {
-  const { t } = useLocale();
+  const { locale, setLocale, t } = useLocale();
 
-  const pagesInfo = {
-    '/': { title: t('titleHome') },
-    '/dashboard': { title: t('titleDashboard') },
-    '/about': { title: t('titleAbout') },
-    '/privacy': { title: t('titlePrivacy') },
-    '/terms': { title: t('titleTerms') },
-    '/404': { title: t('title404') },
+  const pageTitleKeys: Record<string, TranslationKeys> = {
+    '/': 'titleHome',
+    '/dashboard': 'titleDashboard',
+    '/about': 'titleAbout',
+    '/privacy': 'titlePrivacy',
+    '/terms': 'titleTerms',
+    '/404': 'title404',
   };
-
+  const validPages = Object.keys(pageTitleKeys);
 
   // State for current page/route
-  const [page, setPage] = useState<Page>('/');
+  const [page, setPage] = useState<string>('/');
 
   // State for user input
   const [userData, setUserData] = useState<UserData>({
@@ -179,50 +177,81 @@ function AppContent() {
     setSavedSessions(storageService.getSavedSessions());
   }, []);
 
-  // Effect for handling routing
+  // Effect for handling routing based on URL path
   useEffect(() => {
     const handleLocationChange = () => {
-      const path = window.location.pathname;
-      const newPage = (path in pagesInfo) ? (path as Page) : '/404';
-      setPage(newPage);
+        const pathParts = window.location.pathname.split('/').filter(Boolean);
+        const potentialLocale = pathParts[0] as Locale;
+        const isLocaleInPath = locales.some(l => l.code === potentialLocale);
+
+        if (isLocaleInPath) {
+            // Locale is in path, update context and page
+            if (locale !== potentialLocale) {
+                setLocale(potentialLocale);
+            }
+
+            let pagePath = '/' + pathParts.slice(1).join('/');
+            if (pagePath.length > 1 && pagePath.endsWith('/')) {
+              pagePath = pagePath.slice(0, -1);
+            }
+            if(pathParts.length === 1) pagePath = '/';
+
+            const newPage = validPages.includes(pagePath) ? pagePath : '/404';
+            setPage(newPage);
+        } else {
+            // No locale in path, we must redirect.
+            const savedLocale = localStorage.getItem('locale') as Locale;
+            const browserLang = navigator.language.split('-')[0] as Locale;
+            const targetLocale = 
+                (savedLocale && locales.some(l => l.code === savedLocale)) ? savedLocale 
+                : (locales.some(l => l.code === browserLang) ? browserLang : 'en');
+            
+            const newPath = `/${targetLocale}${window.location.pathname}`.replace('//', '/');
+            
+            window.history.replaceState({}, '', newPath);
+            // Call handler again to process the new URL. This is safe because the next time isLocaleInPath will be true.
+            handleLocationChange();
+        }
     };
 
     window.addEventListener('popstate', handleLocationChange);
     handleLocationChange(); // Handle initial load
 
     return () => window.removeEventListener('popstate', handleLocationChange);
-  }, [pagesInfo]);
+}, []); // This effect should run only once to set up the router.
+
 
   // Update document title when page or language changes
   useEffect(() => {
-    document.title = pagesInfo[page].title;
+    document.title = t(pageTitleKeys[page]);
   }, [page, t]);
 
   // Effect for SPA link handling
   useEffect(() => {
     const handleLinkClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const anchor = target.closest('a');
+        const target = e.target as HTMLElement;
+        const anchor = target.closest('a');
 
-      if (anchor && anchor.target !== '_blank' && anchor.origin === window.location.origin) {
-        const path = anchor.pathname;
-        // Check if the link is a valid internal route.
-        if (path in pagesInfo) {
-          // Always prevent the default browser navigation for internal routes.
-          e.preventDefault();
-          // Only push to history and update state if the path is different.
-          if (path !== window.location.pathname) {
-            window.history.pushState({}, '', path);
-            setPage(path as Page);
-            window.scrollTo(0, 0);
-          }
+        if (anchor && anchor.target !== '_blank' && anchor.origin === window.location.origin) {
+            const path = anchor.pathname;
+            // Check if the link is a valid internal route.
+            if (validPages.includes(path)) {
+                e.preventDefault();
+                const newPath = `/${locale}${path === '/' ? '' : path}`;
+                // Only push to history if the path is different.
+                if (newPath !== window.location.pathname) {
+                    window.history.pushState({}, '', newPath);
+                    // Manually dispatch popstate to trigger the router
+                    window.dispatchEvent(new PopStateEvent('popstate'));
+                    window.scrollTo(0, 0);
+                }
+            }
         }
-      }
     };
 
     document.addEventListener('click', handleLinkClick);
     return () => document.removeEventListener('click', handleLinkClick);
-  }, [pagesInfo]);
+}, [locale]); // Re-bind the event listener when the locale changes.
 
 
   const handleSubmit = async () => {
