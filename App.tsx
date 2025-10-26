@@ -254,6 +254,42 @@ function AppContent() {
     document.title = t(pageTitleKeys[page]);
   }, [page, t]);
 
+  // Update canonical and hreflang tags for SEO
+  useEffect(() => {
+    const baseUrl = 'https://ailettergen.com';
+    const canonicalPath = page === '/' ? '' : page;
+    const canonicalUrl = `${baseUrl}/${locale}${canonicalPath}`;
+
+    // Update or create the canonical link tag
+    let canonicalLink = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!canonicalLink) {
+      canonicalLink = document.createElement('link');
+      canonicalLink.rel = 'canonical';
+      document.head.appendChild(canonicalLink);
+    }
+    canonicalLink.href = canonicalUrl;
+
+    // Remove old hreflang tags to prevent duplicates
+    document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(el => el.remove());
+
+    // Add new hreflang tags for all supported languages
+    locales.forEach(lang => {
+      const alternateLink = document.createElement('link');
+      alternateLink.rel = 'alternate';
+      alternateLink.hreflang = lang.code;
+      alternateLink.href = `${baseUrl}/${lang.code}${canonicalPath}`;
+      document.head.appendChild(alternateLink);
+    });
+
+    // Add x-default hreflang tag (pointing to the default language, 'en')
+    const xDefaultLink = document.createElement('link');
+    xDefaultLink.rel = 'alternate';
+    xDefaultLink.hreflang = 'x-default';
+    xDefaultLink.href = `${baseUrl}/en${canonicalPath}`;
+    document.head.appendChild(xDefaultLink);
+
+  }, [page, locale]);
+
   // Effect for SPA link handling
   useEffect(() => {
     const handleLinkClick = (e: MouseEvent) => {
