@@ -4,6 +4,7 @@ import { getFriendlyErrorMessage, FriendlyError } from '../services/errorService
 import { generateAnalysisReportPdf } from '../services/pdfService';
 import { importLinkedInProfile } from '../services/geminiService';
 import { useLocale } from '../contexts/LocaleContext';
+import { trackEvent } from '../services/analyticsService';
 import SmallLoadingSpinner from './icons/SmallLoadingSpinner';
 import InfoIcon from './icons/InfoIcon';
 import DownloadIcon from './icons/DownloadIcon';
@@ -127,10 +128,16 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
         const { skills, experience } = await importLinkedInProfile(file);
         if (isMounted.current) {
             setUserData(prev => ({ ...prev, skills, experience }));
+            trackEvent({ name: 'linkedin_import_success', params: {} });
         }
     } catch (err) {
         if (isMounted.current) {
-            setLinkedInImportError(getFriendlyErrorMessage(err));
+            const friendlyError = getFriendlyErrorMessage(err);
+            setLinkedInImportError(friendlyError);
+            trackEvent({
+              name: 'linkedin_import_failure',
+              params: { error_message: friendlyError.message }
+            });
         }
     } finally {
         if (isMounted.current) {

@@ -123,5 +123,6 @@ declare global {
       jsPDF: jsPDFConstructor;
     };
     html2canvas: (element: HTMLElement, options?: Partial<any>) => Promise<HTMLCanvasElement>;
+    gtag: (...args: any[]) => void;
   }
 }

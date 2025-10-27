@@ -3,6 +3,7 @@ import { FriendlyError } from '../services/errorService';
 import { loadScript } from '../services/scriptLoader';
 import { useLocale } from '../contexts/LocaleContext';
 import { UserData, JobDetails } from '../types';
+import { trackEvent } from '../services/analyticsService';
 import LoadingSpinner from './icons/LoadingSpinner';
 import CopyIcon from './icons/CopyIcon';
 import CheckIcon from './icons/CheckIcon';
@@ -165,7 +166,7 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({
       
       pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
       pdf.save('professional-letter.pdf');
-
+      trackEvent({ name: 'download_pdf', params: {} });
     } catch (e) {
       console.error("Failed to download PDF:", e);
       const message = e instanceof Error ? e.message : "An unknown error occurred.";
@@ -234,6 +235,7 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({
 
         if (shareUrl) {
             window.open(shareUrl, '_blank', 'noopener,noreferrer');
+            trackEvent({ name: 'social_share', params: { platform } });
         }
 
     } catch (err) {

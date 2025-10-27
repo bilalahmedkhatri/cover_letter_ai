@@ -4,6 +4,7 @@ import { UserData, JobDetails, AdmissionInfo, SavedSession, Locale, ExtractedKey
 import { generateCoverLetter, analyzeUniversityPage, extractKeywordsFromJob } from './services/geminiService';
 import * as storageService from './services/storageService';
 import { getFriendlyErrorMessage, FriendlyError } from './services/errorService';
+import { trackEvent } from './services/analyticsService';
 import UserInputForm from './components/UserInputForm';
 import CoverLetterDisplay from './components/CoverLetterDisplay';
 import SavedLettersDisplay from './components/SavedLettersDisplay';
@@ -319,6 +320,10 @@ function AppContent() {
 
 
   const handleSubmit = async () => {
+    trackEvent({
+      name: 'form_submit',
+      params: { letter_type: userData.letterType }
+    });
     setIsLoading(true);
     setError(null);
     setCoverLetter('');
@@ -329,9 +334,24 @@ function AppContent() {
       setCoverLetter(letter);
       const updatedSessions = storageService.saveSession(userData, jobDetails, letter);
       setSavedSessions(updatedSessions);
+      trackEvent({
+        name: 'generate_letter_success',
+        params: {
+          letter_type: userData.letterType,
+          document_type: userData.documentType,
+        }
+      });
     } catch (e) {
       if (!isMounted.current) return;
-      setError(getFriendlyErrorMessage(e));
+      const friendlyError = getFriendlyErrorMessage(e);
+      setError(friendlyError);
+      trackEvent({
+        name: 'generate_letter_failure',
+        params: {
+          letter_type: userData.letterType,
+          error_message: friendlyError.message,
+        }
+      });
     } finally {
       if (!isMounted.current) return;
       setIsLoading(false);
@@ -356,9 +376,15 @@ function AppContent() {
       if (result.notes) {
         setAnalysisNotes(result.notes);
       }
+      trackEvent({ name: 'analyze_url_success', params: {} });
     } catch (e) {
       if (!isMounted.current) return;
-      setAnalysisError(getFriendlyErrorMessage(e));
+      const friendlyError = getFriendlyErrorMessage(e);
+      setAnalysisError(friendlyError);
+      trackEvent({
+        name: 'analyze_url_failure',
+        params: { error_message: friendlyError.message }
+      });
     } finally {
       if (!isMounted.current) return;
       setIsAnalyzing(false);
@@ -374,9 +400,15 @@ function AppContent() {
       const keywords = await extractKeywordsFromJob(jobDetails);
       if (!isMounted.current) return;
       setExtractedKeywords(keywords);
+      trackEvent({ name: 'extract_keywords_success', params: {} });
     } catch (e) {
       if (!isMounted.current) return;
-      setKeywordError(getFriendlyErrorMessage(e));
+      const friendlyError = getFriendlyErrorMessage(e);
+      setKeywordError(friendlyError);
+      trackEvent({
+        name: 'extract_keywords_failure',
+        params: { error_message: friendlyError.message }
+      });
     } finally {
       if (!isMounted.current) return;
       setIsExtractingKeywords(false);
@@ -413,6 +445,8 @@ function AppContent() {
     setUserData(restoredUserData);
     setJobDetails(step3.jobDetails); // Step 3 (Job)
     setCoverLetter(coverLetter);
+
+    trackEvent({ name: 'restore_session', params: {} });
 
     // Scroll to the top of the form for better UX
     window.scrollTo({ top: 0, behavior: 'smooth' });
