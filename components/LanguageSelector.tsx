@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useLocale, locales } from '../contexts/LocaleContext';
 import GlobeIcon from './icons/GlobeIcon';
 import CheckIcon from './icons/CheckIcon';
-import { Locale } from '../types';
+import { localizedPath, resolveRoute } from '../services/routing';
 
 const LanguageSelector: React.FC = () => {
     const { locale } = useLocale();
@@ -19,24 +19,7 @@ const LanguageSelector: React.FC = () => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const handleLocaleChange = (newLocale: Locale) => {
-        setIsOpen(false);
-        const pathParts = window.location.pathname.split('/').filter(Boolean);
-        const hasLocale = locales.some(l => l.code === pathParts[0]);
-    
-        const pagePath = hasLocale ? '/' + pathParts.slice(1).join('/') : window.location.pathname;
-    
-        // handle base path case (e.g. /en -> /fr)
-        const finalPagePath = pagePath === '/' ? '' : pagePath;
-    
-        const newUrl = `/${newLocale}${finalPagePath}`;
-    
-        if (newUrl !== window.location.pathname) {
-          window.history.pushState({}, '', newUrl);
-          // dispatch popstate to trigger the router in App.tsx
-          window.dispatchEvent(new PopStateEvent('popstate'));
-        }
-    };
+    const currentPage = resolveRoute(window.location.pathname).page;
 
     return (
         <div className="relative" ref={dropdownRef}>
@@ -55,14 +38,15 @@ const LanguageSelector: React.FC = () => {
                     <ul className="py-1" role="menu">
                         {locales.map(lang => (
                             <li key={lang.code}>
-                                <button
-                                    onClick={() => handleLocaleChange(lang.code)}
+                                <a
+                                    href={localizedPath(lang.code, currentPage === '/404' ? '/' : currentPage)}
+                                    onClick={() => setIsOpen(false)}
                                     className="w-full text-left rtl:text-right px-4 py-2 text-sm text-text-primary hover:bg-card-secondary flex items-center justify-between"
                                     role="menuitem"
                                 >
                                     {lang.name}
                                     {locale === lang.code && <CheckIcon className="w-5 h-5 text-accent" />}
-                                </button>
+                                </a>
                             </li>
                         ))}
                     </ul>

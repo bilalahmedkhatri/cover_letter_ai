@@ -8,7 +8,13 @@ const PDFJS_WORKER_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338
 
 // NOTE: Your API key should be securely managed and not hardcoded.
 // This implementation assumes the API key is available in the environment variables.
-const ai = new GoogleGenAI({apiKey: process.env.API_KEY!});
+const API_KEY = process.env.API_KEY || process.env.GEMINI_API_KEY || (import.meta as any).env?.VITE_GEMINI_API_KEY;
+
+if (!API_KEY) {
+  // API key not set - handle silently for security
+}
+
+const ai = new GoogleGenAI({ apiKey: API_KEY || '' });
 
 /**
  * Extracts text content from a .docx file.
@@ -31,21 +37,21 @@ const getTextFromDocx = async (file: File): Promise<string> => {
  * @returns A promise that resolves to the extracted text.
  */
 const getTextFromPdf = async (file: File): Promise<string> => {
-    await loadScript(PDFJS_URL);
-    if (!window.pdfjsLib) {
-      throw new Error("PDF parser library failed to load. Please try a different file format or refresh the page.");
-    }
-    window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_URL;
-    
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    let text = '';
-    for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const textContent = await page.getTextContent();
-        text += textContent.items.map((item: any) => item.str).join(' ');
-    }
-    return text;
+  await loadScript(PDFJS_URL);
+  if (!window.pdfjsLib) {
+    throw new Error("PDF parser library failed to load. Please try a different file format or refresh the page.");
+  }
+  window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_URL;
+
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  let text = '';
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const textContent = await page.getTextContent();
+    text += textContent.items.map((item: any) => item.str).join(' ');
+  }
+  return text;
 };
 
 
@@ -82,10 +88,10 @@ const fileToGenerativePart = async (file: File): Promise<Part> => {
  * @param file The PDF file of the LinkedIn profile.
  * @returns A promise that resolves to an object containing skills and experience strings.
  */
-export const importLinkedInProfile = async (file: File): Promise<{ skills: string; experience:string; }> => {
-    const profileText = await getTextFromPdf(file);
-    
-    const prompt = `You are an expert HR data processor. Your task is to parse the unstructured text from a LinkedIn profile PDF and extract key information. The user wants to populate their 'skills' and 'experience' fields.
+export const importLinkedInProfile = async (file: File): Promise<{ skills: string; experience: string; }> => {
+  const profileText = await getTextFromPdf(file);
+
+  const prompt = `You are an expert HR data processor. Your task is to parse the unstructured text from a LinkedIn profile PDF and extract key information. The user wants to populate their 'skills' and 'experience' fields.
 
 Analyze the following text and return a single, valid JSON object with two keys: "skills" and "experience".
 
@@ -99,42 +105,42 @@ Text to parse:
 ${profileText}
 ---
 `;
-    try {
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-pro',
-            contents: prompt,
-            config: {
-                responseMimeType: "application/json",
-                responseSchema: {
-                    type: Type.OBJECT,
-                    properties: {
-                        skills: { 
-                            type: Type.STRING,
-                            description: 'A comma-separated string of skills.'
-                        },
-                        experience: { 
-                            type: Type.STRING,
-                            description: 'A summary of work experience, with new lines separating job entries.'
-                        }
-                    },
-                    required: ['skills', 'experience']
-                }
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-pro',
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            skills: {
+              type: Type.STRING,
+              description: 'A comma-separated string of skills.'
+            },
+            experience: {
+              type: Type.STRING,
+              description: 'A summary of work experience, with new lines separating job entries.'
             }
-        });
-        
-        let jsonString = response.text.trim();
-        // Basic sanitization
-        const firstBrace = jsonString.indexOf('{');
-        const lastBrace = jsonString.lastIndexOf('}');
-        if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-            jsonString = jsonString.substring(firstBrace, lastBrace + 1);
+          },
+          required: ['skills', 'experience']
         }
-        
-        return JSON.parse(jsonString);
-    } catch (error) {
-        console.error("Error parsing LinkedIn profile:", error);
-        throw new Error("The AI could not process the LinkedIn PDF. Please ensure it is a standard LinkedIn profile export and try again.");
+      }
+    });
+
+    let jsonString = response.text.trim();
+    // Basic sanitization
+    const firstBrace = jsonString.indexOf('{');
+    const lastBrace = jsonString.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+      jsonString = jsonString.substring(firstBrace, lastBrace + 1);
     }
+
+    return JSON.parse(jsonString);
+  } catch (error) {
+    // Error parsing LinkedIn profile - handle silently
+    throw new Error("The AI could not process the LinkedIn PDF. Please ensure it is a standard LinkedIn profile export and try again.");
+  }
 };
 
 
@@ -176,7 +182,7 @@ Analyze the following job description:\n`;
       }
     });
   }
-  
+
   parts.unshift({ text: prompt });
 
   const responseSchema = {
@@ -184,11 +190,11 @@ Analyze the following job description:\n`;
     items: {
       type: Type.OBJECT,
       properties: {
-        keyword: { 
+        keyword: {
           type: Type.STRING,
           description: 'A key skill, technology, or qualification.'
         },
-        explanation: { 
+        explanation: {
           type: Type.STRING,
           description: 'A brief explanation of why this keyword is important for the job.'
         }
@@ -209,18 +215,18 @@ Analyze the following job description:\n`;
       contents: { parts: parts },
       config: config
     });
-    
+
     let jsonString = response.text.trim();
     // It's good practice to sanitize, even with schema, in case of minor non-compliance.
     const firstBracket = jsonString.indexOf('[');
     const lastBracket = jsonString.lastIndexOf(']');
     if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
-        jsonString = jsonString.substring(firstBracket, lastBracket + 1);
+      jsonString = jsonString.substring(firstBracket, lastBracket + 1);
     }
-    
+
     return JSON.parse(jsonString);
   } catch (error) {
-    console.error("Error extracting keywords:", error);
+    // Error extracting keywords - handle silently
     // Re-throw to be handled by the UI layer
     throw error;
   }
@@ -256,7 +262,7 @@ export const generateCoverLetter = async (userData: UserData, jobDetails: JobDet
   // Start with a clear instruction for the model.
   let prompt: string;
   const applicationContext = letterType === 'job' ? 'job application' : 'university admission letter';
-  
+
   // High-priority instruction for tone.
   const toneInstruction = `The tone of the document MUST be **${tone}**. This is a strict and primary instruction. Ensure the entire response consistently reflects this tone.`;
 
@@ -265,7 +271,7 @@ export const generateCoverLetter = async (userData: UserData, jobDetails: JobDet
   } else { // default to 'letter'
     prompt = `Please act as a professional career advisor and write a compelling ${applicationContext} in ${language}. ${toneInstruction}`;
   }
-  
+
   prompt += `\n\nHere is information about me:\n`;
   prompt += `- Full Name: ${name}\n`;
   if (skills) prompt += `- Key Skills: ${skills}\n`;
@@ -278,12 +284,12 @@ export const generateCoverLetter = async (userData: UserData, jobDetails: JobDet
       prompt += `I have also provided a screenshot of the job description for more context.\n`;
       parts.push({
         inlineData: {
-            mimeType: 'image/jpeg', 
-            data: jobDetails.screenshot
+          mimeType: 'image/jpeg',
+          data: jobDetails.screenshot
         }
       });
     }
-     if (keywords) {
+    if (keywords) {
       prompt += `\n**Critical Requirement:** To ensure my application is optimized for Applicant Tracking Systems (ATS) and highly relevant, please strategically and naturally incorporate the following keywords throughout the letter: **${keywords}**. Do not just list them; weave them into the narrative of my skills and experience.\n`;
     }
   } else { // university
@@ -291,53 +297,53 @@ export const generateCoverLetter = async (userData: UserData, jobDetails: JobDet
     if (universityUrl) prompt += `- Program URL: ${universityUrl}\n`;
     if (courseName) prompt += `- Course Name: ${courseName}\n`;
   }
-  
+
   if (resume) {
     try {
-        let resumeText = '';
-        if (resume.type === 'application/pdf') {
-            resumeText = await getTextFromPdf(resume);
-        } else if (resume.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-            resumeText = await getTextFromDocx(resume);
-        } else if (resume.type === 'text/plain') {
-             resumeText = await resume.text();
-        }
+      let resumeText = '';
+      if (resume.type === 'application/pdf') {
+        resumeText = await getTextFromPdf(resume);
+      } else if (resume.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+        resumeText = await getTextFromDocx(resume);
+      } else if (resume.type === 'text/plain') {
+        resumeText = await resume.text();
+      }
 
-        if (resumeText) {
-             prompt += `\nHere is the full text of my resume. Please analyze it to extract relevant experiences, skills, and qualifications and incorporate them into the letter to make it as strong as possible:\n\n--- RESUME START ---\n${resumeText}\n--- RESUME END ---\n`;
-        } else {
-            // Fallback for unsupported file types, though less effective
-            prompt += `\nMy resume is attached. Please analyze it if possible.\n`;
-            parts.push(await fileToGenerativePart(resume));
-        }
+      if (resumeText) {
+        prompt += `\nHere is the full text of my resume. Please analyze it to extract relevant experiences, skills, and qualifications and incorporate them into the letter to make it as strong as possible:\n\n--- RESUME START ---\n${resumeText}\n--- RESUME END ---\n`;
+      } else {
+        // Fallback for unsupported file types, though less effective
+        prompt += `\nMy resume is attached. Please analyze it if possible.\n`;
+        parts.push(await fileToGenerativePart(resume));
+      }
     } catch (e) {
-         console.error("Error parsing resume file:", e);
-         prompt += "\nThere was an error parsing my attached resume file.\n"
+      // Error parsing resume file - handle silently
+      prompt += "\nThere was an error parsing my attached resume file.\n"
     }
   }
 
   if (documentType === 'email') {
-      prompt += `\nRegarding the email's closing and signature:\n`;
-      if (footerInfo) {
-          prompt += `- Use this as the complimentary closing (the part before your name): "${footerInfo}"\n`;
-      } else {
-          prompt += `- Use a standard professional complimentary closing (e.g., "Best regards," or "Sincerely,").\n`;
-      }
-      
-      prompt += `- The signature must start with the full name: ${name}.\n`;
+    prompt += `\nRegarding the email's closing and signature:\n`;
+    if (footerInfo) {
+      prompt += `- Use this as the complimentary closing (the part before your name): "${footerInfo}"\n`;
+    } else {
+      prompt += `- Use a standard professional complimentary closing (e.g., "Best regards," or "Sincerely,").\n`;
+    }
 
-      if (headerInfo) {
-          prompt += `- Following the name, include these contact details in the signature:\n${headerInfo}\n`;
-      }
+    prompt += `- The signature must start with the full name: ${name}.\n`;
+
+    if (headerInfo) {
+      prompt += `- Following the name, include these contact details in the signature:\n${headerInfo}\n`;
+    }
   } else {
-      if (headerInfo) {
-        prompt += `\nPlease use the following as the header/contact information section of the letter:\n${headerInfo}\n`;
-      }
-      if (footerInfo) {
-        prompt += `\nPlease use the following for the closing of the letter:\n${footerInfo}\n`;
-      } else {
-        prompt += `\nPlease use a standard professional closing (e.g., "Sincerely,").\n`;
-      }
+    if (headerInfo) {
+      prompt += `\nPlease use the following as the header/contact information section of the letter:\n${headerInfo}\n`;
+    }
+    if (footerInfo) {
+      prompt += `\nPlease use the following for the closing of the letter:\n${footerInfo}\n`;
+    } else {
+      prompt += `\nPlease use a standard professional closing (e.g., "Sincerely,").\n`;
+    }
   }
 
   if (customInstruction) {
@@ -351,7 +357,7 @@ export const generateCoverLetter = async (userData: UserData, jobDetails: JobDet
   } else {
     prompt += `\nThe final letter should be tailored specifically to the opportunity, well-structured, and highlight my suitability in the requested **${tone}** tone. Respond with only the letter text, without any extra commentary or formatting.`;
   }
-  
+
   parts.unshift({ text: prompt });
 
   try {
@@ -361,7 +367,7 @@ export const generateCoverLetter = async (userData: UserData, jobDetails: JobDet
     });
     return response.text;
   } catch (error) {
-    console.error("Error generating cover letter:", error);
+    // Error generating cover letter - handle silently
     throw error;
   }
 };
@@ -374,9 +380,9 @@ export const generateCoverLetter = async (userData: UserData, jobDetails: JobDet
  * @returns A promise that resolves to an object containing admission details, a list of found courses, and any relevant notes from the analysis.
  */
 export const analyzeUniversityPage = async (
-    url: string, 
-    courseName?: string, 
-    userInstruction?: string
+  url: string,
+  courseName?: string,
+  userInstruction?: string
 ): Promise<{ details: AdmissionInfo | null; courses: string[]; notes?: string }> => {
   if (!url) {
     throw new Error("University URL is required for analysis.");
@@ -408,7 +414,7 @@ export const analyzeUniversityPage = async (
   if (userInstruction) {
     prompt += `\n\n**Crucially, follow these specific instructions from the user:** ${userInstruction}`;
   }
-  
+
   prompt += `
   8.  Your final output MUST be a single, valid JSON object. Do not include any text, explanations, or markdown formatting like \`\`\`json\`\`\` before or after the JSON object.
   
@@ -434,26 +440,26 @@ export const analyzeUniversityPage = async (
   let result;
   try {
     const response = await ai.models.generateContent({
-        model: 'gemini-2.5-pro', // Using pro for better reasoning and web search
-        contents: prompt,
-        config: {
-            tools: [{googleSearch: {}}], 
-        },
+      model: 'gemini-2.5-pro', // Using pro for better reasoning and web search
+      contents: prompt,
+      config: {
+        tools: [{ googleSearch: {} }],
+      },
     });
 
     const responseText = response.text;
-    
+
     let jsonString = responseText;
-    
+
     // Sanitize the response to ensure it's valid JSON
     const firstBracket = jsonString.indexOf('{');
     const lastBracket = jsonString.lastIndexOf('}');
     if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
-        jsonString = jsonString.substring(firstBracket, lastBracket + 1);
+      jsonString = jsonString.substring(firstBracket, lastBracket + 1);
     }
-    
+
     result = JSON.parse(jsonString);
-    
+
   } catch (error) {
     console.error("Error analyzing university page:", error);
     throw error;
@@ -465,8 +471,8 @@ export const analyzeUniversityPage = async (
   }
 
   return {
-      details: result.details || null,
-      courses: result.courses || [],
-      notes: result.notes,
+    details: result.details || null,
+    courses: result.courses || [],
+    notes: result.notes,
   };
 };

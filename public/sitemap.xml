@@ -1,33 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://ailettergen.com/</loc>
-    <lastmod>2024-08-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
+    <loc>https://ailettergen.com/en</loc>
   </url>
   <url>
-    <loc>https://ailettergen.com/dashboard</loc>
-    <lastmod>2024-08-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
+    <loc>https://ailettergen.com/en/dashboard</loc>
   </url>
   <url>
-    <loc>https://ailettergen.com/about</loc>
-    <lastmod>2024-08-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://ailettergen.com/en/about</loc>
   </url>
   <url>
-    <loc>https://ailettergen.com/privacy</loc>
-    <lastmod>2024-08-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://ailettergen.com/en/privacy</loc>
   </url>
   <url>
-    <loc>https://ailettergen.com/terms</loc>
-    <lastmod>2024-08-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://ailettergen.com/en/terms</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/es</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/es/dashboard</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/es/about</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/es/privacy</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/es/terms</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/fr</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/fr/dashboard</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/fr/about</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/fr/privacy</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/fr/terms</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/ru</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/ru/dashboard</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/ru/about</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/ru/privacy</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/ru/terms</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/nl</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/nl/dashboard</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/nl/about</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/nl/privacy</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/nl/terms</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/pt</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/pt/dashboard</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/pt/about</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/pt/privacy</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/pt/terms</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/ar</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/ar/dashboard</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/ar/about</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/ar/privacy</loc>
+  </url>
+  <url>
+    <loc>https://ailettergen.com/ar/terms</loc>
   </url>
 </urlset>

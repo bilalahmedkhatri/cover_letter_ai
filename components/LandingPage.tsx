@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ChevronDownIcon from './icons/ChevronDownIcon';
 import { useLocale } from '../contexts/LocaleContext';
+import { localizedPath } from '../services/routing';
 
 // --- Reusable Icon Component ---
 const FeatureIcon: React.FC<{ path: string; className?: string }> = ({ path, className }) => (
@@ -34,7 +35,7 @@ const FaqItem: React.FC<{ question: string; children: React.ReactNode }> = ({ qu
 
 
 const LandingPage: React.FC = () => {
-    const { t } = useLocale();
+    const { t, locale } = useLocale();
 
     return (
         <div className="space-y-20 sm:space-y-32">
@@ -48,7 +49,7 @@ const LandingPage: React.FC = () => {
                     {t('landingHeroSubtitle')}
                 </p>
                 <div className="mt-8 flex justify-center">
-                    <a href="/dashboard" className="inline-block bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 ease-in-out">
+                    <a href={localizedPath(locale, '/dashboard')} className="inline-block bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 ease-in-out">
                         {t('landingHeroButton')}
                     </a>
                 </div>
@@ -166,7 +167,7 @@ const LandingPage: React.FC = () => {
             <section className="text-center py-16">
                 <h2 className="text-3xl font-bold text-text-primary">{t('landingCTATitle')}</h2>
                 <p className="mt-4 max-w-xl mx-auto text-text-secondary">{t('landingCTASubtitle')}</p>
-                <a href="/dashboard" className="mt-8 inline-block bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 ease-in-out">
+                <a href={localizedPath(locale, '/dashboard')} className="mt-8 inline-block bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-all duration-300 ease-in-out">
                     {t('landingCTAButton')}
                 </a>
             </section>

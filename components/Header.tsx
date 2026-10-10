@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../App';
 import { useLocale } from '../contexts/LocaleContext';
+import { localizedPath } from '../services/routing';
 import MenuIcon from './icons/MenuIcon';
 import XIcon from './icons/XIcon';
 import SunIcon from './icons/SunIcon';
@@ -12,7 +13,7 @@ const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { theme, setTheme } = useTheme();
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
@@ -45,10 +46,10 @@ const Header: React.FC = () => {
 
   const navLinks = (
       <>
-        <a href="/dashboard" className="text-text-primary hover:text-accent transition-colors">{t('dashboard')}</a>
-        <a href="/about" className="text-text-secondary hover:text-accent transition-colors">{t('about')}</a>
-        <a href="/privacy" className="text-text-secondary hover:text-accent transition-colors">{t('privacy')}</a>
-        <a href="/terms" className="text-text-secondary hover:text-accent transition-colors">{t('terms')}</a>
+        <a href={localizedPath(locale, '/dashboard')} className="text-text-primary hover:text-accent transition-colors">{t('dashboard')}</a>
+        <a href={localizedPath(locale, '/about')} className="text-text-secondary hover:text-accent transition-colors">{t('about')}</a>
+        <a href={localizedPath(locale, '/privacy')} className="text-text-secondary hover:text-accent transition-colors">{t('privacy')}</a>
+        <a href={localizedPath(locale, '/terms')} className="text-text-secondary hover:text-accent transition-colors">{t('terms')}</a>
       </>
   );
 
@@ -56,7 +57,7 @@ const Header: React.FC = () => {
     <header className={`sticky top-0 z-20 transition-all duration-300 ${isScrolled ? 'bg-header-bg/80 backdrop-blur-sm border-b border-border' : 'bg-header-bg'}`}>
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <a href="/" aria-label="AI Letter Generator Homepage">
+          <a href={localizedPath(locale, '/')} aria-label="AI Letter Generator Homepage">
             <LogoIcon />
           </a>
           

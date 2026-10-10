@@ -1,8 +1,9 @@
 import React from 'react';
 import { useLocale } from '../contexts/LocaleContext';
+import { localizedPath } from '../services/routing';
 
 const NotFoundPage: React.FC = () => {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   return (
     <div className="flex flex-col items-center justify-center text-center py-20">
       <h1 className="text-6xl font-extrabold text-accent">404</h1>
@@ -12,7 +13,7 @@ const NotFoundPage: React.FC = () => {
       </p>
       <div className="mt-10 flex items-center justify-center gap-x-6">
         <a
-          href="/"
+          href={localizedPath(locale, '/')}
           className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           {t('notFoundButton')}

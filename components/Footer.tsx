@@ -1,8 +1,9 @@
 import React from 'react';
 import { useLocale } from '../contexts/LocaleContext';
+import { localizedPath } from '../services/routing';
 
 const Footer: React.FC = () => {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -17,16 +18,16 @@ const Footer: React.FC = () => {
             <div>
               <h4 className="text-sm font-semibold text-text-primary tracking-wider uppercase">{t('footerLinks')}</h4>
               <ul className="mt-4 space-y-2">
-                <li><a href="/" className="text-text-secondary hover:text-accent text-sm transition-colors">{t('footerHome')}</a></li>
-                <li><a href="/dashboard" className="text-text-secondary hover:text-accent text-sm transition-colors">{t('footerGenerator')}</a></li>
+                <li><a href={localizedPath(locale, '/')} className="text-text-secondary hover:text-accent text-sm transition-colors">{t('footerHome')}</a></li>
+                <li><a href={localizedPath(locale, '/dashboard')} className="text-text-secondary hover:text-accent text-sm transition-colors">{t('footerGenerator')}</a></li>
               </ul>
             </div>
             <div>
               <h4 className="text-sm font-semibold text-text-primary tracking-wider uppercase">{t('footerLegal')}</h4>
               <ul className="mt-4 space-y-2">
-                <li><a href="/about" className="text-text-secondary hover:text-accent text-sm transition-colors">{t('footerAbout')}</a></li>
-                <li><a href="/privacy" className="text-text-secondary hover:text-accent text-sm transition-colors">{t('footerPrivacy')}</a></li>
-                <li><a href="/terms" className="text-text-secondary hover:text-accent text-sm transition-colors">{t('footerTerms')}</a></li>
+                <li><a href={localizedPath(locale, '/about')} className="text-text-secondary hover:text-accent text-sm transition-colors">{t('footerAbout')}</a></li>
+                <li><a href={localizedPath(locale, '/privacy')} className="text-text-secondary hover:text-accent text-sm transition-colors">{t('footerPrivacy')}</a></li>
+                <li><a href={localizedPath(locale, '/terms')} className="text-text-secondary hover:text-accent text-sm transition-colors">{t('footerTerms')}</a></li>
               </ul>
             </div>
           </div>

@@ -1,0 +1,16 @@
+@import "tailwindcss";
+@config "./tailwind.config.cjs";
+
+@layer utilities {
+  .glass {
+    @apply bg-card/60 backdrop-blur-md border border-white/10 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)];
+  }
+  
+  .glass-panel {
+    @apply bg-card-secondary/50 backdrop-blur-sm border border-white/5;
+  }
+
+  .skeleton {
+    @apply animate-pulse bg-card-secondary rounded-md;
+  }
+}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocale } from '../contexts/LocaleContext';
+import { localizedPath } from '../services/routing';
 
 const TermsOfService: React.FC = () => {
   const { t, locale } = useLocale();
@@ -40,7 +41,7 @@ const TermsOfService: React.FC = () => {
       </p>
 
       <div className="mt-8 pt-6 border-t border-border text-center">
-        <a href="/dashboard" className="inline-block px-6 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-md transition-colors font-medium">
+        <a href={localizedPath(locale, '/dashboard')} className="inline-block px-6 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-md transition-colors font-medium">
             {t('backToGenerator')}
         </a>
       </div>

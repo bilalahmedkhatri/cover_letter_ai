@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { translations, TranslationKeys } from '../services/translations';
 import { Locale } from '../types';
+import { resolveRoute } from '../services/routing';
 
 export const locales: { code: Locale; name: string }[] = [
     { code: 'en', name: 'English' },
@@ -21,7 +22,7 @@ interface LocaleContextType {
 const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
 
 export const LocaleProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [locale, setLocale] = useState<Locale>('en');
+  const [locale, setLocale] = useState<Locale>(() => resolveRoute(window.location.pathname).locale);
 
   // Effect to update everything when the locale changes
   useEffect(() => {
