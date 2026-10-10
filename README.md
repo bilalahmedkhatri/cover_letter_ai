@@ -28,7 +28,7 @@ language preference. All internal links and sitemap entries use localized paths.
 
 `vercel.json` adds permanent (308) redirects from `/` and the legacy pages,
 plus hostname-scoped redirects from `www.ailettergen.com`. Vercel's HTTPS
-handling should be checked alongside these deployment rules. Its app-shell
+handling should be checked alongside these deployment rules. Its generated-page
 rewrites cover only supported language/page combinations, leaving static files
 and unknown paths to normal hosting behavior.
 
@@ -53,3 +53,48 @@ Vite dev/preview does not execute Vercel redirects. After deployment, verify:
 
 Then submit `https://ailettergen.com/sitemap.xml` in Search Console and check
 the English and Russian homepage canonicals after Google recrawls them.
+
+## Public HTML and metadata
+
+`npm run build` now builds the Vite client, then renders the existing React app
+for all 35 public URLs using Vite's SSR module loader. Generated pages live at
+`dist/<locale>/index.html` and `dist/<locale>/<page>/index.html`; Vercel rewrites
+serve those files under the existing canonical URLs. No runtime SSR server or
+additional dependency is required. Deploy the complete `dist` directory.
+
+The client hydrates this markup. Public text, links, metadata and theme styles
+are present before JavaScript loads. Generating/editing letters still requires
+JavaScript. FAQs use native details/summary and work without JavaScript.
+`services/seo.ts` is the shared source for build-time and client metadata.
+
+About pages use translated product information. Privacy/terms preserve the
+original English policy text, label its language explicitly and omit hreflang
+claims until complete policy translations are reviewed. The automatically
+changing policy dates and unverified testimonial section were removed.
+The absent `og-image.png` reference was removed; a branded raster social image
+can be added with the redesign.
+
+Run `npm run build`, `npm run test:prerender`, `npm run test:seo` and
+`npx tsc --noEmit`. After deployment inspect the raw HTML of `/en`, `/ru`,
+`/ru/dashboard` and `/ar/about`, checking content, canonical, description,
+lang/dir and response status. Reconfirm the existing redirects and unknown-URL
+404 status on Vercel; Vite preview does not execute hosting redirect rules.
+
+## Interface and commercial planning
+
+The interface uses the shared controls in `components/ui`, Radix dropdown/tabs
+and Lucide icons. Public copy is localized in `services/interfaceCopy.ts`.
+AI SDKs load dynamically when generation/import is requested. Existing providers
+are retained; the redesign does not activate billing or change AI models.
+
+The current provider/pricing proposal lives in
+`research/SUBSCRIPTION_PLANS_2026-10-11.md` ($10/$20/$28; Luna/Opus).
+The earlier proposal is retained as a historical report. Open the self-contained
+`research/cost-calculator.html` to change prices, token assumptions, free trials,
+fees, infrastructure and labor costs. These are planning estimates, not invoices.
+Regenerate it and its JSON/CSV scenarios with `node scripts/build-research.mjs`;
+verify the arithmetic with
+`node --test --test-isolation=none tests/cost-model.test.mjs`.
+Synthetic multilingual fixtures and unrun reviewer sheets live in
+`research/evaluation`; regenerate with `node scripts/build-evaluation-fixtures.mjs`.
+No paid-provider quality benchmark has been performed.

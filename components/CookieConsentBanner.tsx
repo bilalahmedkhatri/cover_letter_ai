@@ -1,3 +1,4 @@
+import { Button } from './ui/button';
 import React, { useState, useEffect } from 'react';
 import { useLocale } from '../contexts/LocaleContext';
 
@@ -35,13 +36,13 @@ const CookieConsentBanner: React.FC = () => {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 bg-slate-800 text-white p-4 z-50 shadow-lg animate-slide-up"
+      className="fixed bottom-3 inset-x-3 sm:inset-x-6 bg-card border border-border text-text-primary p-4 z-50 rounded-xl shadow-lg"
       role="dialog"
       aria-live="polite"
       aria-label="Cookie Consent Banner"
     >
       <div className="container mx-auto flex flex-col sm:flex-row items-center sm:justify-between gap-4">
-        <p className="text-sm text-slate-200 text-center sm:text-left">
+        <p className="text-sm text-text-secondary text-start">
           {t('cookieBannerText')}
           {' '}
           <a
@@ -54,20 +55,20 @@ const CookieConsentBanner: React.FC = () => {
           </a>.
         </p>
         <div className="flex-shrink-0 flex gap-3">
-          <button
+          <Button variant="outline"
             onClick={() => handleConsent('rejected')}
-            className="px-4 py-2 text-sm font-medium rounded-md bg-slate-600 hover:bg-slate-500 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white"
+            className="px-4 py-2 text-sm font-medium rounded-md bg-card hover:bg-card-secondary transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white"
             aria-label="Reject non-essential cookies"
           >
             {t('cookieReject')}
-          </button>
-          <button
+          </Button>
+          <Button variant="outline"
             onClick={() => handleConsent('accepted')}
-            className="px-4 py-2 text-sm font-medium rounded-md bg-indigo-600 hover:bg-indigo-500 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-indigo-500"
+            className="px-4 py-2 text-sm font-medium rounded-md bg-accent hover:bg-accent/90 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-indigo-500"
             aria-label="Accept all cookies"
           >
             {t('cookieAccept')}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

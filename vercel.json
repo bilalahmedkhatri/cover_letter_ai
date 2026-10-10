@@ -4,23 +4,42 @@
   "redirects": [
     {
       "source": "/",
-      "has": [{ "type": "host", "value": "www\\.ailettergen\\.com" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "www\\.ailettergen\\.com"
+        }
+      ],
       "destination": "https://ailettergen.com/en",
       "permanent": true
     },
     {
       "source": "/:page(dashboard|about|privacy|terms)",
-      "has": [{ "type": "host", "value": "www\\.ailettergen\\.com" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "www\\.ailettergen\\.com"
+        }
+      ],
       "destination": "https://ailettergen.com/en/:page",
       "permanent": true
     },
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "www\\.ailettergen\\.com" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "www\\.ailettergen\\.com"
+        }
+      ],
       "destination": "https://ailettergen.com/:path*",
       "permanent": true
     },
-    { "source": "/", "destination": "/en", "permanent": true },
+    {
+      "source": "/",
+      "destination": "/en",
+      "permanent": true
+    },
     {
       "source": "/:page(dashboard|about|privacy|terms)",
       "destination": "/en/:page",
@@ -30,11 +49,11 @@
   "rewrites": [
     {
       "source": "/:locale(en|es|fr|ru|nl|pt|ar)",
-      "destination": "/index.html"
+      "destination": "/:locale/index.html"
     },
     {
       "source": "/:locale(en|es|fr|ru|nl|pt|ar)/:page(dashboard|about|privacy|terms)",
-      "destination": "/index.html"
+      "destination": "/:locale/:page/index.html"
     }
   ]
 }

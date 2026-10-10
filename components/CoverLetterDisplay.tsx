@@ -1,3 +1,4 @@
+import { Button } from './ui/button';
 import React, { useState, useEffect, useRef } from 'react';
 import { FriendlyError } from '../services/errorService';
 import { loadScript } from '../services/scriptLoader';
@@ -27,12 +28,12 @@ interface CoverLetterDisplayProps {
   jobDetails: JobDetails;
 }
 
-const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({ 
-  coverLetter, 
-  setCoverLetter, 
-  isLoading, 
-  error, 
-  onSubmit, 
+const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({
+  coverLetter,
+  setCoverLetter,
+  isLoading,
+  error,
+  onSubmit,
   userData,
   jobDetails,
 }) => {
@@ -105,7 +106,7 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({
     footer.style.color = '#666';
     footer.style.textAlign = 'center';
     footer.style.flexShrink = '0';
-    
+
     const siteText = document.createElement('p');
     siteText.innerText = `Generated with AI Letter Generator - ailettergen.com`;
     footer.appendChild(siteText);
@@ -118,10 +119,10 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({
       contextText.style.wordBreak = 'break-all';
       footer.appendChild(contextText);
     }
-    
+
     container.appendChild(content);
     container.appendChild(footer);
-    
+
     document.body.appendChild(container);
 
     const canvas = await window.html2canvas(container, {
@@ -139,31 +140,31 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({
     try {
       const canvas = await generateLetterImage();
       const imgData = canvas.toDataURL('image/png');
-      
+
       await loadScript(JSPDF_URL);
       if (!window.jspdf || !window.jspdf.jsPDF) {
         throw new Error("PDF library failed to load. Please refresh and try again.");
       }
       const { jsPDF } = window.jspdf;
-      
+
       // Fix: Updated the jsPDF constructor to pass an options object, matching the expected signature.
       const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
       // Fix: Switched from getWidth()/getHeight() methods to direct property access to align with the type definition.
       const pdfWidth = pdf.internal.pageSize.width;
       const pdfHeight = pdf.internal.pageSize.height;
-      
+
       const canvasWidth = canvas.width;
       const canvasHeight = canvas.height;
       const ratio = canvasWidth / canvasHeight;
-      
+
       let imgWidth = pdfWidth;
       let imgHeight = imgWidth / ratio;
-      
+
       if (imgHeight > pdfHeight) {
           imgHeight = pdfHeight;
           imgWidth = imgHeight * ratio;
       }
-      
+
       pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
       pdf.save('professional-letter.pdf');
       trackEvent({ name: 'download_pdf', params: {} });
@@ -179,7 +180,7 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({
       }
     }
   };
-  
+
   const handleSocialShare = async (platform: 'linkedin' | 'twitter' | 'facebook') => {
     setSharingPlatform(platform);
     setImageGenError(null);
@@ -270,12 +271,12 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({
           <p className="font-bold text-lg text-red-500">{t('displayError')}</p>
           <p className="text-sm text-text-secondary mt-2 max-w-md">{error.message}</p>
           {error.isRetryable && (
-            <button
+            <Button variant="ghost"
               onClick={onSubmit}
               className="mt-4 flex items-center gap-2 px-4 py-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-md transition-colors text-sm font-medium"
             >
               <span>{t('displayRetry')}</span>
-            </button>
+            </Button>
           )}
         </div>
       );
@@ -288,11 +289,11 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({
               ref={textareaRef}
               value={coverLetter}
               onChange={(e) => setCoverLetter(e.target.value)}
-              className="w-full bg-transparent border-none outline-none resize-none text-text-primary font-sans text-base leading-relaxed whitespace-pre-wrap overflow-hidden p-2 -m-2"
+              className="w-full bg-transparent border-none outline-none resize-none text-text-primary font-serif text-base leading-8 whitespace-pre-wrap overflow-hidden p-2 -m-2"
               aria-label="Editable cover letter content"
               rows={1}
             />
-          
+
             {/* Share Section */}
             <div className="mt-4 pt-4 border-t border-border">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
@@ -301,33 +302,33 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({
                     {sharingPlatform && <SmallLoadingSpinner />}
                 </div>
                 <div className="flex items-center gap-3">
-                  <button onClick={() => handleSocialShare('linkedin')} disabled={sharingPlatform !== null} title={t('displayShareOnLinkedIn')} aria-label={t('displayShareOnLinkedIn')} className="p-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><LinkedInIcon className="w-5 h-5 text-text-primary" /></button>
-                  <button onClick={() => handleSocialShare('twitter')} disabled={sharingPlatform !== null} title={t('displayShareOnTwitter')} aria-label={t('displayShareOnTwitter')} className="p-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><TwitterIcon className="w-5 h-5 text-text-primary" /></button>
-                  <button onClick={() => handleSocialShare('facebook')} disabled={sharingPlatform !== null} title={t('displayShareOnFacebook')} aria-label={t('displayShareOnFacebook')} className="p-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><FacebookIcon className="w-5 h-5 text-text-primary" /></button>
+                  <Button variant="ghost" onClick={() => handleSocialShare('linkedin')} disabled={sharingPlatform !== null} title={t('displayShareOnLinkedIn')} aria-label={t('displayShareOnLinkedIn')} className="p-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><LinkedInIcon className="w-5 h-5 text-text-primary" /></Button>
+                  <Button variant="ghost" onClick={() => handleSocialShare('twitter')} disabled={sharingPlatform !== null} title={t('displayShareOnTwitter')} aria-label={t('displayShareOnTwitter')} className="p-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><TwitterIcon className="w-5 h-5 text-text-primary" /></Button>
+                  <Button variant="ghost" onClick={() => handleSocialShare('facebook')} disabled={sharingPlatform !== null} title={t('displayShareOnFacebook')} aria-label={t('displayShareOnFacebook')} className="p-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><FacebookIcon className="w-5 h-5 text-text-primary" /></Button>
                 </div>
               </div>
               {imageGenError && <p className="text-xs text-red-400 mt-1 sm:text-right">{imageGenError}</p>}
             </div>
 
           <div className="flex flex-col sm:flex-row sm:justify-end gap-3 mt-4 flex-shrink-0">
-            <button 
+            <Button variant="ghost"
               onClick={handleCopy}
               className="flex items-center justify-center gap-2 px-4 py-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-md transition-colors text-sm font-medium w-full sm:w-auto"
               aria-label="Copy to clipboard"
             >
               {copied ? <CheckIcon className="w-5 h-5 text-green-400" /> : <CopyIcon className="w-5 h-5 text-text-primary" />}
               <span>{copied ? t('displayCopied') : t('displayCopy')}</span>
-            </button>
+            </Button>
             <div className="w-full sm:w-auto">
-              <button 
+              <Button variant="ghost"
                 onClick={handleDownloadPdf}
                 disabled={isDownloadingPdf}
-                className="flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-md transition-colors text-sm font-medium w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-accent text-white hover:bg-accent/90 rounded-md transition-colors text-sm font-medium w-full disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Download as PDF"
               >
                 {isDownloadingPdf ? <SmallLoadingSpinner /> : <DownloadIcon className="w-5 h-5" />}
                 <span>{isDownloadingPdf ? t('formGeneratingButton') : t('displayDownload')}</span>
-              </button>
+              </Button>
               {pdfError && <p className="text-xs text-red-400 mt-1 sm:text-right">{pdfError}</p>}
             </div>
           </div>
@@ -344,11 +345,11 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({
       </div>
     );
   };
-  
+
   return (
-    <div className="flex flex-col min-h-[30rem] my-6">
-      <h2 className="text-2xl font-bold text-accent mb-6 flex-shrink-0">{t('displayTitle')}</h2>
-      <div className="bg-card rounded-lg p-6 flex-grow flex flex-col">
+    <div className="flex flex-col min-h-[32rem]">
+      <h2 className="text-sm font-semibold border-b border-border px-6 py-5 flex-shrink-0">{t('displayTitle')}</h2>
+      <div className="draft-sheet m-5 sm:m-7 border border-border rounded-sm p-6 flex-grow flex flex-col">
         {renderContent()}
       </div>
     </div>

@@ -1,14 +1,16 @@
 import React from 'react';
+import { Button } from './ui/button';
 import { useLocale } from '../contexts/LocaleContext';
 import { localizedPath } from '../services/routing';
+import { legalLanguageNotice } from '../services/seo';
 
 const TermsOfService: React.FC = () => {
   const { t, locale } = useLocale();
   return (
-    <div className="space-y-4 text-text-primary">
-      <h1 className="text-3xl font-bold text-accent mb-4">{t('terms')}</h1>
-      {locale !== 'en' && <p className="p-3 bg-amber-900/50 border border-amber-700 text-amber-300 text-sm rounded-lg italic">{t('legalDisclaimer')}</p>}
-      <p>Last updated: {new Date().toLocaleDateString()}</p>
+    <div className="mx-auto max-w-3xl space-y-5 text-text-primary leading-relaxed">
+      <h1 className="editorial-title mb-8">{t('terms')}</h1>
+      {locale !== 'en' && <p className="p-3 bg-amber-900/50 border border-amber-700 text-amber-300 text-sm rounded-lg italic">{legalLanguageNotice[locale]}</p>}
+      <div lang="en" dir="ltr" className="space-y-4">
 
       <h2 className="text-xl font-semibold text-accent pt-4">1. Acceptance of Terms</h2>
       <p>
@@ -40,10 +42,11 @@ const TermsOfService: React.FC = () => {
         We reserve the right, at our sole discretion, to modify or replace these Terms at any time. We will provide notice of any changes by posting the new Terms on this page.
       </p>
 
+      </div>
       <div className="mt-8 pt-6 border-t border-border text-center">
-        <a href={localizedPath(locale, '/dashboard')} className="inline-block px-6 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-md transition-colors font-medium">
+        <Button asChild><a href={localizedPath(locale, '/dashboard')}>
             {t('backToGenerator')}
-        </a>
+        </a></Button>
       </div>
     </div>
   );

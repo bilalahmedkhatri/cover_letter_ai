@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState } from 'react';
 import { useFormState } from '../contexts/FormStateContext';
 import { useGeneration } from '../contexts/GenerationContext';
 import { useLocale } from '../contexts/LocaleContext';
-import { generateCoverLetterUnified, extractKeywordsFromJobUnified, analyzeUniversityPageUnified } from '../services/llms';
 import * as storageService from '../services/storageService';
 import { trackEvent } from '../services/analyticsService';
 import { getFriendlyErrorMessage } from '../services/errorService';
@@ -11,8 +10,7 @@ import WorkspaceLayout from './WorkspaceLayout';
 import WizardContainer from './wizard/WizardContainer';
 import CoverLetterDisplay from './CoverLetterDisplay';
 import SavedLettersDisplay from './SavedLettersDisplay';
-import InfoIcon from './icons/InfoIcon';
-import XIcon from './icons/XIcon';
+import { interfaceCopy } from '../services/interfaceCopy';
 
 const DashboardPage: React.FC = () => {
   const { userData, setUserData, jobDetails, setJobDetails, setCurrentStep } = useFormState();
@@ -25,11 +23,11 @@ const DashboardPage: React.FC = () => {
     extractedKeywords, setExtractedKeywords,
     isExtractingKeywords, setIsExtractingKeywords, setKeywordError
   } = useGeneration();
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const copy = interfaceCopy(locale);
   const isMounted = useRef(true);
 
   const [savedSessions, setSavedSessions] = useState<SavedSession[]>([]);
-  const [showStorageWarning, setShowStorageWarning] = useState(true);
 
   useEffect(() => {
     isMounted.current = true;
@@ -43,6 +41,7 @@ const DashboardPage: React.FC = () => {
     setError(null);
     setCoverLetter('');
     try {
+      const { generateCoverLetterUnified } = await import('../services/llms');
       const keywordsString = extractedKeywords.map(k => k.keyword).join(', ');
       const letter = await generateCoverLetterUnified(userData, jobDetails, keywordsString);
       if (!isMounted.current) return;
@@ -67,6 +66,7 @@ const DashboardPage: React.FC = () => {
     setFoundCourses([]);
     setAnalysisNotes('');
     try {
+      const { analyzeUniversityPageUnified } = await import('../services/llms');
       const result = await analyzeUniversityPageUnified(userData.universityUrl, userData.courseName, userData.universityAnalysisInstruction);
       if (!isMounted.current) return;
       setAdmissionInfo(result.details);
@@ -89,6 +89,7 @@ const DashboardPage: React.FC = () => {
     setKeywordError(null);
     setExtractedKeywords([]);
     try {
+      const { extractKeywordsFromJobUnified } = await import('../services/llms');
       const keywords = await extractKeywordsFromJobUnified(jobDetails);
       if (!isMounted.current) return;
       setExtractedKeywords(keywords);
@@ -140,20 +141,6 @@ const DashboardPage: React.FC = () => {
 
   const wizardPanel = (
     <>
-        {showStorageWarning && (
-          <div className="bg-amber-900/50 border border-amber-700 text-amber-300 text-sm rounded-lg p-4 flex justify-between items-start gap-4 mb-6">
-            <div className="flex items-start gap-3">
-              <InfoIcon className="w-5 h-5 flex-shrink-0 mt-0.5" />
-              <div>
-                <h4 className="font-semibold">{t('storageWarningTitle')}</h4>
-                <p className="leading-relaxed mt-1">{t('storageWarningBody')}</p>
-              </div>
-            </div>
-            <button onClick={() => setShowStorageWarning(false)} className="text-amber-200 hover:text-white" aria-label={t('storageWarningDismiss')}>
-              <XIcon className="w-5 h-5" />
-            </button>
-          </div>
-        )}
         <WizardContainer 
             onSubmit={handleSubmit}
             onAnalyzeUrl={handleAnalyzeUrl}
@@ -163,7 +150,7 @@ const DashboardPage: React.FC = () => {
   );
 
   const displayPanel = (
-      <div id="cover-letter-display" className="bg-card/50 p-4 sm:p-6 rounded-lg shadow-lg h-full">
+      <div id="cover-letter-display" className="letter-preview border border-border rounded-xl bg-card h-full">
         <CoverLetterDisplay
           coverLetter={coverLetter}
           setCoverLetter={setCoverLetter}
@@ -177,9 +164,14 @@ const DashboardPage: React.FC = () => {
   );
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="workspace space-y-7">
+        <section className="space-y-2">
+          <h1 className="editorial-title workspace-title">{copy.workspace}</h1>
+          <p className="text-text-secondary">{copy.workspaceIntro}</p>
+        </section>
         <WorkspaceLayout leftPane={wizardPanel} rightPane={displayPanel} />
         
+        <p className="text-xs leading-relaxed text-text-muted">{copy.localSave}</p>
         <SavedLettersDisplay
             sessions={savedSessions}
             onRestore={handleRestoreSession}

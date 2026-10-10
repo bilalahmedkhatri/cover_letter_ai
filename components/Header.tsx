@@ -1,101 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Menu, X, Moon, Sun, PenLine } from 'lucide-react';
 import { useTheme } from '../App';
 import { useLocale } from '../contexts/LocaleContext';
+import { useRoutePath } from '../contexts/RouteContext';
 import { localizedPath } from '../services/routing';
-import MenuIcon from './icons/MenuIcon';
-import XIcon from './icons/XIcon';
-import SunIcon from './icons/SunIcon';
-import MoonIcon from './icons/MoonIcon';
+import { interfaceCopy } from '../services/interfaceCopy';
+import { Button } from './ui/button';
 import LanguageSelector from './LanguageSelector';
-import LogoIcon from './icons/LogoIcon';
 
-const Header: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+export default function Header() {
+  const { locale, t } = useLocale();
+  const copy = interfaceCopy(locale);
   const { theme, setTheme } = useTheme();
-  const { t, locale } = useLocale();
-
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-  
-  // Close menu on navigation for SPA behavior
-  useEffect(() => {
-    const handleLocationChange = () => setIsOpen(false);
-    window.addEventListener('popstate', handleLocationChange);
-    // Also handle direct link clicks that change the page state in App.tsx
-    const originalPushState = history.pushState;
-    history.pushState = function() {
-      originalPushState.apply(this, arguments as any);
-      handleLocationChange();
-    };
-    
-    return () => {
-      window.removeEventListener('popstate', handleLocationChange);
-      history.pushState = originalPushState;
-    };
-  }, []);
-
-  const navLinks = (
-      <>
-        <a href={localizedPath(locale, '/dashboard')} className="text-text-primary hover:text-accent transition-colors">{t('dashboard')}</a>
-        <a href={localizedPath(locale, '/about')} className="text-text-secondary hover:text-accent transition-colors">{t('about')}</a>
-        <a href={localizedPath(locale, '/privacy')} className="text-text-secondary hover:text-accent transition-colors">{t('privacy')}</a>
-        <a href={localizedPath(locale, '/terms')} className="text-text-secondary hover:text-accent transition-colors">{t('terms')}</a>
-      </>
-  );
-
-  return (
-    <header className={`sticky top-0 z-20 transition-all duration-300 ${isScrolled ? 'bg-header-bg/80 backdrop-blur-sm border-b border-border' : 'bg-header-bg'}`}>
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <a href={localizedPath(locale, '/')} aria-label="AI Letter Generator Homepage">
-            <LogoIcon />
-          </a>
-          
-          <div className="flex items-center gap-4">
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
-              {navLinks}
-            </nav>
-
-             {/* Theme Toggle Button */}
-            <button
-              onClick={toggleTheme}
-              className="text-text-secondary hover:text-accent transition-colors"
-              aria-label={t('themeSwitch', { theme: theme === 'dark' ? 'light' : 'dark' })}
-            >
-              {theme === 'dark' ? <SunIcon className="w-6 h-6" /> : <MoonIcon className="w-6 h-6" />}
-            </button>
-            
-            <LanguageSelector />
-
-            {/* Mobile Menu Button */}
-            <div className="md:hidden">
-              <button onClick={() => setIsOpen(!isOpen)} className="text-text-primary hover:text-accent focus:outline-none" aria-label="Toggle mobile menu">
-                {isOpen ? <XIcon className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
-              </button>
-            </div>
-          </div>
-        </div>
+  const pathname = useRoutePath();
+  const [open, setOpen] = useState(false);
+  useEffect(() => setOpen(false), [pathname]);
+  const links = <>
+    <a href={localizedPath(locale, '/dashboard')} aria-current={pathname.endsWith('/dashboard') ? 'page' : undefined}>{t('footerGenerator')}</a>
+    <a href={localizedPath(locale, '/about')} aria-current={pathname.endsWith('/about') ? 'page' : undefined}>{t('about')}</a>
+  </>;
+  return <header className="site-header sticky top-0 z-30 border-b border-border bg-header-bg/95 backdrop-blur-md">
+    <div className="mx-auto flex h-20 max-w-screen-xl items-center justify-between gap-3 px-5 sm:px-8 lg:px-10">
+      <a href={localizedPath(locale, '/')} className="brand" aria-label="AI Letter Generator Homepage">
+        <span className="brand-mark"><PenLine size={20} /></span><span>ailettergen<span className="text-accent">.</span></span>
+      </a>
+      <nav aria-label={copy.menu} className="header-nav hidden items-center gap-7 text-sm md:flex">{links}</nav>
+      <div className="flex items-center gap-1 sm:gap-2">
+        <LanguageSelector />
+        <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} aria-label={t('themeSwitch', { theme: theme === 'light' ? 'dark' : 'light' })}>{theme === 'light' ? <Moon /> : <Sun />}</Button>
+        <Button asChild size="sm" className="hidden lg:inline-flex"><a href={localizedPath(locale, '/dashboard')}>{copy.start}</a></Button>
+        <Button variant="ghost" size="icon" className="md:hidden" aria-label={copy.menu} aria-expanded={open} aria-controls="mobile-navigation" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</Button>
       </div>
-
-      {/* Mobile Menu */}
-      <div className={`md:hidden ${isOpen ? 'block' : 'hidden'} absolute w-full bg-header-bg/95 backdrop-blur-sm shadow-lg`}>
-        <nav className="flex flex-col items-center space-y-4 py-4 border-t border-border">
-          {navLinks}
-        </nav>
-      </div>
-    </header>
-  );
-};
-
-export default Header;
+    </div>
+    {open && <nav id="mobile-navigation" aria-label={copy.menu} className="header-nav flex flex-col gap-5 border-t border-border bg-header-bg px-6 py-5 md:hidden">{links}<a href={localizedPath(locale, '/privacy')}>{t('privacy')}</a></nav>}
+  </header>;
+}

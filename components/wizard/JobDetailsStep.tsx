@@ -1,3 +1,5 @@
+import { Input, Textarea, NativeSelect } from '../ui/fields';
+import { Button } from '../ui/button';
 import React, { useState } from 'react';
 import { useFormState } from '../../contexts/FormStateContext';
 import { useGeneration } from '../../contexts/GenerationContext';
@@ -26,8 +28,8 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
   const [customKeyword, setCustomKeyword] = useState('');
   const [pdfError, setPdfError] = useState<Error | null>(null);
 
-  const inputStyle = "w-full bg-input-bg border border-border rounded-md px-3 py-2 text-text-primary placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors";
-  const inputFileStyle = "w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600/20 file:text-indigo-300 hover:file:bg-indigo-600/30 cursor-pointer";
+  const inputStyle = "";
+  const inputFileStyle = "w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-accent/20 file:text-accent hover:file:bg-accent/30 cursor-pointer";
 
   const handleUserChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -56,7 +58,7 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
   const handleRemoveKeyword = (indexToRemove: number) => {
     setExtractedKeywords(extractedKeywords.filter((_, index) => index !== indexToRemove));
   };
-  
+
   const handleAddKeyword = () => {
     if (customKeyword.trim() !== '' && !extractedKeywords.some(kw => kw.keyword.toLowerCase() === customKeyword.trim().toLowerCase())) {
       setExtractedKeywords([...extractedKeywords, { keyword: customKeyword.trim(), explanation: 'Manually added by user.' }]);
@@ -97,11 +99,11 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                   <label htmlFor="url" className="block text-sm font-medium text-text-primary mb-2">{t('formJobURL')}</label>
-                  <input type="url" id="url" name="url" value={jobDetails.url} onChange={handleJobChange} className={inputStyle} placeholder={t('formJobURLPlaceholder')} />
+                  <Input type="url" id="url" name="url" value={jobDetails.url} onChange={handleJobChange} className={inputStyle} placeholder={t('formJobURLPlaceholder')} />
               </div>
               <div>
                   <label htmlFor="screenshot" className="block text-sm font-medium text-text-primary mb-2">{t('formJobScreenshot')}</label>
-                  <input type="file" id="screenshot" name="screenshot" onChange={handleScreenshotChange} accept="image/*" className={inputFileStyle} />
+                  <Input type="file" id="screenshot" name="screenshot" onChange={handleScreenshotChange} accept="image/*" className={inputFileStyle} />
               </div>
             </div>
 
@@ -111,15 +113,15 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
                   <h3 className="font-semibold text-text-primary">{t('formKeywordsTitle')}</h3>
                   <p className="text-sm text-text-secondary">{t('formKeywordsDescription')}</p>
                 </div>
-                <button 
-                  type="button" 
-                  onClick={onExtractKeywords} 
+                <Button variant="ghost"
+                  type="button"
+                  onClick={onExtractKeywords}
                   disabled={isExtractingKeywords || (!jobDetails.url && !jobDetails.screenshot)}
                   className="flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-md transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isExtractingKeywords && <SmallLoadingSpinner />}
                   {isExtractingKeywords ? t('formKeywordsExtracting') : t('formKeywordsExtract')}
-                </button>
+                </Button>
               </div>
 
               {keywordError && (
@@ -128,7 +130,7 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
                   <p className="mt-1">{keywordError.message}</p>
                 </div>
               )}
-              
+
               {(extractedKeywords.length > 0 || isExtractingKeywords) && !keywordError && (
                  <div className="mt-4">
                     <label className="block text-sm font-medium text-text-primary mb-2">{t('formKeywordsExtracted')}</label>
@@ -141,19 +143,19 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
                              <div className="flex flex-wrap gap-2">
                                 {extractedKeywords.map((kw, index) => (
                                     <div key={index} className="group relative">
-                                        <span className="flex items-center bg-indigo-600/30 text-indigo-200 text-sm font-medium ps-3 pe-2 py-1 rounded-full">
+                                        <span className="flex items-center bg-accent/30 text-text-primary text-sm font-medium ps-3 pe-2 py-1 rounded-full">
                                             {kw.keyword}
-                                            <button
+                                            <Button variant="ghost"
                                                 type="button"
                                                 onClick={() => handleRemoveKeyword(index)}
-                                                className="ms-2 -me-1 text-indigo-200 hover:text-white"
+                                                className="ms-2 -me-1 text-text-primary hover:text-accent"
                                                 aria-label={`Remove ${kw.keyword}`}
                                             >
                                                 <XIcon className="w-4 h-4" />
-                                            </button>
+                                            </Button>
                                         </span>
                                         {kw.explanation && (
-                                            <div className="absolute bottom-full mb-2 w-64 p-2 bg-card text-text-secondary text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 border border-border">
+                                            <div className="absolute bottom-full mb-2 w-64 p-2 bg-card text-text-secondary text-xs rounded-lg shadow-sm opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 border border-border">
                                                 <div className="flex items-start gap-2">
                                                     <InfoIcon className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
                                                     <p>{kw.explanation}</p>
@@ -166,7 +168,7 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
                         )}
                     </div>
                     <div className="mt-2 flex gap-2">
-                        <input
+                        <Input
                             type="text"
                             value={customKeyword}
                             onChange={(e) => setCustomKeyword(e.target.value)}
@@ -174,13 +176,13 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
                             className={inputStyle + " flex-grow"}
                             placeholder={t('formKeywordsAddPlaceholder')}
                         />
-                        <button
+                        <Button variant="ghost"
                             type="button"
                             onClick={handleAddKeyword}
                             className="px-4 py-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-md transition-colors text-sm font-medium"
                         >
                             {t('formKeywordsAddButton')}
-                        </button>
+                        </Button>
                     </div>
                 </div>
               )}
@@ -191,12 +193,12 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div>
                     <label htmlFor="universityUrl" className="block text-sm font-medium text-text-primary mb-2">{t('formUniversityURL')}</label>
-                    <input type="url" id="universityUrl" name="universityUrl" value={userData.universityUrl} onChange={handleUserChange} required className={inputStyle} placeholder={t('formUniversityURLPlaceholder')} />
+                    <Input type="url" id="universityUrl" name="universityUrl" value={userData.universityUrl} onChange={handleUserChange} required className={inputStyle} placeholder={t('formUniversityURLPlaceholder')} />
                 </div>
                  <div>
                     <label htmlFor="courseName" className="block text-sm font-medium text-text-primary mb-2">{t('formCourseName')}</label>
                     {foundCourses && foundCourses.length > 0 ? (
-                      <select
+                      <NativeSelect
                         id="courseName"
                         name="courseName"
                         value={userData.courseName}
@@ -208,9 +210,9 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
                         {foundCourses.map(course => (
                           <option key={course} value={course}>{course}</option>
                         ))}
-                      </select>
+                      </NativeSelect>
                     ) : (
-                      <input
+                      <Input
                         type="text"
                         id="courseName"
                         name="courseName"
@@ -224,7 +226,7 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
             </div>
             <div>
                 <label htmlFor="universityAnalysisInstruction" className="block text-sm font-medium text-text-primary mb-2">{t('formAnalysisInstructions')}</label>
-                <textarea
+                <Textarea
                     id="universityAnalysisInstruction"
                     name="universityAnalysisInstruction"
                     value={userData.universityAnalysisInstruction}
@@ -234,10 +236,10 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
                     placeholder={t('formAnalysisInstructionsPlaceholder')}
                 />
             </div>
-            <button type="button" onClick={onAnalyzeUrl} disabled={isAnalyzing || !userData.universityUrl} className="flex items-center justify-center gap-2 w-full md:w-auto px-4 py-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-md transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+            <Button variant="ghost" type="button" onClick={onAnalyzeUrl} disabled={isAnalyzing || !userData.universityUrl} className="flex items-center justify-center gap-2 w-full md:w-auto whitespace-normal h-auto min-h-11 px-4 py-2 bg-button-secondary-bg hover:bg-button-secondary-hover-bg rounded-md transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed">
               {isAnalyzing && <SmallLoadingSpinner />}
               {isAnalyzing ? t('formAnalyzingButton') : t('formAnalyzeButton')}
-            </button>
+            </Button>
             {analysisError && (
               <div className="mt-4 bg-red-900/50 border border-red-700 text-red-300 text-sm rounded-lg p-3" role="alert">
                 <p className="font-semibold">{t('formAnalysisFailed')}</p>
@@ -263,14 +265,14 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
                     <div className="flex justify-between items-center">
                       <h3 className="font-semibold text-lg text-accent">{t('formAnalysisResults')}</h3>
                       <div className="text-right">
-                        <button
+                        <Button variant="ghost"
                           type="button"
                           onClick={handleDownloadAnalysisPdf}
-                          className="flex items-center gap-2 px-3 py-1 bg-indigo-600 hover:bg-indigo-500 rounded-md transition-colors text-xs font-medium"
+                          className="flex items-center gap-2 px-3 py-1 bg-accent hover:bg-accent/90 rounded-md transition-colors text-xs font-medium"
                         >
                           <DownloadIcon className="w-4 h-4" />
                           <span>{t('formDownloadPDF')}</span>
-                        </button>
+                        </Button>
                       </div>
                     </div>
                     {admissionInfo.admissionRequirements && (
@@ -278,7 +280,7 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
                           <strong className="font-medium text-text-primary flex items-center gap-2 mb-1">
                             {t('formRequirements')}
                             {admissionInfo.admissionRequirements.sourceUrl && <a href={admissionInfo.admissionRequirements.sourceUrl} target="_blank" rel="noopener noreferrer"><ExternalLinkIcon className="w-4 h-4" /></a>}
-                          </strong> 
+                          </strong>
                           {renderBulletedText(admissionInfo.admissionRequirements.text)}
                       </div>
                     )}
@@ -287,7 +289,7 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
                           <strong className="font-medium text-text-primary flex items-center gap-2 mb-1">
                               {t('formDeadlines')}
                               {admissionInfo.deadlines.sourceUrl && <a href={admissionInfo.deadlines.sourceUrl} target="_blank" rel="noopener noreferrer"><ExternalLinkIcon className="w-4 h-4" /></a>}
-                          </strong> 
+                          </strong>
                           {renderBulletedText(admissionInfo.deadlines.text)}
                       </div>
                     )}
@@ -296,7 +298,7 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
                         <strong className="font-medium text-text-primary flex items-center gap-2 mb-1">
                             {t('formScholarships')}
                             {admissionInfo.scholarships.sourceUrl && <a href={admissionInfo.scholarships.sourceUrl} target="_blank" rel="noopener noreferrer"><ExternalLinkIcon className="w-4 h-4" /></a>}
-                        </strong> 
+                        </strong>
                         {renderBulletedText(admissionInfo.scholarships.text)}
                       </div>
                     )}

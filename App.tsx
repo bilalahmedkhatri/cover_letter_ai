@@ -8,14 +8,14 @@ import Footer from './components/Footer';
 import NotFoundPage from './components/NotFoundPage';
 import CookieConsentBanner from './components/CookieConsentBanner';
 import { themes } from './theme';
-import WhatsAppJoin from './components/WhatsAppJoin';
 import BackToTopButton from './components/BackToTopButton';
-import { LocaleProvider, useLocale, locales } from './contexts/LocaleContext';
-import { TranslationKeys } from './services/translations';
+import { LocaleProvider, useLocale } from './contexts/LocaleContext';
 import DashboardPage from './components/DashboardPage';
 import { FormStateProvider } from './contexts/FormStateContext';
 import { GenerationProvider } from './contexts/GenerationContext';
 import { localizedPath, resolveRoute, siteOrigin, Page } from './services/routing';
+import { RouteProvider, useRoutePath } from './contexts/RouteContext';
+import { alternateLocales, updateMetadata } from './services/seo';
 
 // --- Theme Management ---
 type Theme = 'light' | 'dark';
@@ -25,9 +25,9 @@ interface ThemeContextType {
 }
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const generateThemeCss = (themes: Record<string, Record<string, string>>): string => {
+export const generateThemeCss = (themes: Record<string, Record<string, string>>): string => {
   let css = '';
-  const defaultThemeName = 'dark';
+  const defaultThemeName = 'light';
   const defaultTheme = themes[defaultThemeName];
 
   css += `:root, .theme-${defaultThemeName} {\n`;
@@ -50,7 +50,7 @@ const generateThemeCss = (themes: Record<string, Record<string, string>>): strin
 };
 
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = useState<Theme>('dark');
+  const [theme, setTheme] = useState<Theme>('light');
 
   useEffect(() => {
     const themeCss = generateThemeCss(themes);
@@ -106,17 +106,10 @@ export const useTheme = (): ThemeContextType => {
 
 
 function AppContent() {
-  const { locale, setLocale, t } = useLocale();
+  const { locale, setLocale } = useLocale();
 
-  const pageTitleKeys: Record<string, TranslationKeys> = {
-    '/': 'titleHome',
-    '/dashboard': 'titleDashboard',
-    '/about': 'titleAbout',
-    '/privacy': 'titlePrivacy',
-    '/terms': 'titleTerms',
-    '/404': 'title404',
-  };
-  const [page, setPage] = useState<Page>(() => resolveRoute(window.location.pathname).page);
+  const pathname = useRoutePath();
+  const [page, setPage] = useState<Page>(() => resolveRoute(pathname).page);
 
   useEffect(() => {
     const handleLocationChange = () => {
@@ -135,8 +128,8 @@ function AppContent() {
   }, [setLocale]);
 
   useEffect(() => {
-    document.title = t(pageTitleKeys[page]);
-  }, [page, t]);
+    updateMetadata(locale, page);
+  }, [page, locale]);
 
   useEffect(() => {
     document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(el => el.remove());
@@ -156,14 +149,15 @@ function AppContent() {
 
     document.querySelector('meta[property="og:url"]')?.setAttribute('content', canonicalUrl);
 
-    locales.forEach(lang => {
+    alternateLocales(page).forEach(code => {
       const alternateLink = document.createElement('link');
       alternateLink.rel = 'alternate';
-      alternateLink.hreflang = lang.code;
-      alternateLink.href = siteOrigin + localizedPath(lang.code, page);
+      alternateLink.hreflang = code;
+      alternateLink.href = siteOrigin + localizedPath(code, page);
       document.head.appendChild(alternateLink);
     });
 
+    if (alternateLocales(page).length === 0) return;
     const xDefaultLink = document.createElement('link');
     xDefaultLink.rel = 'alternate';
     xDefaultLink.hreflang = 'x-default';
@@ -178,6 +172,8 @@ function AppContent() {
         const anchor = e.target instanceof Element ? e.target.closest('a') : null;
 
         if (anchor && (!anchor.target || anchor.target === '_self') && !anchor.hasAttribute('download') && anchor.origin === window.location.origin) {
+            // Let the browser scroll same-page anchors and preserve native hash history.
+            if (anchor.pathname === window.location.pathname && anchor.hash) return;
             const route = resolveRoute(anchor.pathname);
             if (route.page !== '/404') {
                 e.preventDefault();
@@ -185,7 +181,7 @@ function AppContent() {
                 if (newPath !== window.location.pathname + window.location.search + window.location.hash) {
                     window.history.pushState({}, '', newPath);
                     window.dispatchEvent(new PopStateEvent('popstate'));
-                    window.scrollTo(0, 0);
+                    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
                 }
             }
         }
@@ -211,19 +207,27 @@ function AppContent() {
   return (
     <div className="bg-background text-text-primary min-h-screen font-sans flex flex-col">
       <Header />
-      <main className="flex-grow w-full max-w-screen-xl mx-auto p-4 sm:p-6 lg:p-8">
+      <main className="flex-grow w-full max-w-screen-xl mx-auto px-5 sm:px-8 lg:px-10 py-8 sm:py-12">
         {renderPage()}
       </main>
       <Footer />
-      <WhatsAppJoin />
+
       <BackToTopButton />
       <CookieConsentBanner />
     </div>
   );
 }
 
-function App() {
+function App({ pathname = typeof window === 'undefined' ? '/en' : window.location.pathname }: { pathname?: string }) {
+  const [routePath, setRoutePath] = useState(pathname);
+  useEffect(() => {
+    const update = () => setRoutePath(window.location.pathname);
+    window.addEventListener('popstate', update);
+    update();
+    return () => window.removeEventListener('popstate', update);
+  }, []);
   return (
+    <RouteProvider value={routePath}>
     <ThemeProvider>
       <LocaleProvider>
         <FormStateProvider>
@@ -233,6 +237,7 @@ function App() {
         </FormStateProvider>
       </LocaleProvider>
     </ThemeProvider>
+    </RouteProvider>
   );
 }
 

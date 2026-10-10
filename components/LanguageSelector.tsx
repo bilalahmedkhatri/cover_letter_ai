@@ -1,59 +1,22 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { Globe, Check, ChevronDown } from 'lucide-react';
 import { useLocale, locales } from '../contexts/LocaleContext';
-import GlobeIcon from './icons/GlobeIcon';
-import CheckIcon from './icons/CheckIcon';
-import { localizedPath, resolveRoute } from '../services/routing';
-
-const LanguageSelector: React.FC = () => {
-    const { locale } = useLocale();
-    const [isOpen, setIsOpen] = useState(false);
-    const dropdownRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-                setIsOpen(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
-
-    const currentPage = resolveRoute(window.location.pathname).page;
-
-    return (
-        <div className="relative" ref={dropdownRef}>
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-1 text-text-secondary hover:text-accent transition-colors"
-                aria-label="Select language"
-                aria-haspopup="true"
-                aria-expanded={isOpen}
-            >
-                <GlobeIcon className="w-6 h-6" />
-                <span className="text-sm font-medium uppercase">{locale}</span>
-            </button>
-            {isOpen && (
-                <div className="absolute end-0 mt-2 w-48 bg-card rounded-md shadow-lg z-30 border border-border">
-                    <ul className="py-1" role="menu">
-                        {locales.map(lang => (
-                            <li key={lang.code}>
-                                <a
-                                    href={localizedPath(lang.code, currentPage === '/404' ? '/' : currentPage)}
-                                    onClick={() => setIsOpen(false)}
-                                    className="w-full text-left rtl:text-right px-4 py-2 text-sm text-text-primary hover:bg-card-secondary flex items-center justify-between"
-                                    role="menuitem"
-                                >
-                                    {lang.name}
-                                    {locale === lang.code && <CheckIcon className="w-5 h-5 text-accent" />}
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
-        </div>
-    );
-};
-
-export default LanguageSelector;
+import { useRoutePath } from '../contexts/RouteContext';
+import { resolveRoute, localizedPath } from '../services/routing';
+import { interfaceCopy } from '../services/interfaceCopy';
+import { Button } from './ui/button';
+export default function LanguageSelector() {
+  const { locale } = useLocale();
+  const page = resolveRoute(useRoutePath()).page;
+  return <DropdownMenu.Root dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+    <DropdownMenu.Trigger asChild><Button variant="ghost" size="sm" aria-label={interfaceCopy(locale).language}><Globe /><span className="uppercase">{locale}</span><ChevronDown /></Button></DropdownMenu.Trigger>
+    <DropdownMenu.Portal><DropdownMenu.Content align="end" sideOffset={10} className="z-50 min-w-48 rounded-xl border border-border bg-card p-1.5 shadow-xl">
+      {locales.map(language => <DropdownMenu.Item key={language.code} asChild>
+        <a href={localizedPath(language.code, page === '/404' ? '/' : page)} lang={language.code} className="flex cursor-pointer items-center justify-between gap-6 rounded-lg px-3 py-2.5 text-sm text-text-primary outline-none focus:bg-card-secondary">
+          {language.name}{locale === language.code && <Check size={15} className="text-accent" />}
+        </a>
+      </DropdownMenu.Item>)}
+    </DropdownMenu.Content></DropdownMenu.Portal>
+  </DropdownMenu.Root>;
+}

@@ -7,11 +7,11 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-background border-t border-border mt-16">
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <footer className="bg-background border-t border-border mt-20">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="md:col-span-1">
-            <h3 className="text-xl font-bold text-accent">AI Letter Generator</h3>
+            <h3 className="text-xl font-semibold text-text-primary">ailettergen.</h3>
             <p className="mt-2 text-sm text-text-secondary">{t('footerDescription')}</p>
           </div>
           <div className="grid grid-cols-2 gap-8 md:col-span-2">
@@ -32,7 +32,7 @@ const Footer: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="mt-8 border-border pt-8 text-center text-sm text-text-muted">
+        <div className="mt-8 border-border pt-8 text-start text-xs text-text-muted">
           <p>{t('footerCopyright', { year: currentYear.toString() })}</p>
         </div>
       </div>

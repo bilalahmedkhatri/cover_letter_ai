@@ -36,7 +36,7 @@ module.exports = {
         accent: 'rgb(var(--color-accent) / <alpha-value>)'
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Arial', 'Helvetica', 'sans-serif'],
       },
       animation: {
         'slide-up': 'slide-up 0.5s ease-out forwards',

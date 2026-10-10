@@ -1,0 +1,7 @@
+paying_users,scenario,gross_revenue,total_cost_before_income_tax,owner_labor_included,profit_before_tax,profit_after_tax_reserve,break_even_paying_users
+100,expected,1480.00,758.19,200.00,721.81,649.62,31
+100,fullQuota,1480.00,1018.33,200.00,461.67,415.51,41
+500,expected,7400.00,2524.07,200.00,4875.93,4388.33,31
+500,fullQuota,7400.00,3824.72,200.00,3575.28,3217.75,41
+1000,expected,14800.00,4731.42,200.00,10068.58,9061.72,31
+1000,fullQuota,14800.00,7332.73,200.00,7467.27,6720.55,41

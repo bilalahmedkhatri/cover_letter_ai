@@ -1,0 +1,83 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ailettergen · Updated subscription costs</title>
+<style>*{box-sizing:border-box}body{margin:0;background:#f8f7f4;color:#23362d;font:15px/1.6 Arial,sans-serif}main{max-width:1200px;margin:auto;padding:30px 20px}h1{font:40px Georgia}h2{font-size:20px}p{color:#59665e}section,details{background:white;border:1px solid #d9dfd8;border-radius:12px;padding:22px;margin:20px 0}summary{font-weight:bold;cursor:pointer}.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-top:20px}label{font-size:13px}input{display:block;width:100%;padding:10px;border:1px solid #c9d2c8;border-radius:6px;font:inherit;color:inherit}input:focus{outline:2px solid #348263}.table{overflow:auto}table{border-collapse:collapse;width:100%;font-size:14px}th,td{padding:10px;border-bottom:1px solid #e4e8e1;text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}.metric{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:15px}.metric div{background:#eff3ec;padding:18px;border-radius:8px}.metric b{font:30px Georgia;display:block}.note{font-size:13px}button{border:0;border-radius:6px;background:#285e46;color:white;padding:10px 18px;font:inherit;cursor:pointer}#error{color:#a32b26}a{color:#286347}</style>
+<main><small>AILETTERGEN · CURRENT PLANNING · 11 OCT 2026 · USD</small><h1>Three plans. One shared credit wallet.</h1>
+<p>Starter $10, Plus $20, Pro $28 with 10% extra credits. GPT-6 Luna and Claude Opus 5.5 are the selected models. These are proposed quotas and token allowances; billing and provider integration are not deployed.</p>
+<p>One Luna letter = 1 credit; one Opus letter = 4 credits; one bounded university research = 20 credits. Maximum columns below are alternatives: users cannot consume all three maxima together. Editing, copying and local exports consume no credits; a new AI rewrite consumes its model's letter credits. Trial credits are Luna-only.</p>
+<section><h2>Monthly allowance and token estimates</h2><div class="table"><table><thead><tr><th>Plan</th><th>Price</th><th>Credits</th><th>Luna letters only</th><th>Opus letters only</th><th>Research only</th><th>Luna tokens*</th><th>Opus tokens*</th><th>Research tokens*</th></tr></thead><tbody id="plans"></tbody></table></div><p class="note">*Input + billable output, including reasoning. Operation budgeting totals: 8,000 tokens per letter; 40,000 per research. Real tokenizer counts vary by language/provider. Unused remainder credits remain available until the monthly reset. Pro receives its bonus once, not again on each operation.</p></section>
+<section><h2>Per-operation cost</h2><div class="table"><table><thead><tr><th>Operation</th><th>Token-only estimate</th><th>Reserved cost incl. tools/retry/infra</th></tr></thead><tbody id="operations"></tbody></table></div><p>Research means one university/program: up to five official source pages, three search calls, and an aggregate token allowance across calls. This is a bounded research report, not unlimited agent work. Search-result content and repeated context count as input tokens.</p></section>
+<button id="reset">Reset assumptions</button><p id="error" role="alert"></p><div id="controls"></div>
+<section aria-live="polite"><h2>Selected customer count</h2><div id="metrics" class="metric"></div><div class="table"><table><thead><tr><th>Monthly line item</th><th>Expected usage</th><th>Full paid quota</th></tr></thead><tbody id="breakdown"></tbody></table></div></section>
+<section><h2>100 / 500 / 1,000 paying users</h2><div class="table"><table><thead><tr><th>Users</th><th>Scenario</th><th>Revenue</th><th>Total cost/reserves</th><th>Remaining</th><th>Margin</th></tr></thead><tbody id="scenarios"></tbody></table></div></section>
+<p class="note">Defaults: 60% Starter / 30% Plus / 10% Pro, 40% expected usage; full-quota case uses 100% paid credits. AI is budgeted at the worst reserved cost per credit across the selected operations. Operations/owner time/acquisition/refunds/tax reserve remain estimates. The tax percentage is a placeholder, not a local tax rate. Setup cost defaults to unknown/zero; enter actual invoices. Free trials scale with the entered ratio. Extra traffic can increase infrastructure costs. Prices exclude checkout taxes, and tax-inclusive processor fees may differ.</p>
+<p>Sources: <a href="https://developers.openai.com/api/docs/pricing">OpenAI</a> · <a href="https://platform.claude.com/docs/en/about-claude/pricing">Claude</a> · <a href="https://www.paddle.com/pricing">Payment fee baseline</a>. This worksheet runs offline and has no tracking.</p></main>
+<script>// Current planning: $10/$20/$28; Pro has 10% extra credits. Not deployed quotas.
+const models={'GPT-6 Luna':{input:.10,output:.50},'Claude Opus 5.5':{input:4,output:20}};
+const defaults={
+ users:100,starterShare:.6,plusShare:.3,starterPrice:10,plusPrice:20,proPrice:28,
+ starterCredits:100,plusCredits:200,proCredits:280,proBonus:.10,
+ lunaLetterCredits:1,opusLetterCredits:4,researchCredits:20,
+ letterInput:6000,letterVisibleOutput:1000,letterReasoning:1000,
+ researchInput:30000,researchVisibleOutput:6000,researchReasoning:4000,
+ researchSearches:3,searchPrice:.01,retryRate:.15,
+ lunaLetterReserve:.015,opusLetterReserve:.10,researchReserve:.45,
+ letterParsingInfra:.005,researchParsingInfra:.01,utilization:.4,
+ newFreeTrialsPerPaid:5,trialCredits:2,paymentPercent:.05,paymentFixed:.5,
+ refundRate:.02,payoutFxRate:.01,disputeReserveRate:.005,
+ hosting:20,database:25,email:20,domain:1.5,monitoring:5,infraOverage:10,accounting:20,otherFixed:0,
+ supportPerPaid:.25,replacementCac:5,churn:.1,ownerHours:20,ownerHourlyRate:10,
+ setupCost:0,amortizationMonths:12,bufferRate:.15,incomeTaxReserve:.1
+};
+function operationCosts(input={}){
+ const a={...defaults,...input};
+ const tokens=(m,i,o)=>(i*m.input+o*m.output)/1e6;
+ const lo=a.letterVisibleOutput+a.letterReasoning,ro=a.researchVisibleOutput+a.researchReasoning;
+ const lunaToken=tokens(models['GPT-6 Luna'],a.letterInput,lo);
+ const opusToken=tokens(models['Claude Opus 5.5'],a.letterInput,lo);
+ const researchToken=tokens(models['Claude Opus 5.5'],a.researchInput,ro);
+ const luna=Math.max(a.lunaLetterReserve,lunaToken*(1+a.retryRate)+a.letterParsingInfra);
+ const opus=Math.max(a.opusLetterReserve,opusToken*(1+a.retryRate)+a.letterParsingInfra);
+ const research=Math.max(a.researchReserve,(researchToken+a.researchSearches*a.searchPrice)*(1+a.retryRate)+a.researchParsingInfra);
+ return {lunaToken,opusToken,researchToken,luna,opus,research,
+ perCredit:Math.max(luna/a.lunaLetterCredits,opus/a.opusLetterCredits,research/a.researchCredits)};
+}
+function plans(input={}){
+ const a={...defaults,...input};
+ return [['Starter',a.starterPrice,a.starterCredits],['Plus',a.plusPrice,a.plusCredits],['Pro',a.proPrice,Math.floor(a.proCredits*(1+a.proBonus)+1e-9)]].map(([name,price,credits])=>{
+ const lunaLetters=Math.floor(credits/a.lunaLetterCredits),opusLetters=Math.floor(credits/a.opusLetterCredits),researches=Math.floor(credits/a.researchCredits);
+ const lt=a.letterInput+a.letterVisibleOutput+a.letterReasoning,rt=a.researchInput+a.researchVisibleOutput+a.researchReasoning;
+ return {name,price,credits,lunaLetters,opusLetters,researches,lunaTokens:lunaLetters*lt,opusTokens:opusLetters*lt,researchTokens:researches*rt};
+ });
+}
+function calculate(input={},fullQuota=false){
+ const a={...defaults,...input};
+ if(a.starterShare+a.plusShare>1+1e-9)throw new Error('Starter + Plus shares must not exceed 100%; remaining share is Pro.');
+ if([a.lunaLetterCredits,a.opusLetterCredits,a.researchCredits].some(x=>x<=0))throw new Error('Operation credit costs must be positive.');
+ const p=plans(a),op=operationCosts(a),proShare=Math.max(0,1-a.starterShare-a.plusShare);
+ const weightedPrice=a.starterShare*p[0].price+a.plusShare*p[1].price+proShare*p[2].price;
+ const weightedQuota=a.starterShare*p[0].credits+a.plusShare*p[1].credits+proShare*p[2].credits;
+ const paidCredits=a.users*weightedQuota*(fullQuota?1:a.utilization),freeCredits=a.users*a.newFreeTrialsPerPaid*a.trialCredits;
+ // Conservative worst-cost operation mix per credit; trials are Luna-only.
+ const ai=paidCredits*op.perCredit+freeCredits*op.luna/a.lunaLetterCredits;
+ const revenue=a.users*weightedPrice,payments=revenue*a.paymentPercent+a.users*a.paymentFixed;
+ const refunds=revenue*a.refundRate,payoutFx=revenue*a.payoutFxRate,disputes=revenue*a.disputeReserveRate;
+ const support=a.users*a.supportPerPaid,marketing=a.users*a.churn*a.replacementCac;
+ const fixed=a.hosting+a.database+a.email+a.domain+a.monitoring+a.infraOverage+a.accounting+a.otherFixed;
+ const ownerLabor=a.ownerHours*a.ownerHourlyRate,setupAmortization=a.amortizationMonths>0?a.setupCost/a.amortizationMonths:a.setupCost;
+ const contingency=(fixed+ai)*a.bufferRate,variable=payments+refunds+payoutFx+disputes+ai+support+marketing;
+ const cashOperatingSurplus=revenue-variable-fixed-contingency,beforeTax=cashOperatingSurplus-ownerLabor-setupAmortization;
+ const taxReserve=Math.max(0,beforeTax)*a.incomeTaxReserve,afterTaxReserve=beforeTax-taxReserve;
+ const perUser=weightedPrice*(a.paymentPercent+a.refundRate+a.payoutFxRate+a.disputeReserveRate)+a.paymentFixed+a.supportPerPaid+a.churn*a.replacementCac+
+ (weightedQuota*(fullQuota?1:a.utilization)*op.perCredit+a.newFreeTrialsPerPaid*a.trialCredits*op.luna/a.lunaLetterCredits)*(1+a.bufferRate);
+ const contribution=weightedPrice-perUser;
+ return {users:a.users,fullQuota,weightedPrice,weightedQuota,paidCredits,freeCredits,unitCost:op.perCredit,revenue,payments,refunds,payoutFx,disputes,ai,support,marketing,fixed,ownerLabor,setupAmortization,contingency,variable,cashOperatingSurplus,beforeTax,taxReserve,afterTaxReserve,margin:revenue>0?afterTaxReserve/revenue:0,
+ breakEven:contribution>0?Math.ceil((fixed*(1+a.bufferRate)+ownerLabor+setupAmortization)/contribution):null};
+}
+
+const groups=[["Customers and plans",["users","starterShare","plusShare","starterPrice","plusPrice","proPrice","starterCredits","plusCredits","proCredits","proBonus","utilization","newFreeTrialsPerPaid","trialCredits"]],["AI / research estimates",["lunaLetterCredits","opusLetterCredits","researchCredits","letterInput","letterVisibleOutput","letterReasoning","researchInput","researchVisibleOutput","researchReasoning","researchSearches","searchPrice","retryRate","lunaLetterReserve","opusLetterReserve","researchReserve","letterParsingInfra","researchParsingInfra"]],["Payment deductions (checkout tax excluded)",["paymentPercent","paymentFixed","refundRate","payoutFxRate","disputeReserveRate"]],["Monthly operations",["hosting","database","email","domain","monitoring","infraOverage","accounting","otherFixed","supportPerPaid","replacementCac","churn","ownerHours","ownerHourlyRate","setupCost","amortizationMonths","bufferRate","incomeTaxReserve"]]];const percent=["starterShare","plusShare","proBonus","utilization","retryRate","paymentPercent","refundRate","payoutFxRate","disputeReserveRate","churn","bufferRate","incomeTaxReserve"];
+const titles={users:'Paying users',starterShare:'Starter share (%)',plusShare:'Plus share (%; remainder is Pro)',starterPrice:'Starter price ($)',plusPrice:'Plus price ($)',proPrice:'Pro price ($)',starterCredits:'Starter credits',plusCredits:'Plus credits',proCredits:'Pro base credits',proBonus:'Pro bonus (%)',lunaLetterCredits:'Credits per Luna letter',opusLetterCredits:'Credits per Opus letter',researchCredits:'Credits per research',letterInput:'Aggregate letter input tokens',letterVisibleOutput:'Letter visible output tokens',letterReasoning:'Letter extra reasoning tokens',researchInput:'Aggregate research input tokens',researchVisibleOutput:'Research visible output tokens',researchReasoning:'Research extra reasoning tokens',researchSearches:'Searches per research',searchPrice:'Search $/call',retryRate:'Billed retry overhead (%)',lunaLetterReserve:'Luna $/letter reserve',opusLetterReserve:'Opus $/letter reserve',researchReserve:'Research $/report reserve',letterParsingInfra:'Extra letter parsing/infra $',researchParsingInfra:'Extra research parsing/infra $',utilization:'Expected paid quota usage (%)',newFreeTrialsPerPaid:'New free trials per paid user/month',trialCredits:'Lifetime Luna credits per trial',paymentPercent:'Payment fee (%)',paymentFixed:'Fixed transaction fee ($)',refundRate:'Refund revenue reserve (%)',payoutFxRate:'Payout/FX revenue reserve (%)',disputeReserveRate:'Dispute revenue reserve (%)',hosting:'Hosting $/month',database:'Database/auth $/month',email:'Email $/month',domain:'Annual domain / 12 ($)',monitoring:'Monitoring $/month',infraOverage:'Infra overage/backups $/month',accounting:'Accounting $/month',otherFixed:'Other fixed $/month',supportPerPaid:'Support $/paying user',replacementCac:'Replacement acquisition $/customer',churn:'Monthly churn (%)',ownerHours:'Owner hours/month',ownerHourlyRate:'Owner $/hour',setupCost:'One-time setup invoice ($; unknown by default)',amortizationMonths:'Setup allocation months',bufferRate:'Buffer on fixed + AI (%)',incomeTaxReserve:'Positive profit tax placeholder (%)'};
+const money=x=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(x);
+function setup(){document.getElementById('controls').innerHTML=groups.map(([title,keys],i)=>`<details ${i===0?'open':''}><summary>${title}</summary><div class="fields">${keys.map(k=>`<label>${titles[k]}<input id="${k}" type="number" min="0" ${percent.includes(k)?'max="100"':''} step="any" value="${percent.includes(k)?defaults[k]*100:defaults[k]}"></label>`).join('')}</div></details>`).join('')}
+function read(){const a={};for(const[,keys]of groups)for(const k of keys){a[k]=Math.max(0,Number(document.getElementById(k).value)||0)/(percent.includes(k)?100:1);if(percent.includes(k))a[k]=Math.min(1,a[k]);}return a}
+function render(){try{const a=read(),e=calculate(a),w=calculate(a,true),o=operationCosts(a);document.getElementById('error').textContent='';document.getElementById('plans').innerHTML=plans(a).map(p=>`<tr><td>${p.name}</td><td>${money(p.price)}</td><td>${p.credits}</td><td>${p.lunaLetters}</td><td>${p.opusLetters}</td><td>${p.researches}</td><td>${p.lunaTokens.toLocaleString()}</td><td>${p.opusTokens.toLocaleString()}</td><td>${p.researchTokens.toLocaleString()}</td></tr>`).join('');document.getElementById('operations').innerHTML=[['Luna letter',o.lunaToken,o.luna],['Opus letter',o.opusToken,o.opus],['Opus research',o.researchToken,o.research]].map(([l,t,r])=>`<tr><td>${l}</td><td>$${t.toFixed(4)}</td><td>$${r.toFixed(4)}</td></tr>`).join('');document.getElementById('metrics').innerHTML=[['Remaining after reserves',money(e.afterTaxReserve)],['Reserved $/credit','$'+e.unitCost.toFixed(4)],['Expected break-even',e.breakEven??'No positive contribution'],['Full-quota break-even',w.breakEven??'No positive contribution']].map(([l,v])=>`<div>${l}<b>${v}</b></div>`).join('');const lines=[['Revenue','revenue'],['AI / tools / parsing / variable infra','ai'],['Payment fees','payments'],['Refunds','refunds'],['Payout/FX','payoutFx'],['Disputes','disputes'],['Support','support'],['Replacement acquisition','marketing'],['Fixed operations','fixed'],['Owner time','ownerLabor'],['Setup allocation','setupAmortization'],['Buffer','contingency'],['Before tax reserve','beforeTax'],['Tax placeholder','taxReserve'],['After reserve','afterTaxReserve']];document.getElementById('breakdown').innerHTML=lines.map(([l,k])=>`<tr><td>${l}</td><td>${money(e[k])}</td><td>${money(w[k])}</td></tr>`).join('');document.getElementById('scenarios').innerHTML=[100,500,1000].flatMap(users=>[false,true].map(full=>{const r=calculate({...a,users},full);return`<tr><td>${users}</td><td>${full?'Full quota':'Expected'}</td><td>${money(r.revenue)}</td><td>${money(r.revenue-r.afterTaxReserve)}</td><td>${money(r.afterTaxReserve)}</td><td>${(r.margin*100).toFixed(1)}%</td></tr>`})).join('')}catch(error){document.getElementById('error').textContent=error.message}}
+setup();render();document.addEventListener('input',render);document.getElementById('reset').addEventListener('click',()=>{setup();render()});
+</script></html>

@@ -1,3 +1,4 @@
+import { Button } from './ui/button';
 import React from 'react';
 import { SavedSession } from '../types';
 import { useLocale } from '../contexts/LocaleContext';
@@ -16,7 +17,7 @@ const SavedLettersDisplay: React.FC<SavedLettersDisplayProps> = ({ sessions, onR
   }
 
   return (
-    <div className="bg-card/50 p-4 sm:p-6 rounded-lg shadow-lg">
+    <div className="bg-card/50 p-4 sm:p-6 rounded-lg shadow-sm">
       <h2 className="text-2xl font-bold text-accent mb-4">{t('savedTitle')}</h2>
       <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
         {sessions.map((session) => (
@@ -28,20 +29,20 @@ const SavedLettersDisplay: React.FC<SavedLettersDisplayProps> = ({ sessions, onR
               </p>
             </div>
             <div className="flex-shrink-0 flex gap-2 w-full sm:w-auto">
-              <button
+              <Button variant="ghost"
                 onClick={() => onRestore(session)}
                 className="w-1/2 sm:w-auto text-center px-3 py-1 bg-card-secondary hover:bg-button-secondary-hover-bg rounded-md transition-colors text-xs font-medium"
                 aria-label={`Restore session saved on ${new Date(session.date).toLocaleString()}`}
               >
                 {t('savedRestore')}
-              </button>
-              <button
+              </Button>
+              <Button variant="ghost"
                 onClick={() => onRemove(session.id)}
                 className="w-1/2 sm:w-auto text-center px-3 py-1 bg-red-800/50 hover:bg-red-800/80 text-red-300 rounded-md transition-colors text-xs font-medium"
                 aria-label={`Remove session saved on ${new Date(session.date).toLocaleString()}`}
               >
                 {t('savedRemove')}
-              </button>
+              </Button>
             </div>
           </div>
         ))}
