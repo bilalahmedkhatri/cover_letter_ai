@@ -27,7 +27,6 @@ const CustomizationStep: React.FC = () => {
   const [showTemplates, setShowTemplates] = useState(false);
   const templatesRef = useRef<HTMLDivElement>(null);
 
-  const inputStyle = "";
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -59,7 +58,7 @@ const CustomizationStep: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="tone" className="block text-sm font-medium text-text-primary mb-2">{t('formTone')}</label>
-                <NativeSelect id="tone" name="tone" value={userData.tone} onChange={handleUserChange} className={inputStyle}>
+                <NativeSelect id="tone" name="tone" value={userData.tone} onChange={handleUserChange}>
                   {(['Professional', 'Formal', 'Enthusiastic', 'Concise'] as const).map(t => (
                     <option key={t} value={t}>{t}</option>
                   ))}
@@ -67,7 +66,7 @@ const CustomizationStep: React.FC = () => {
               </div>
               <div>
                 <label htmlFor="language" className="block text-sm font-medium text-text-primary mb-2">{t('formLanguage')}</label>
-                <NativeSelect id="language" name="language" value={userData.language} onChange={handleUserChange} className={inputStyle}>
+                <NativeSelect id="language" name="language" value={userData.language} onChange={handleUserChange}>
                   {languages.map(lang => <option key={lang} value={lang}>{lang}</option>)}
                 </NativeSelect>
               </div>
@@ -118,7 +117,6 @@ const CustomizationStep: React.FC = () => {
                 value={userData.customInstruction}
                 onChange={handleUserChange}
                 rows={4}
-                className={inputStyle}
                 placeholder={t('formInstructionsPlaceholderJob')}
               />
             </div>
@@ -132,7 +130,6 @@ const CustomizationStep: React.FC = () => {
                     value={userData.headerInfo}
                     onChange={handleUserChange}
                     rows={3}
-                    className={inputStyle}
                     placeholder={
                         userData.documentType === 'email'
                         ? t('formEmailSignaturePlaceholder')
@@ -150,7 +147,6 @@ const CustomizationStep: React.FC = () => {
                     name="footerInfo"
                     value={userData.footerInfo}
                     onChange={handleUserChange}
-                    className={inputStyle}
                     placeholder={
                         userData.documentType === 'email'
                         ? t('formEmailClosingPlaceholder')

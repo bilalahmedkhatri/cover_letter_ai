@@ -39,7 +39,7 @@ export const FormStateProvider: React.FC<{ children: ReactNode }> = ({ children 
 
   const [currentStep, setCurrentStep] = useState(1);
 
-  const nextStep = () => setCurrentStep((prev) => Math.min(prev + 1, 4));
+  const nextStep = () => setCurrentStep((prev) => Math.min(prev + 1, 3));
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
 
   return (

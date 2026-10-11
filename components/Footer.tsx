@@ -1,6 +1,8 @@
 import React from 'react';
 import { useLocale } from '../contexts/LocaleContext';
 import { localizedPath } from '../services/routing';
+import { resourceLabels } from '../services/resourceCopy';
+import { pricingLabel } from '../services/pricingCopy';
 
 const Footer: React.FC = () => {
   const { t, locale } = useLocale();
@@ -20,6 +22,8 @@ const Footer: React.FC = () => {
               <ul className="mt-4 space-y-2">
                 <li><a href={localizedPath(locale, '/')} className="text-text-secondary hover:text-accent text-sm transition-colors">{t('footerHome')}</a></li>
                 <li><a href={localizedPath(locale, '/dashboard')} className="text-text-secondary hover:text-accent text-sm transition-colors">{t('footerGenerator')}</a></li>
+                <li><a href={localizedPath(locale, '/pricing')} className="text-text-secondary hover:text-accent text-sm transition-colors">{pricingLabel[locale]}</a></li>
+                {(['/features', '/guides', '/compare'] as const).map((page, index) => <li key={page}><a href={localizedPath(locale, page)} className="text-text-secondary hover:text-accent text-sm transition-colors">{resourceLabels[locale][index]}</a></li>)}
               </ul>
             </div>
             <div>

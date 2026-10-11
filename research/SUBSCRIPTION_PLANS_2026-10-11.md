@@ -1,3 +1,5 @@
+> Superseded usage limits: see ../PLAN_USAGE.md (2026-10-12). Prices are unchanged, but the old generation counts, consumption weights and calculator assumptions below are historical.
+
 # Current subscription proposal: Starter $10, Plus $20, Pro $28
 
 Updated 11 October 2026 following the user's pricing/model decision. Pro includes **10% extra usage at the same $28 price**, not an extra charge. Selected models: **GPT-6 Luna (`gpt-6-luna`) and Claude Opus 5.5**. This replaces the earlier $5.99/$7.99 proposal. Prices, quotas and provider usage are planning configuration; production checkout and server-side AI routing have not been implemented.

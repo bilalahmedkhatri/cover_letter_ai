@@ -14,7 +14,7 @@
       "permanent": true
     },
     {
-      "source": "/:page(dashboard|about|privacy|terms)",
+      "source": "/:page(dashboard|about|privacy|terms|pricing|features|guides|compare)",
       "has": [
         {
           "type": "host",
@@ -41,7 +41,7 @@
       "permanent": true
     },
     {
-      "source": "/:page(dashboard|about|privacy|terms)",
+      "source": "/:page(dashboard|about|privacy|terms|pricing|features|guides|compare)",
       "destination": "/en/:page",
       "permanent": true
     }
@@ -52,7 +52,7 @@
       "destination": "/:locale/index.html"
     },
     {
-      "source": "/:locale(en|es|fr|ru|nl|pt|ar)/:page(dashboard|about|privacy|terms)",
+      "source": "/:locale(en|es|fr|ru|nl|pt|ar)/:page(dashboard|about|privacy|terms|pricing|features|guides|compare)",
       "destination": "/:locale/:page/index.html"
     }
   ]

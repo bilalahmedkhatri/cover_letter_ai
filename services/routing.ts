@@ -2,7 +2,7 @@ import type { Locale } from '../types';
 
 export const siteOrigin = 'https://ailettergen.com';
 export const localeCodes: Locale[] = ['en', 'es', 'fr', 'ru', 'nl', 'pt', 'ar'];
-export const publicPages = ['/', '/dashboard', '/about', '/privacy', '/terms'] as const;
+export const publicPages = ['/', '/dashboard', '/about', '/privacy', '/terms', '/pricing', '/features', '/guides', '/compare'] as const;
 export type Page = typeof publicPages[number] | '/404';
 
 export function localizedPath(locale: Locale, page: Page): string {

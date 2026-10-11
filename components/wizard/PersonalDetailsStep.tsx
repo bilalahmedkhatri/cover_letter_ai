@@ -15,7 +15,6 @@ const PersonalDetailsStep: React.FC = () => {
   const [linkedInImportError, setLinkedInImportError] = useState<FriendlyError | null>(null);
   const linkedInFileInputRef = useRef<HTMLInputElement>(null);
 
-  const inputStyle = "";
   const inputFileStyle = "w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-accent/20 file:text-accent hover:file:bg-accent/30 cursor-pointer";
 
   const handleUserChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -73,7 +72,7 @@ const PersonalDetailsStep: React.FC = () => {
           </div>
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-text-primary mb-2">{t('formFullName')}</label>
-            <Input type="text" id="name" name="name" value={userData.name} onChange={handleUserChange} required className={inputStyle} placeholder={t('formFullNamePlaceholder')} />
+            <Input type="text" id="name" name="name" value={userData.name} onChange={handleUserChange} required placeholder={t('formFullNamePlaceholder')} />
           </div>
         </div>
       </section>
@@ -119,11 +118,11 @@ const PersonalDetailsStep: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label htmlFor="skills" className="block text-sm font-medium text-text-primary mb-2">{t('formSkills')}</label>
-            <Textarea id="skills" name="skills" value={userData.skills} onChange={handleUserChange} rows={5} className={inputStyle} placeholder={t('formSkillsPlaceholder')}></Textarea>
+            <Textarea id="skills" name="skills" value={userData.skills} onChange={handleUserChange} rows={5} placeholder={t('formSkillsPlaceholder')}></Textarea>
           </div>
           <div>
             <label htmlFor="experience" className="block text-sm font-medium text-text-primary mb-2">{t('formExperience')}</label>
-            <Textarea id="experience" name="experience" value={userData.experience} onChange={handleUserChange} rows={5} className={inputStyle} placeholder={t('formExperiencePlaceholder')}></Textarea>
+            <Textarea id="experience" name="experience" value={userData.experience} onChange={handleUserChange} rows={5} placeholder={t('formExperiencePlaceholder')}></Textarea>
           </div>
           <div className="md:col-span-2">
             <label htmlFor="resume" className="block text-sm font-medium text-text-primary mb-2">{t('formResume')}</label>

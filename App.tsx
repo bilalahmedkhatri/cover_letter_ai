@@ -11,6 +11,8 @@ import { themes } from './theme';
 import BackToTopButton from './components/BackToTopButton';
 import { LocaleProvider, useLocale } from './contexts/LocaleContext';
 import DashboardPage from './components/DashboardPage';
+import PricingPage from './components/PricingPage';
+import ResourcePages from './components/ResourcePages';
 import { FormStateProvider } from './contexts/FormStateContext';
 import { GenerationProvider } from './contexts/GenerationContext';
 import { localizedPath, resolveRoute, siteOrigin, Page } from './services/routing';
@@ -196,6 +198,8 @@ function AppContent() {
     switch (page) {
       case '/': return <LandingPage />;
       case '/dashboard': return <DashboardPage />;
+      case '/pricing': return <PricingPage />;
+      case '/features': case '/guides': case '/compare': return <ResourcePages page={page} />;
       case '/privacy': return <PrivacyPolicy />;
       case '/terms': return <TermsOfService />;
       case '/about': return <AboutUs />;

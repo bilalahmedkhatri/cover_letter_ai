@@ -98,3 +98,33 @@ verify the arithmetic with
 Synthetic multilingual fixtures and unrun reviewer sheets live in
 `research/evaluation`; regenerate with `node scripts/build-evaluation-fixtures.mjs`.
 No paid-provider quality benchmark has been performed.
+
+## Payments and database
+
+NOWPayments hosted invoices, signed callbacks and atomic Neon PostgreSQL credit
+allocation are implemented. See [PAYMENTS_SETUP.md](PAYMENTS_SETUP.md) for endpoint
+and deployment configuration, and [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md) for
+the nine created billing tables and the next feature tables.
+
+Run `npm run test:payments` for payment/security and PostgreSQL function tests.
+Keep checkout disabled until authenticated server-side AI usage is implemented.
+
+Pricing is a dedicated page at `/en/pricing` and `/ru/pricing`, with plan cards,
+feature comparison, shared-credit examples and renewal FAQs. Other locale routes
+show an explicit notice before English plan details. Header/footer navigation,
+Vercel redirects, prerendering and the sitemap include pricing. The generator
+shows payment/access status and links to pricing instead of repeating plan cards.
+
+The latest limits and consumption weights are documented in [PLAN_USAGE.md](PLAN_USAGE.md).
+The allowance migration adds `usage_allocations` and `generation_reservations`;
+there are now eleven billing tables. The server metering wrapper is implemented
+and tested, but the existing client AI generator must still be moved onto it.
+The landing page includes localized use cases, writing tools, preparation and
+review guidance in all seven locales. Pricing omits raw units and payment/access
+comparison rows.
+
+Public resources now include `/features`, `/guides` and `/compare` (localized routes).
+English and Russian bodies are complete; other locales show a language notice.
+The comparison cites official Rezi/Teal prices verified October 12, 2026 and distinguishes planned pricing, free options and product scope.
+Draft review runs locally with Unicode word counts, optional length targets and common placeholder warnings. Guides can preload writing instructions; users can download TXT and multi-page PDF.
+Run `node --test --test-isolation=none tests/draft-review.test.mjs` for writing checks.

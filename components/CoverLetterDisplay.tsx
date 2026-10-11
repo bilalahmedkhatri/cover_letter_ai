@@ -1,3 +1,4 @@
+import DraftReview from './DraftReview';
 import { Button } from './ui/button';
 import React, { useState, useEffect, useRef } from 'react';
 import { FriendlyError } from '../services/errorService';
@@ -37,12 +38,22 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({
   userData,
   jobDetails,
 }) => {
+  const [copyFailed, setCopyFailed] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [sharingPlatform, setSharingPlatform] = useState<null | 'linkedin' | 'twitter' | 'facebook'>(null);
   const [imageGenError, setImageGenError] = useState<string | null>(null);
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const copyError = {
+    en: 'Copy failed. Select the draft text and copy it manually.',
+    ru: 'Не удалось скопировать. Выделите текст и скопируйте его вручную.',
+    es: 'No se pudo copiar. Selecciona el texto y cópialo manualmente.',
+    fr: 'Copie impossible. Sélectionnez le texte et copiez-le manuellement.',
+    nl: 'Kopiëren mislukt. Selecteer de tekst en kopieer deze handmatig.',
+    pt: 'Não foi possível copiar. Selecione o texto e copie manualmente.',
+    ar: 'تعذر النسخ. حدد نص المسودة وانسخه يدويًا.',
+  }[locale];
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const isMounted = useRef(true);
 
@@ -67,9 +78,17 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({
     }
   }, [coverLetter]);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(coverLetter);
-    setCopied(true);
+  const handleCopy = async () => {
+    setCopyFailed(false);
+    try { await navigator.clipboard.writeText(coverLetter); setCopied(true); }
+    catch { setCopyFailed(true); }
+  };
+
+  const handleDownloadText = () => {
+    const url = URL.createObjectURL(new Blob([coverLetter], { type: 'text/plain;charset=utf-8' }));
+    const link = document.createElement('a');
+    link.href = url; link.download = 'professional-letter.txt'; link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 
   const generateLetterImage = async (contextUrl?: string): Promise<HTMLCanvasElement> => {
@@ -125,13 +144,8 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({
 
     document.body.appendChild(container);
 
-    const canvas = await window.html2canvas(container, {
-      scale: 2,
-      useCORS: true, // This is crucial for handling cross-origin resources like fonts
-    });
-
-    document.body.removeChild(container);
-    return canvas;
+    try { return await window.html2canvas(container, { scale: 2, useCORS: true }); }
+    finally { container.remove(); }
   };
 
   const handleDownloadPdf = async () => {
@@ -139,33 +153,23 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({
     setPdfError(null);
     try {
       const canvas = await generateLetterImage();
-      const imgData = canvas.toDataURL('image/png');
-
       await loadScript(JSPDF_URL);
-      if (!window.jspdf || !window.jspdf.jsPDF) {
-        throw new Error("PDF library failed to load. Please refresh and try again.");
-      }
-      const { jsPDF } = window.jspdf;
-
-      // Fix: Updated the jsPDF constructor to pass an options object, matching the expected signature.
-      const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
-      // Fix: Switched from getWidth()/getHeight() methods to direct property access to align with the type definition.
+      if (!window.jspdf?.jsPDF) throw new Error('PDF library failed to load. Please refresh and try again.');
+      const pdf = new window.jspdf.jsPDF({ orientation: 'p', unit: 'mm', format: 'a4', compress: true });
       const pdfWidth = pdf.internal.pageSize.width;
       const pdfHeight = pdf.internal.pageSize.height;
-
-      const canvasWidth = canvas.width;
-      const canvasHeight = canvas.height;
-      const ratio = canvasWidth / canvasHeight;
-
-      let imgWidth = pdfWidth;
-      let imgHeight = imgWidth / ratio;
-
-      if (imgHeight > pdfHeight) {
-          imgHeight = pdfHeight;
-          imgWidth = imgHeight * ratio;
+      // Slice long documents across A4 pages instead of shrinking all text onto one page.
+      const pixelsPerPage = Math.floor(canvas.width * pdfHeight / pdfWidth);
+      for (let offset = 0; offset < canvas.height; offset += pixelsPerPage) {
+        if (offset > 0) pdf.addPage();
+        const pageCanvas = document.createElement('canvas');
+        pageCanvas.width = canvas.width;
+        pageCanvas.height = Math.min(pixelsPerPage, canvas.height - offset);
+        const context = pageCanvas.getContext('2d');
+        if (!context) throw new Error('Could not prepare PDF page.');
+        context.drawImage(canvas, 0, offset, canvas.width, pageCanvas.height, 0, 0, canvas.width, pageCanvas.height);
+        pdf.addImage(pageCanvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, pdfWidth, pageCanvas.height * pdfWidth / canvas.width);
       }
-
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
       pdf.save('professional-letter.pdf');
       trackEvent({ name: 'download_pdf', params: {} });
     } catch (e) {
@@ -294,6 +298,7 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({
               rows={1}
             />
 
+            <DraftReview text={coverLetter} />
             {/* Share Section */}
             <div className="mt-4 pt-4 border-t border-border">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
@@ -310,6 +315,7 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({
               {imageGenError && <p className="text-xs text-red-400 mt-1 sm:text-right">{imageGenError}</p>}
             </div>
 
+          {copyFailed && <p role="alert" className="mt-3 text-xs text-text-secondary">{copyError}</p>}
           <div className="flex flex-col sm:flex-row sm:justify-end gap-3 mt-4 flex-shrink-0">
             <Button variant="ghost"
               onClick={handleCopy}
@@ -319,6 +325,7 @@ const CoverLetterDisplay: React.FC<CoverLetterDisplayProps> = ({
               {copied ? <CheckIcon className="w-5 h-5 text-green-400" /> : <CopyIcon className="w-5 h-5 text-text-primary" />}
               <span>{copied ? t('displayCopied') : t('displayCopy')}</span>
             </Button>
+            <Button variant="outline" onClick={handleDownloadText}><DownloadIcon className="h-4 w-4"/>TXT</Button>
             <div className="w-full sm:w-auto">
               <Button variant="ghost"
                 onClick={handleDownloadPdf}

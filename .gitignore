@@ -20,14 +20,27 @@ dist-ssr/
 !.env.*.example
 *.local
 
-# Tool caches, deployment metadata, and test output
+# Tool caches and deployment metadata
 .vite/
 .cache/
 .vercel/
+
+# Test reports and local browser artifacts
 coverage/
 playwright-report/
 test-results/
+/.playwright-cli/
+/output/playwright/
 
+# Local AI tools and installed skills
+/.agents/
+/.codex/
+/.sixth/
+/skills-lock.json
+
+# Local Neon project state and Search Console exports
+/.neon
+/gsc/
 
 # Editor directories and files
 .vscode/*
@@ -38,7 +51,4 @@ Thumbs.db
 Desktop.ini
 *.suo
 *.ntvs*
-*.njsproj
-*.sln
 *.sw?
-gsc/

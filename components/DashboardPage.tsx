@@ -11,6 +11,7 @@ import WizardContainer from './wizard/WizardContainer';
 import CoverLetterDisplay from './CoverLetterDisplay';
 import SavedLettersDisplay from './SavedLettersDisplay';
 import { interfaceCopy } from '../services/interfaceCopy';
+import BillingPanel from './billing/BillingPanel';
 
 const DashboardPage: React.FC = () => {
   const { userData, setUserData, jobDetails, setJobDetails, setCurrentStep } = useFormState();
@@ -170,6 +171,7 @@ const DashboardPage: React.FC = () => {
           <p className="text-text-secondary">{copy.workspaceIntro}</p>
         </section>
         <WorkspaceLayout leftPane={wizardPanel} rightPane={displayPanel} />
+        <BillingPanel compact />
         
         <p className="text-xs leading-relaxed text-text-muted">{copy.localSave}</p>
         <SavedLettersDisplay

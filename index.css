@@ -30,16 +30,3 @@
 @media (max-width: 480px) { .brand { font-size: 1.05rem; gap: .4rem; } .brand-mark { width: 1.85rem; height: 1.85rem; } .sample-paper { padding: 1.25rem; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
 
-@layer utilities {
-  .glass {
-    @apply bg-card/60 backdrop-blur-md border border-white/10 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)];
-  }
-  
-  .glass-panel {
-    @apply bg-card-secondary/50 backdrop-blur-sm border border-white/5;
-  }
-
-  .skeleton {
-    @apply animate-pulse bg-card-secondary rounded-md;
-  }
-}

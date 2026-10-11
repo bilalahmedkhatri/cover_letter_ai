@@ -25,6 +25,11 @@ test('every sitemap route has usable HTML and exactly one canonical, title and d
         assert.ok(html.includes('lang="en" dir="ltr"'), route);
         assert.ok(!html.includes('hreflang='), 'Do not claim English legal text is translated');
         assert.ok(!html.includes('Last updated:'), 'Do not invent policy modification dates');
+      } else if (['/pricing', '/features', '/guides', '/compare'].includes(page)) {
+        assert.equal((html.match(/hreflang=/g) || []).length, 3, route);
+        if (page === '/pricing') assert.ok(html.includes('id="compare-plans"'), route);
+        if (page === '/pricing') assert.ok(html.includes('<table') && html.includes('<details'), route);
+        if (page === '/compare') assert.ok(html.includes('<table') && html.includes('https://www.rezi.ai/pricing') && html.includes('https://www.tealhq.com/pricing'), route);
       } else {
         assert.equal((html.match(/hreflang=/g) || []).length, 8, route);
       }

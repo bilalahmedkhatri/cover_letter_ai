@@ -28,7 +28,6 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
   const [customKeyword, setCustomKeyword] = useState('');
   const [pdfError, setPdfError] = useState<Error | null>(null);
 
-  const inputStyle = "";
   const inputFileStyle = "w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-accent/20 file:text-accent hover:file:bg-accent/30 cursor-pointer";
 
   const handleUserChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -99,7 +98,7 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                   <label htmlFor="url" className="block text-sm font-medium text-text-primary mb-2">{t('formJobURL')}</label>
-                  <Input type="url" id="url" name="url" value={jobDetails.url} onChange={handleJobChange} className={inputStyle} placeholder={t('formJobURLPlaceholder')} />
+                  <Input type="url" id="url" name="url" value={jobDetails.url} onChange={handleJobChange} placeholder={t('formJobURLPlaceholder')} />
               </div>
               <div>
                   <label htmlFor="screenshot" className="block text-sm font-medium text-text-primary mb-2">{t('formJobScreenshot')}</label>
@@ -173,7 +172,7 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
                             value={customKeyword}
                             onChange={(e) => setCustomKeyword(e.target.value)}
                             onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddKeyword(); } }}
-                            className={inputStyle + " flex-grow"}
+                            className="flex-grow"
                             placeholder={t('formKeywordsAddPlaceholder')}
                         />
                         <Button variant="ghost"
@@ -193,7 +192,7 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div>
                     <label htmlFor="universityUrl" className="block text-sm font-medium text-text-primary mb-2">{t('formUniversityURL')}</label>
-                    <Input type="url" id="universityUrl" name="universityUrl" value={userData.universityUrl} onChange={handleUserChange} required className={inputStyle} placeholder={t('formUniversityURLPlaceholder')} />
+                    <Input type="url" id="universityUrl" name="universityUrl" value={userData.universityUrl} onChange={handleUserChange} required placeholder={t('formUniversityURLPlaceholder')} />
                 </div>
                  <div>
                     <label htmlFor="courseName" className="block text-sm font-medium text-text-primary mb-2">{t('formCourseName')}</label>
@@ -203,7 +202,6 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
                         name="courseName"
                         value={userData.courseName}
                         onChange={handleUserChange}
-                        className={inputStyle}
                         aria-label="Select from courses found on the page"
                       >
                         <option value="">{t('formCourseNameSelect')}</option>
@@ -218,7 +216,6 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
                         name="courseName"
                         value={userData.courseName}
                         onChange={handleUserChange}
-                        className={inputStyle}
                         placeholder={t('formCourseNamePlaceholder')}
                       />
                     )}
@@ -232,7 +229,6 @@ const JobDetailsStep: React.FC<JobDetailsStepProps> = ({ onAnalyzeUrl, onExtract
                     value={userData.universityAnalysisInstruction}
                     onChange={handleUserChange}
                     rows={3}
-                    className={inputStyle}
                     placeholder={t('formAnalysisInstructionsPlaceholder')}
                 />
             </div>

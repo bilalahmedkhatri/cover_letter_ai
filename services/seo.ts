@@ -1,8 +1,10 @@
 import type { Locale } from '../types';
 import { translations, type TranslationKeys } from './translations';
 import { localizedPath, localeCodes, siteOrigin, type Page } from './routing';
+import { resourceMetadata, type ResourcePage } from './resourceCopy';
+import { pricingLabel } from './pricingCopy';
 
-const titles: Record<Page, TranslationKeys> = {
+const titles: Record<Exclude<Page, '/pricing' | ResourcePage>, TranslationKeys> = {
   '/': 'titleHome', '/dashboard': 'titleDashboard', '/about': 'titleAbout',
   '/privacy': 'titlePrivacy', '/terms': 'titleTerms', '/404': 'title404',
 };
@@ -71,12 +73,14 @@ export const legalLanguageNotice: Record<Locale, string> = {
 
 // Legal bodies remain the original English text until full policy translations are reviewed.
 export function alternateLocales(page: Page): Locale[] {
+  if (['/pricing', '/features', '/guides', '/compare'].includes(page)) return ['en', 'ru'];
   return page === '/privacy' || page === '/terms' ? [] : localeCodes;
 }
 export function getMetadata(locale: Locale, page: Page) {
+  const resource = ['/features', '/guides', '/compare'].includes(page) ? resourceMetadata(locale, page as ResourcePage) : null;
   return {
-    title: translations[locale][titles[page]],
-    description: descriptions[locale][pages.indexOf(page)] || translations[locale].title404,
+    title: resource?.title ?? (page === '/pricing' ? `${pricingLabel[locale]} | AI Letter Generator` : translations[locale][titles[page as keyof typeof titles]]),
+    description: resource?.description ?? (page === '/pricing' ? (locale === 'ru' ? 'Сравните Starter за $10, Plus за $20 и Pro за $28: кредиты, лимиты писем и исследований, возможности и продление на 30 дней. Платные тарифы готовятся к запуску.' : 'Compare Starter $10, Plus $20 and Pro $28: shared credits, letter and research limits, features and 30-day prepaid renewal. Paid plans are being prepared.') : descriptions[locale][pages.indexOf(page)] || translations[locale].title404),
     canonical: siteOrigin + localizedPath(locale, page),
     ogLocale: ogLocales[locale],
   };

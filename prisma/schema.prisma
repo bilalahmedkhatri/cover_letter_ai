@@ -1,0 +1,187 @@
+datasource db {
+  provider = "postgresql"
+  schemas  = ["billing"]
+}
+
+model Plan {
+  id         String  @id
+  name       String
+  priceCents Int     @map("price_cents")
+  credits    Int
+  standardCost Int @default(1) @map("standard_cost")
+  premiumCost Int @default(4) @map("premium_cost")
+  researchCost Int @default(20) @map("research_cost")
+  periodDays Int     @default(30) @map("period_days")
+  active     Boolean @default(true)
+  orders     PaymentOrder[]
+  accounts   CreditAccount[]
+  periods    Subscription[]
+  @@map("plans")
+  @@schema("billing")
+}
+model Customer {
+  environment String
+  id          String
+  authUserId  String? @map("auth_user_id")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  orders      PaymentOrder[]
+  account     CreditAccount?
+  periods     Subscription[]
+  allocations UsageAllocation[]
+  reservations GenerationReservation[]
+  ledger      CreditLedger[]
+  @@id([environment, id])
+  @@unique([environment, authUserId])
+  @@map("customers")
+  @@schema("billing")
+}
+model PaymentOrder {
+  environment String
+  id          String
+  customerId  String @map("customer_id")
+  planId      String @map("plan_id")
+  priceCents  Int @map("price_cents")
+  credits     Int
+  standardCost Int @default(1) @map("standard_cost")
+  premiumCost Int @default(4) @map("premium_cost")
+  researchCost Int @default(20) @map("research_cost")
+  invoiceId   String? @map("invoice_id")
+  invoiceUrl  String? @map("invoice_url")
+  paymentId   String? @map("payment_id")
+  status      String @default("creating")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  fulfilledAt DateTime? @map("fulfilled_at") @db.Timestamptz
+  customer    Customer @relation(fields: [environment, customerId], references: [environment, id])
+  plan        Plan @relation(fields: [planId], references: [id])
+  payments    Payment[]
+  allocation UsageAllocation?
+  subscription Subscription?
+  ledger      CreditLedger[]
+  events      WebhookEvent[]
+  @@id([environment, id])
+  @@unique([environment, invoiceId])
+  @@index([environment, customerId, createdAt(sort: Desc)], map: "orders_customer_created")
+  @@map("orders")
+  @@schema("billing")
+}
+model CreditAccount {
+  environment String
+  customerId  String @map("customer_id")
+  credits     Int @default(0)
+  expiresAt   DateTime @default(now()) @map("expires_at") @db.Timestamptz
+  planId      String? @map("plan_id")
+  updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamptz
+  customer    Customer @relation(fields: [environment, customerId], references: [environment, id])
+  plan        Plan? @relation(fields: [planId], references: [id])
+  @@id([environment, customerId])
+  @@map("credit_accounts")
+  @@schema("billing")
+}
+model Payment {
+  environment String
+  id          String
+  orderId     String @map("order_id")
+  invoiceId   String @map("invoice_id")
+  status      String
+  priceCents  Int @map("price_cents")
+  payCurrency String? @map("pay_currency")
+  payAmount   Decimal? @map("pay_amount") @db.Decimal(60,30)
+  actuallyPaid Decimal? @map("actually_paid") @db.Decimal(60,30)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamptz
+  order       PaymentOrder @relation(fields: [environment, orderId], references: [environment, id])
+  @@id([environment, id])
+  @@map("payments")
+  @@schema("billing")
+}
+model Subscription {
+  environment String
+  orderId     String @map("order_id")
+  customerId  String @map("customer_id")
+  planId      String @map("plan_id")
+  startsAt    DateTime @map("starts_at") @db.Timestamptz
+  endsAt      DateTime @map("ends_at") @db.Timestamptz
+  status      String @default("active")
+  order       PaymentOrder @relation(fields: [environment, orderId], references: [environment, id])
+  customer    Customer @relation(fields: [environment, customerId], references: [environment, id])
+  plan        Plan @relation(fields: [planId], references: [id])
+  @@id([environment, orderId])
+  @@index([environment, customerId, endsAt(sort: Desc)], map: "subscriptions_customer_end")
+  @@map("subscriptions")
+  @@schema("billing")
+}
+model CreditLedger {
+  id          String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  environment String
+  customerId  String @map("customer_id")
+  orderId     String? @map("order_id")
+  kind        String
+  delta       Int
+  balanceAfter Int @map("balance_after")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  customer    Customer @relation(fields: [environment, customerId], references: [environment, id])
+  order       PaymentOrder? @relation(fields: [environment, orderId], references: [environment, id])
+  @@unique([environment, orderId, kind])
+  @@index([environment, customerId, createdAt(sort: Desc)], map: "credit_ledger_customer_created")
+  @@map("credit_ledger")
+  @@schema("billing")
+}
+model WebhookEvent {
+  environment String
+  id          String
+  orderId     String @map("order_id")
+  paymentId   String @map("payment_id")
+  providerStatus String @map("provider_status")
+  attempts    Int @default(1)
+  receivedAt  DateTime @default(now()) @map("received_at") @db.Timestamptz
+  processedAt DateTime? @map("processed_at") @db.Timestamptz
+  order       PaymentOrder @relation(fields: [environment, orderId], references: [environment, id])
+  @@id([environment, id])
+  @@map("webhook_events")
+  @@schema("billing")
+}
+model RateLimit {
+  environment String
+  id          String
+  count       Int
+  expiresAt   DateTime @map("expires_at") @db.Timestamptz
+  @@id([environment, id])
+  @@map("rate_limits")
+  @@schema("billing")
+}
+
+model UsageAllocation {
+  environment String
+  orderId String @map("order_id")
+  customerId String @map("customer_id")
+  remainingUnits Int @map("remaining_units")
+  standardCost Int @map("standard_cost")
+  premiumCost Int @map("premium_cost")
+  researchCost Int @map("research_cost")
+  closed Boolean @default(false)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  order PaymentOrder @relation(fields: [environment, orderId], references: [environment, id])
+  customer Customer @relation(fields: [environment, customerId], references: [environment, id])
+  reservations GenerationReservation[]
+  @@id([environment, orderId])
+  @@index([environment, customerId, createdAt], map: "usage_allocations_customer")
+  @@map("usage_allocations")
+  @@schema("billing")
+}
+model GenerationReservation {
+  environment String
+  id String
+  customerId String @map("customer_id")
+  orderId String @map("order_id")
+  operation String
+  units Int
+  status String @default("reserved")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  settledAt DateTime? @map("settled_at") @db.Timestamptz
+  customer Customer @relation(fields: [environment, customerId], references: [environment, id])
+  allocation UsageAllocation @relation(fields: [environment, orderId], references: [environment, orderId])
+  @@id([environment, id])
+  @@index([environment, customerId, createdAt], map: "generation_reservations_customer")
+  @@map("generation_reservations")
+  @@schema("billing")
+}
