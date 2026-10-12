@@ -128,3 +128,6 @@ English and Russian bodies are complete; other locales show a language notice.
 The comparison cites official Rezi/Teal prices verified October 12, 2026 and distinguishes planned pricing, free options and product scope.
 Draft review runs locally with Unicode word counts, optional length targets and common placeholder warnings. Guides can preload writing instructions; users can download TXT and multi-page PDF.
 Run `node --test --test-isolation=none tests/draft-review.test.mjs` for writing checks.
+
+Vercel must use the committed `vercel.json` build command (`npm run build`).
+A bare `vite build` skips prerendering and leaves localized rewrite destinations missing, returning platform 404s. The configured output directory is `dist`.

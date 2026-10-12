@@ -48,3 +48,12 @@ test('hosting maps language URLs to their generated files', () => {
   const config = JSON.parse(readFileSync('vercel.json', 'utf8'));
   assert.deepEqual(config.rewrites.map(rule => rule.destination), ['/:locale/index.html', '/:locale/:page/index.html']);
 });
+
+test('Vercel runs prerendering rather than a bare Vite build', () => {
+  const config = JSON.parse(readFileSync('vercel.json', 'utf8'));
+  const scripts = JSON.parse(readFileSync('package.json', 'utf8')).scripts;
+  assert.equal(config.framework, 'vite');
+  assert.equal(config.buildCommand, 'npm run build');
+  assert.equal(config.outputDirectory, 'dist');
+  assert.ok(scripts.build.includes('node scripts/prerender.mjs'));
+});
