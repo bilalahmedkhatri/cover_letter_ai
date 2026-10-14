@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   },
   description:
     "Write thoughtful job cover letters, university applications and professional outreach emails.",
-  icons: { icon: "/icon.svg", apple: "/icon.svg" },
+  icons: { icon: "/icon.svg?v=3", apple: "/icon.svg?v=3" },
 };
 export default async function RootLayout({
   children,
