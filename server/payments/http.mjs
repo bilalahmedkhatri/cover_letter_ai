@@ -11,9 +11,9 @@ export function failure(error) {
   console.error('Billing request failed', { status: error instanceof PaymentError ? error.status : 500 });
   return json({ error: error instanceof PaymentError ? error.message : 'Payment service temporarily unavailable.' }, error instanceof PaymentError ? error.status : 500);
 }
-export async function body(request) {
+export async function body(request, maxBytes = 32768) {
   if (!request.headers.get('content-type')?.includes('application/json')) throw new PaymentError('JSON required.', 415);
-  if (Number(request.headers.get('content-length')) > 32768) throw new PaymentError('Request too large.', 413);
+  if (Number(request.headers.get('content-length')) > maxBytes) throw new PaymentError('Request too large.', 413);
   const reader = request.body?.getReader();
   if (!reader) throw new PaymentError('Missing request body.');
   let size = 0;
@@ -22,7 +22,7 @@ export async function body(request) {
     const { done, value } = await reader.read();
     if (done) break;
     size += value.length;
-    if (size > 32768) { await reader.cancel(); throw new PaymentError('Request too large.', 413); }
+    if (size > maxBytes) { await reader.cancel(); throw new PaymentError('Request too large.', 413); }
     chunks.push(Buffer.from(value));
   }
   let parsed;

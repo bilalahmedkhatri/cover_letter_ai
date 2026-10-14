@@ -14,7 +14,7 @@ const content: Record<Locale, Content> = {
     tools: [
       ['Bring your background', 'Enter your experience, skills and achievements. Use specific facts instead of generic claims about being passionate or hardworking.'],
       ['Choose tone and length', 'Match the style to your reader: a concise professional email, a formal application or a more personal introduction.'],
-      ['Keep control of the final wording', 'Edit the draft, remove anything that does not sound like you and copy or export the version you want to keep. Drafts stay in this browser; save important work separately.'],
+      ['Keep control of the final wording', 'Edit the draft, remove anything that does not sound like you and copy or export the version you want to keep. Save important work to your account or export a copy.'],
     ],
     prepareTitle: 'A little context makes a better first draft.',
     prepareIntro: 'You do not need a perfect brief. These details give the generator a useful starting point:',

@@ -25,6 +25,7 @@ const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
 export const LocaleProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const pathname = useRoutePath();
   const [locale, setLocale] = useState<Locale>(() => resolveRoute(pathname).locale);
+  useEffect(() => { setLocale(resolveRoute(pathname).locale); }, [pathname]);
 
   // Effect to update everything when the locale changes
   useEffect(() => {

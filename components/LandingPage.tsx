@@ -1,3 +1,5 @@
+import CustomerReviews from './CustomerReviews';
+import BusinessLetterContent from './BusinessLetterContent';
 import React from 'react';
 import { LandingAdditions } from './ResourcePages';
 import * as Tabs from '@radix-ui/react-tabs';
@@ -32,8 +34,8 @@ export default function LandingPage() {
       </div>
       <div className="paper-stage rounded-2xl border border-border bg-card-secondary/70 p-5 sm:p-8">
         <div className="mb-4 flex items-center justify-between gap-3 text-xs text-text-secondary"><span className="flex items-center gap-2"><PencilLine size={14}/>{copy.sample}</span><span className="rounded-full border border-border bg-card px-3 py-1">{copy.job}</span></div>
-        <article className="sample-paper rounded-sm bg-white p-7 text-[#293d32] shadow-[0_12px_30px_-15px_rgba(20,40,25,0.25)] sm:p-9">
-          <div className="mb-8 flex items-center justify-between border-b border-[#dfe5de] pb-4"><span className="font-semibold">Alex Morgan</span><span className="text-xs uppercase tracking-widest text-[#687c6c]">{locale.toUpperCase()}</span></div>
+        <article className="sample-paper rounded-sm border border-border bg-card p-7 text-text-primary shadow-sm sm:p-9">
+          <div className="mb-8 flex items-center justify-between border-b border-border pb-4"><span className="font-semibold">Alex Morgan</span><span className="text-xs uppercase tracking-widest text-text-secondary">{locale.toUpperCase()}</span></div>
           <h2 className="mb-6 font-serif text-2xl">{copy.sampleTitle}</h2>
           <div className="space-y-4 text-sm leading-7"><p>{copy.sampleGreeting}</p><p>{copy.sampleBody}</p><p>{copy.sampleClosing}</p><p className="pt-2 font-serif text-lg italic">Alex Morgan</p></div>
         </article>
@@ -64,7 +66,9 @@ export default function LandingPage() {
     </section>
     <section><h2 className="section-title">{content.toolsTitle}</h2><div className="mt-8 grid gap-8 sm:grid-cols-3">{content.tools.map(([title, text], index) => <article key={title} className="border-t border-border pt-6"><span className="text-xs font-semibold text-accent">0{index + 1}</span><h3 className="mt-4 text-lg font-semibold">{title}</h3><p className="mt-3 text-sm leading-7 text-text-secondary">{text}</p></article>)}</div></section>
     <section className="grid gap-8 rounded-2xl border border-border bg-card-secondary p-7 sm:p-10 lg:grid-cols-2"><div><h2 className="section-title">{content.prepareTitle}</h2><p className="mt-4 text-sm leading-7 text-text-secondary">{content.prepareIntro}</p></div><ul className="space-y-5">{content.checklist.map(item => <li key={item} className="flex items-start gap-3 text-sm leading-6"><Check size={17} className="mt-1 shrink-0 text-accent" aria-hidden="true"/>{item}</li>)}</ul></section>
+    <BusinessLetterContent showFreeFaq={false} />
     <LandingAdditions />
+    <CustomerReviews />
     <section id="pricing" className="flex flex-col items-start justify-between gap-6 border-y border-border py-9 sm:flex-row sm:items-center"><p className="text-lg font-semibold">{pricingCopy(locale).teaser}</p><Button asChild variant="outline"><a href={localizedPath(locale, '/pricing')}>{pricingCopy(locale).view}<ArrowRight className="rtl:rotate-180"/></a></Button></section>
     <section className="grid gap-8 lg:grid-cols-[.9fr_1.1fr] lg:gap-20">
       <div><p className="eyebrow">{t('landingFAQTitle')}</p><h2 className="section-title mt-4">{copy.faq}</h2></div>

@@ -3,14 +3,21 @@ import { billingPlans } from '../../services/billingPlans.mjs';
 import { PaymentError, paymentConfig, createProvider, providerId, checkoutUrl, validatePayment, verifySignature } from './nowpayments.mjs';
 import { createStore } from './store.mjs';
 import { json, failure, body, sameOrigin, session, clientRateKey } from './http.mjs';
+import { createIdentity } from '../accounts/auth.mjs';
 
 const statuses = new Set(['waiting', 'confirming', 'confirmed', 'sending', 'partially_paid', 'finished', 'failed', 'refunded', 'expired']);
 const orderPattern = /^[a-f0-9]{64}$/;
 const publicOrder = order => ({ id: order.id, plan: order.plan, price: order.price, credits: order.credits,
   status: order.status, invoiceUrl: order.invoiceUrl || null, fulfilledAt: order.fulfilledAt || null });
 
-export function createHandlers({ config = paymentConfig(), store = createStore(), provider = createProvider(config), now = Date.now } = {}) {
+export function createHandlers({ config = paymentConfig(), store = createStore(), provider = createProvider(config), now = Date.now, identity = createIdentity(), requireIdentity = false } = {}) {
   const ready = () => Boolean(config.apiKey && config.ipnKey && store.ready);
+  async function owner(request, create = false) {
+    if (!requireIdentity && !request.headers.has('authorization')) return session(request, config, create);
+    const user = await identity(request);
+    const proposed = createHash('sha256').update('account:' + user.id).digest('hex');
+    return { owner: await store.authenticatedOwner(user.id, proposed), cookie: null };
+  }
   async function reconcile(order, payment) {
     if (!order.invoiceId) throw new PaymentError('Invoice is still being recorded. Retry notification.', 503);
     if (!statuses.has(payment.payment_status)) throw new PaymentError('Unknown payment status.', 409);
@@ -28,7 +35,7 @@ export function createHandlers({ config = paymentConfig(), store = createStore()
         if (!ready() || !config.enabled) throw new PaymentError('Checkout is not available yet.', 503);
         const input = await body(request);
         if (!Object.hasOwn(billingPlans, input.plan) || !/^[a-f0-9-]{36}$/.test(input.requestId || '')) throw new PaymentError('Invalid checkout request.');
-        const user = session(request, config);
+        const user = await owner(request);
         if (!user) throw new PaymentError('Please refresh the page before opening checkout.', 401);
         await store.limit('checkout:' + clientRateKey(request), 10, 3600);
         const id = createHmac('sha256', config.ipnKey).update(user.owner + ':' + input.requestId).digest('hex');
@@ -62,7 +69,7 @@ export function createHandlers({ config = paymentConfig(), store = createStore()
     async status(request) {
       try {
         if (!ready()) return json({ ready: false, checkoutEnabled: false, account: null, order: null });
-        const user = session(request, config, true);
+        const user = await owner(request, true);
         const id = new URL(request.url).searchParams.get('order');
         let order = null;
         if (id) {

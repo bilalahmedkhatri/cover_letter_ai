@@ -34,6 +34,13 @@ test('migration builds eleven billing tables and seeds exact plan prices/allocat
   const plans = (await db.query('SELECT id,price_cents,credits FROM billing.plans ORDER BY price_cents')).rows;
   assert.deepEqual(plans, [{ id: 'starter', price_cents: 1000, credits: 120 }, { id: 'plus', price_cents: 2000, credits: 630 }, { id: 'pro', price_cents: 2800, credits: 2100 }]);
 });
+test('authenticated billing owner stays stable across devices and separate between users and environments', async () => {
+  const first = await live.authenticatedOwner('account-alice', id());
+  assert.equal(await live.authenticatedOwner('account-alice', id()), first);
+  assert.notEqual(await live.authenticatedOwner('account-bob', id()), first);
+  assert.notEqual(await sandbox.authenticatedOwner('account-alice', id()), first);
+});
+
 test('real PostgreSQL function grants exactly once for eight simultaneous retries', async () => {
   const o = await order(live); const p = paid(o);
   const results = await Promise.all(Array.from({ length: 8 }, () => live.settle(o, p, instant)));

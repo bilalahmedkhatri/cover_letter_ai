@@ -24,6 +24,10 @@ export function createStore(env = process.env, injectedQuery) {
   }
   return {
     ready,
+    async authenticatedOwner(userId, proposedId) {
+      await query('INSERT INTO billing.customers(environment,id,auth_user_id) VALUES($1,$2,$3) ON CONFLICT(environment,auth_user_id) DO NOTHING', [environment, proposedId, userId]);
+      return (await query('SELECT id FROM billing.customers WHERE environment=$1 AND auth_user_id=$2', [environment, userId]))[0].id;
+    },
     async getOrder(id) {
       const rows = await query('SELECT * FROM billing.orders WHERE environment=$1 AND id=$2', [environment, id]);
       return orderFromRow(rows[0]);

@@ -1,7 +1,7 @@
 module.exports = {
   content: [
-    "./index.html",
-    "./App.tsx",
+    "./app/**/*.{ts,tsx}",
+    "./lib/**/*.{ts,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
     "./contexts/**/*.{js,ts,jsx,tsx}",
     "./services/**/*.{js,ts,jsx,tsx}",

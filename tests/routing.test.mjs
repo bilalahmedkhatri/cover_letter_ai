@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import sitemap from '../app/sitemap.ts';
+import { blogPosts } from '../services/blogContent.mjs';
 import { resolveRoute, localizedPath, localeCodes, publicPages, siteOrigin } from '../services/routing.ts';
 
 test('legacy URLs always resolve to English and are idempotent', () => {
@@ -30,14 +31,27 @@ test('unknown URLs and missing assets never become valid localized pages', () =>
   }
 });
 
+test('published blog articles keep their locale and unknown slugs remain missing', () => {
+  for (const locale of localeCodes) {
+    for (const post of blogPosts) {
+      const page = `/blog/${post.slug}`;
+      const path = localizedPath(locale, page);
+      assert.deepEqual(resolveRoute(path), { locale, page, path });
+    }
+    const missing = `/${locale}/blog/unpublished-article`;
+    assert.equal(resolveRoute(missing).page, '/404');
+    assert.equal(resolveRoute(missing).path, missing);
+  }
+});
+
 test('the sitemap contains exactly the canonical public language URLs', () => {
-  const xml = readFileSync(new URL('../public/sitemap.xml', import.meta.url), 'utf8');
-  const urls = [...xml.matchAll(/<loc>(.*?)<\/loc>/g)].map(match => match[1]);
-  const expected = localeCodes.flatMap(locale => publicPages.map(page => siteOrigin + localizedPath(locale, page)));
+  const entries=sitemap();
+  const urls=entries.map(entry=>entry.url);
+  const expected = [...localeCodes.flatMap(locale => publicPages.map(page => siteOrigin + localizedPath(locale, page))), ...blogPosts.map(post => siteOrigin + localizedPath('en', `/blog/${post.slug}`))];
   assert.equal(new Set(urls).size, urls.length);
   assert.deepEqual(urls.slice().sort(), expected.sort());
   for (const url of urls) {
     assert.equal(resolveRoute(new URL(url).pathname).path, new URL(url).pathname);
   }
-  assert.ok(!xml.includes('<lastmod>'), 'Do not publish guessed last-modification dates');
+  assert.ok(entries.every(entry=>!entry.lastModified), 'Do not publish guessed last-modification dates');
 });

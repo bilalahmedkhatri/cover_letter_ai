@@ -16,6 +16,10 @@ export interface UserData {
   courseName: string;
   universityAnalysisInstruction: string;
   tone: LetterTone;
+  targetRecipient?: string;
+  outputLength?: string;
+  opportunityDescription?: string;
+  opportunityUrl?: string;
 }
 
 export interface JobDetails {

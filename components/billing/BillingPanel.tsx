@@ -5,6 +5,8 @@ import { billingCopy } from '../../services/billingCopy';
 import { pricingCopy } from '../../services/pricingCopy';
 import { localizedPath } from '../../services/routing';
 import { Button } from '../ui/button';
+import { useAccount } from '../../contexts/AccountContext';
+import { accessToken } from '../../services/authClient';
 
 type Order = { id: string; plan: string; status: string; invoiceUrl: string | null; fulfilledAt: number | null };
 type Billing = { ready: boolean; checkoutEnabled: boolean; sandbox?: boolean;
@@ -13,6 +15,7 @@ const waiting = new Set(['creating', 'waiting', 'confirming', 'confirmed', 'send
 
 export default function BillingPanel({ compact = false }: { compact?: boolean }) {
   const { locale } = useLocale();
+  const { user } = useAccount();
   const copy = billingCopy(locale);
   const pricing = pricingCopy(locale);
   const [billing, setBilling] = useState<Billing | null>(null);
@@ -25,7 +28,8 @@ export default function BillingPanel({ compact = false }: { compact?: boolean })
   const polls = useRef(0);
 
   async function refresh(signal?: AbortSignal) {
-    const response = await fetch('/api/billing/status' + (orderId.current ? '?order=' + encodeURIComponent(orderId.current) : ''), { cache: 'no-store', signal });
+    const headers = user ? { Authorization: `Bearer ${await accessToken()}` } : {};
+    const response = await fetch('/api/billing/status' + (orderId.current ? '?order=' + encodeURIComponent(orderId.current) : ''), { cache: 'no-store', signal, headers });
     const result = await response.json();
     if (!response.ok) throw new Error(copy.retry);
     if (alive.current) { setBilling(result); setError(''); }
@@ -39,7 +43,7 @@ export default function BillingPanel({ compact = false }: { compact?: boolean })
     const controller = new AbortController();
     refresh(controller.signal).catch(() => { if (alive.current && !controller.signal.aborted) setError(copy.retry); });
     return () => { alive.current = false; controller.abort(); };
-  }, []);
+  }, [user?.id]);
   useEffect(() => {
     if (!billing?.order || !waiting.has(billing.order.status) || polls.current >= 18) return;
     const controller = new AbortController();
@@ -55,7 +59,8 @@ export default function BillingPanel({ compact = false }: { compact?: boolean })
     setBusy(plan); setError('');
     try {
       requests.current[plan] ||= crypto.randomUUID();
-      const response = await fetch('/api/billing/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      if (!user) { window.location.assign(localizedPath(locale, '/login')); return; }
+      const response = await fetch('/api/billing/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${await accessToken()}` },
         body: JSON.stringify({ plan, locale, requestId: requests.current[plan] }) });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || copy.retry);

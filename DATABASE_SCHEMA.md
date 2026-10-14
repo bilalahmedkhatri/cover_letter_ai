@@ -1,6 +1,6 @@
 # Database schema
 
-The supplied Neon PostgreSQL database has the following eleven application tables in the isolated `billing` schema. Prisma also maintains `public._prisma_migrations`. No production customer or test payment records were inserted.
+The Neon PostgreSQL database has eleven billing tables and three account tables in the `app` schema. Prisma also maintains `public._prisma_migrations`; Neon manages its own authentication schema. Temporary account test records were removed after browser verification. No test payments were made.
 
 | Table | Purpose |
 | --- | --- |
@@ -20,18 +20,20 @@ Live and sandbox data are separated by environment keys. `billing.fulfill_order`
 
 Schema source: `prisma/schema.prisma`. Migration source: `prisma/migrations/202610110001_billing/migration.sql`. Database access stays on the server. Prisma handles migrations; the runtime uses the official Neon HTTP driver.
 
+Account migration: `prisma/migrations/202610120002_accounts/migration.sql`. `app.profiles` stores writing preferences, `app.documents` stores selected letter/email drafts and research notes, and `app.reviews` stores consent and moderation state. Queries enforce the signed-in user ID for reads, edits and deletes. File bodies and screenshots are not saved there. See ACCOUNT_SETUP.md.
+
 ## Tables needed next
 
 Create these alongside their actual features, rather than adding unused tables now:
 
 | Priority | Tables / managed service | Why |
 | --- | --- | --- |
-| Before paid launch | Managed authentication + `user_profiles` | Login, verified email, cross-device ownership and recovery; link identities to existing billing customers. Do not build a plaintext password table. |
+| Implemented | Neon Auth + `app.profiles`, `app.documents`, `app.reviews` | Managed login, owner-scoped drafts/research, preferences and moderated consented reviews. Billing customers map to authentication identities. See ACCOUNT_SETUP.md for deployment configuration. |
 | Before paid launch | `ai_requests` | Model/provider, request status, input/output/cached tokens, currency and measured cost; idempotency per request. |
 | Before paid launch | Connect existing `generation_reservations` to authenticated server AI calls | The reservation/settlement functions exist; the browser generator does not yet use them. |
-| Product feature | `letters`, `letter_versions` | Saved drafts, edits, language and document history under user ownership. |
+| Future feature | `letter_versions` | Optional revision history for the existing saved documents. |
 | Product feature | `documents` | Upload metadata, retention and ownership; keep resume/file bodies in private object storage. |
-| University research | `research_reports`, `research_sources` | Findings, source URLs, retrieval dates and associated AI cost. |
+| Future research automation | `research_reports`, `research_sources` | Structured report/source retrieval history and measured AI cost beyond the existing saved notes. |
 | Payment operations | `refunds`, `audit_events` | Refund reconciliation, credit/access adjustments and operator action history. |
 
 Authentication and server-side AI metering are the immediate next stage. Model labels and proposed credit weights are not evidence of actual model availability or cost. Keep checkout disabled until these features are delivering the paid service.

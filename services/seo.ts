@@ -3,10 +3,12 @@ import { translations, type TranslationKeys } from './translations';
 import { localizedPath, localeCodes, siteOrigin, type Page } from './routing';
 import { resourceMetadata, type ResourcePage } from './resourceCopy';
 import { pricingLabel } from './pricingCopy';
+import { businessLetterCopy } from './businessLetterCopy.mjs';
+import { blogCopy, findBlogPost } from './blogContent.mjs';
 
-const titles: Record<Exclude<Page, '/pricing' | ResourcePage>, TranslationKeys> = {
+const titles: Partial<Record<Page, TranslationKeys>> = {
   '/': 'titleHome', '/dashboard': 'titleDashboard', '/about': 'titleAbout',
-  '/privacy': 'titlePrivacy', '/terms': 'titleTerms', '/404': 'title404',
+  '/privacy': 'titlePrivacy', '/terms': 'titleTerms', '/404': 'title404', '/login': 'titleDashboard', '/account': 'titleDashboard',
 };
 const descriptions: Record<Locale, string[]> = {
   en: [
@@ -73,15 +75,20 @@ export const legalLanguageNotice: Record<Locale, string> = {
 
 // Legal bodies remain the original English text until full policy translations are reviewed.
 export function alternateLocales(page: Page): Locale[] {
+  if (page.startsWith('/blog/')) return []; // Article bodies currently remain English.
+  if (['/login','/account'].includes(page) || page.startsWith('/dashboard')) return [];
   if (['/pricing', '/features', '/guides', '/compare'].includes(page)) return ['en', 'ru'];
   return page === '/privacy' || page === '/terms' ? [] : localeCodes;
 }
 export function getMetadata(locale: Locale, page: Page) {
   const resource = ['/features', '/guides', '/compare'].includes(page) ? resourceMetadata(locale, page as ResourcePage) : null;
+  const business = page === '/' ? businessLetterCopy[locale] : null;
+  const post = page.startsWith('/blog/') ? findBlogPost(page.slice(6)) : null;
+  const blog = page === '/blog' ? { title: `${blogCopy[locale].label} | ailettergen`, description: blogCopy[locale].intro } : post ? { title: `${post.title} | ailettergen`, description: post.intro } : null;
   return {
-    title: resource?.title ?? (page === '/pricing' ? `${pricingLabel[locale]} | AI Letter Generator` : translations[locale][titles[page as keyof typeof titles]]),
-    description: resource?.description ?? (page === '/pricing' ? (locale === 'ru' ? 'Сравните Starter за $10, Plus за $20 и Pro за $28: кредиты, лимиты писем и исследований, возможности и продление на 30 дней. Платные тарифы готовятся к запуску.' : 'Compare Starter $10, Plus $20 and Pro $28: shared credits, letter and research limits, features and 30-day prepaid renewal. Paid plans are being prepared.') : descriptions[locale][pages.indexOf(page)] || translations[locale].title404),
-    canonical: siteOrigin + localizedPath(locale, page),
+    title: page.startsWith('/dashboard') ? `${locale==='ru'?'Ваш кабинет':'Your dashboard'} | AI Letter Generator` : ['/login','/account'].includes(page) ? `${locale === 'ru' ? (page === '/login' ? 'Войти' : 'Ваш кабинет') : (page === '/login' ? 'Sign in' : 'Your account')} | AI Letter Generator` : blog?.title ?? resource?.title ?? (page === '/pricing' ? `${pricingLabel[locale]} | AI Letter Generator` : translations[locale][titles[page as keyof typeof titles]]),
+    description: blog?.description ?? business?.description ?? resource?.description ?? (page === '/pricing' ? (locale === 'ru' ? 'Сравните Starter за $10, Plus за $20 и Pro за $28: кредиты, лимиты писем и исследований, возможности и продление на 30 дней. Платные тарифы готовятся к запуску.' : 'Compare Starter $10, Plus $20 and Pro $28: shared credits, letter and research limits, features and 30-day prepaid renewal. Paid plans are being prepared.') : descriptions[locale][pages.indexOf(page)] || translations[locale].title404),
+    canonical: siteOrigin + localizedPath(post ? 'en' : locale, page),
     ogLocale: ogLocales[locale],
   };
 }
@@ -92,7 +99,7 @@ export function metadataHtml(locale: Locale, page: Page): string {
   const meta = getMetadata(locale, page);
   return `<title>${escapeHtml(meta.title)}</title>
 <meta name="description" content="${escapeHtml(meta.description)}">
-<meta name="robots" content="${page === '/404' ? 'noindex,follow' : 'index,follow'}">
+<meta name="robots" content="${['/404','/login','/account'].includes(page) ? 'noindex,follow' : 'index,follow'}">
 ${page === '/404' ? '' : `<link rel="canonical" href="${meta.canonical}">`}
 ${page === '/404' ? '' : alternateLocales(page).map(code => `<link rel="alternate" hreflang="${code}" href="${siteOrigin + localizedPath(code, page)}">`).join('\n')}
 ${page === '/404' || alternateLocales(page).length === 0 ? '' : `<link rel="alternate" hreflang="x-default" href="${siteOrigin + localizedPath('en', page)}">`}
@@ -115,7 +122,7 @@ export function updateMetadata(locale: Locale, page: Page): void {
     element.content = value;
   };
   setMeta('name', 'description', meta.description);
-  setMeta('name', 'robots', page === '/404' ? 'noindex,follow' : 'index,follow');
+  setMeta('name', 'robots', ['/404','/login','/account'].includes(page) ? 'noindex,follow' : 'index,follow');
   setMeta('property', 'og:title', meta.title);
   setMeta('property', 'og:description', meta.description);
   setMeta('property', 'og:locale', meta.ogLocale);

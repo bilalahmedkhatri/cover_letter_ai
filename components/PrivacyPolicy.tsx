@@ -28,7 +28,7 @@ const PrivacyPolicy: React.FC = () => {
         <li>Information related to job or university applications (e.g., URLs, screenshots).</li>
       </ul>
       <p>
-        All data you provide is processed in-memory for the duration of your request to generate a letter. We do not store your personal data, resumes, or generated letters on our servers after your session ends.
+        Your writing inputs are sent to the selected AI service to prepare a response. Unsaved drafts remain in the current workspace until you refresh. Older browser-local drafts, if present, remain on your device. If you create an account and explicitly save your profile, a draft or research notes, those items are stored in our Neon database so you can reopen them after signing in. Login sessions are managed by Neon Auth. Payment and usage records are stored separately for billing. Reviews are stored with publication consent and appear publicly only after approval. Raw resume uploads and screenshots are not part of the account document save flow.
       </p>
 
       <h2 className="text-xl font-semibold text-accent pt-4">3. How We Use Your Information</h2>
@@ -48,7 +48,7 @@ const PrivacyPolicy: React.FC = () => {
 
       <h2 className="text-xl font-semibold text-accent pt-4">5. Third-Party Services</h2>
       <p>
-        Our service uses Google's Gemini API to process your data and generate content. Your data is sent to Google for this purpose. We recommend you review Google's Privacy Policy to understand how they handle data. We are not responsible for the data practices of third-party services.
+        The current AI workflows may use Google Gemini. Account authentication and database storage use Neon, and the integrated crypto payment provider is NOWPayments when checkout is enabled. Information needed for each requested operation is processed by the relevant service. Review each provider’s privacy terms; we do not promise a single retention or training policy across all providers.
       </p>
 
       <h2 className="text-xl font-semibold text-accent pt-4">6. Changes to This Privacy Policy</h2>

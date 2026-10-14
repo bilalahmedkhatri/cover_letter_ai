@@ -1,4 +1,5 @@
 import React from 'react';
+import BusinessLetterContent from './BusinessLetterContent';
 import { ArrowRight, Check, FileText, GraduationCap, Mail } from 'lucide-react';
 import { useLocale } from '../contexts/LocaleContext';
 import { useFormState } from '../contexts/FormStateContext';
@@ -66,5 +67,6 @@ export default function ResourcePages({ page }: { page: ResourcePage }) {
       {page === '/compare' && <><PriceComparison/><section className="max-w-3xl"><h2 className="section-title">{c.choiceTitle}</h2><p className="mt-5 text-sm leading-8 text-text-secondary">{c.choice}</p><a href={localizedPath(locale, '/features')} className="mt-5 inline-block text-sm font-semibold text-accent underline underline-offset-4">{c.featuresTitle}</a></section></>}
       <div className="border-t border-border pt-8"><Button asChild size="lg"><a href={localizedPath(locale, '/dashboard')}>{c.start}<ArrowRight/></a></Button></div>
     </div>
+    {page !== '/compare' && <BusinessLetterContent />}
   </div>;
 }

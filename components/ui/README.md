@@ -1,15 +1,7 @@
-# Shared controls
+# Shared UI
 
-Button follows the shadcn-style Radix Slot/CVA composition. Language menus use
-Radix DropdownMenu and purpose/workspace navigation uses Radix Tabs. These
-primitives provide keyboard interaction, focus management and ARIA behavior;
-product-specific composition and visual styling live in our source.
+Official shadcn/ui components were installed with the registry CLI using `components.json` (new-york, Radix, Zinc). Compose these primitives instead of writing duplicate controls. `IconButton` adds the required accessible label to the shared Button.
 
-Input, Textarea and NativeSelect are shared native controls. Use named Lucide
-imports for standard icons. Do not combine different primitive libraries for the
-same behavior. Keep logical padding/alignment properties for Arabic and use
-the same component variants throughout the product.
+Theme tokens live in `app/globals.css` and `tailwind.config.cjs`; `cn` is shared through `lib/utils.ts`. Generator fields reuse `FormField`; all route loading/error files reuse `PageLoading` and `PageError`. The Next error boundary uses `retry()` to fetch fresh content.
 
-References: https://ui.shadcn.com/docs/components/radix/button,
-https://www.radix-ui.com/primitives/docs/components/dropdown-menu,
-https://www.radix-ui.com/primitives/docs/components/tabs.
+Use Lucide document, pen and navigation icons. Branding must not use sparkles, brains or robots. Keep logical spacing and alignment for RTL languages, label form fields, and verify focus, dark/light contrast and mobile behavior in a browser.

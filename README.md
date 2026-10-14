@@ -1,133 +1,79 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# ailettergen
 
-# Run and deploy your AI Studio app
+Next.js App Router application for job cover letters, university applications and professional outreach emails. The existing Neon identities, cloud drafts and NOWPayments billing data are retained.
 
-This contains everything you need to run your app locally.
+## Local setup
 
-View your app in AI Studio: https://ai.studio/apps/drive/1RpktAWM9KZdJWKxUiSmDK7kf8o0fbR-s
-
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
-
-## Canonical routes and deployment checks
-
-English public pages use `/en`, `/en/dashboard`, `/en/about`, `/en/privacy`,
-and `/en/terms`. The seven supported languages keep their own prefixes.
-Legacy unprefixed pages resolve to English even when the browser has a different
-language preference. All internal links and sitemap entries use localized paths.
-
-`vercel.json` adds permanent (308) redirects from `/` and the legacy pages,
-plus hostname-scoped redirects from `www.ailettergen.com`. Vercel's HTTPS
-handling should be checked alongside these deployment rules. Its generated-page
-rewrites cover only supported language/page combinations, leaving static files
-and unknown paths to normal hosting behavior.
-
-Validation commands (Node.js 22.18+ or 24+ for native TypeScript stripping):
+Use Node.js 22.18+ or 24+.
 
 ```sh
-npm run test:seo
-npx tsc --noEmit
-npm run build
+npm install
+npm run dev
 ```
 
-Vite dev/preview does not execute Vercel redirects. After deployment, verify:
+Open `http://localhost:3000/en`. Copy `.env.example` to `.env.local` and configure the server variables described in `ACCOUNT_SETUP.md`. Never commit credentials.
 
-- `/` returns a permanent redirect to `/en`, which returns 200.
-- `/dashboard?ref=test` redirects to `/en/dashboard?ref=test`.
-- `www` and HTTP aliases reach the preferred HTTPS host without a loop.
-- `/ru` and `/ru/dashboard` keep their language and return 200.
-- `/en/` redirects to `/en`, with no trailing slash in its canonical.
-- `/robots.txt`, `/sitemap.xml`, and built JS/CSS return their correct content types.
-- Unknown URLs and missing assets return HTTP 404.
-- Rendered canonicals and language alternates match the sitemap URLs.
+```sh
+npm run build
+npm run preview
+npm run test:seo
+npm run test:prerender
+npm run test:workflow
+npm run test:accounts
+npm run test:payments
+npx tsc --noEmit
+```
 
-Then submit `https://ailettergen.com/sitemap.xml` in Search Console and check
-the English and Russian homepage canonicals after Google recrawls them.
+`test:prerender` now checks App Router structure and access guards; public pages are server-rendered on demand rather than emitted into Vite's `dist` folder. Browser verification is also required for redirects, metadata and interactive UI.
 
-## Public HTML and metadata
+## Architecture
 
-`npm run build` now builds the Vite client, then renders the existing React app
-for all 35 public URLs using Vite's SSR module loader. Generated pages live at
-`dist/<locale>/index.html` and `dist/<locale>/<page>/index.html`; Vercel rewrites
-serve those files under the existing canonical URLs. No runtime SSR server or
-additional dependency is required. Deploy the complete `dist` directory.
+- `app/[locale]`: localized public pages; each page owns `page.tsx`, `loading.tsx` and `error.tsx`.
+- `app/[locale]/dashboard`: protected overview, three writing workflows, cloud library, billing, profile and feedback pages.
+- `components/ui`: official shadcn/ui components installed through its registry. Product compositions reuse these primitives.
+- `components/dashboard` and `components/generator`: reusable sidebar, cards, form fields, resume upload and editor.
+- `lib/auth`: Neon same-origin auth proxy and server identity checks. Route protection runs in `proxy.ts`, the dashboard layout, individual dashboard pages and account/generation APIs.
+- `server/accounts` and `server/payments`: owner-scoped durable storage, signed payment callbacks and atomic usage reservations.
+- `app/api/generate`: server-only provider calls. The browser receives output and token metadata, never provider credentials.
 
-The client hydrates this markup. Public text, links, metadata and theme styles
-are present before JavaScript loads. Generating/editing letters still requires
-JavaScript. FAQs use native details/summary and work without JavaScript.
-`services/seo.ts` is the shared source for build-time and client metadata.
+`app/globals.css` shares emerald/zinc tokens between the public UI and dashboard. `components/Brand.tsx` and `public/icon.svg` share the minimalist document emblem. Shadcn Sidebar, Sheet, Select, Tabs, Tooltip, Dialog, Card, Badge, Input, Textarea, Skeleton and Button handle common UI behavior.
 
-About pages use translated product information. Privacy/terms preserve the
-original English policy text, label its language explicitly and omit hreflang
-claims until complete policy translations are reviewed. The automatically
-changing policy dates and unverified testimonial section were removed.
-The absent `og-image.png` reference was removed; a branded raster social image
-can be added with the redesign.
+## Writing workflow
 
-Run `npm run build`, `npm run test:prerender`, `npm run test:seo` and
-`npx tsc --noEmit`. After deployment inspect the raw HTML of `/en`, `/ru`,
-`/ru/dashboard` and `/ar/about`, checking content, canonical, description,
-lang/dir and response status. Reconfirm the existing redirects and unknown-URL
-404 status on Vercel; Vite preview does not execute hosting redirect rules.
+Resume parsing is loaded only when needed: PDF through PDF.js, DOCX through Mammoth's browser build, TXT through the browser File API. Limits: 5 MB, 30 PDF pages and 12,000 extracted characters. Scanned PDFs without text require pasted background; OCR is not included. The original file is not stored. Extracted text is submitted to the writing provider only when the user generates a draft.
 
-## Interface and commercial planning
+Each workflow accepts an opportunity URL and/or description, recipient, tone, output language and length. Pasted requirements provide more reliable context than a URL alone. URL-based generation uses optional Google Search grounding; it does not guarantee access to every source page.
 
-The interface uses the shared controls in `components/ui`, Radix dropdown/tabs
-and Lucide icons. Public copy is localized in `services/interfaceCopy.ts`.
-AI SDKs load dynamically when generation/import is requested. Existing providers
-are retained; the redesign does not activate billing or change AI models.
+The Tiptap editor supports bold, italic, lists, alignment, undo/redo, live preview and copying. PDF export opens a print view; choose **Save as PDF** in the browser's print dialog. Native browser rendering supports multilingual scripts without shipping a large font bundle. Cloud drafts store plain text and writing settings; editor formatting is not persisted between sessions.
 
-The current provider/pricing proposal lives in
-`research/SUBSCRIPTION_PLANS_2026-10-11.md` ($10/$20/$28; Luna/Opus).
-The earlier proposal is retained as a historical report. Open the self-contained
-`research/cost-calculator.html` to change prices, token assumptions, free trials,
-fees, infrastructure and labor costs. These are planning estimates, not invoices.
-Regenerate it and its JSON/CSV scenarios with `node scripts/build-research.mjs`;
-verify the arithmetic with
-`node --test --test-isolation=none tests/cost-model.test.mjs`.
-Synthetic multilingual fixtures and unrun reviewer sheets live in
-`research/evaluation`; regenerate with `node scripts/build-evaluation-fixtures.mjs`.
-No paid-provider quality benchmark has been performed.
+The current configured provider is Gemini (`GEMINI_API_KEY`, optional `GEMINI_MODEL`). No GPT/Claude model is claimed to be connected. Free access allows up to three generation attempts per UTC day, with ten attempts per hour overall. Existing active paid accounts use atomic standard-letter reservations; failed paid provider calls refund reservations. Paid checkout remains disabled until launch validation. Premium generation and automatic research are not enabled by this migration.
 
-## Payments and database
+## Billing, data and deployment
 
-NOWPayments hosted invoices, signed callbacks and atomic Neon PostgreSQL credit
-allocation are implemented. See [PAYMENTS_SETUP.md](PAYMENTS_SETUP.md) for endpoint
-and deployment configuration, and [DATABASE_SCHEMA.md](DATABASE_SCHEMA.md) for
-the nine created billing tables and the next feature tables.
+Starter $10, Plus $20 and Pro $28 retain the shared weighted allowances in `services/billingPlans.mjs`. Limits are alternative maxima from the same balance. NOWPayments invoices and signed, idempotent IPN settlement are retained. Crypto renewal remains prepaid rather than an automatic wallet debit.
 
-Run `npm run test:payments` for payment/security and PostgreSQL function tests.
-Keep checkout disabled until authenticated server-side AI usage is implemented.
+Apply existing migrations with `npm run db:migrate`; inspect `DATABASE_SCHEMA.md`. Real reviews require publication consent and moderation (`npm run reviews -- list|publish UUID|reject UUID`). No invented testimonials are shown.
 
-Pricing is a dedicated page at `/en/pricing` and `/ru/pricing`, with plan cards,
-feature comparison, shared-credit examples and renewal FAQs. Other locale routes
-show an explicit notice before English plan details. Header/footer navigation,
-Vercel redirects, prerendering and the sitemap include pricing. The generator
-shows payment/access status and links to pricing instead of repeating plan cards.
+Vercel now uses **Next.js** and `npm run build`; clear any dashboard override pointing to `dist` or Vite. Add server environment variables yourself, then redeploy. Secrets have not been uploaded by this change. Follow `ACCOUNT_SETUP.md` for the new cookie secret. Browser drafts from older versions are not deleted or silently uploaded; the current workspace saves only through **Save to account**. Export unsaved work before refreshing.
 
-The latest limits and consumption weights are documented in [PLAN_USAGE.md](PLAN_USAGE.md).
-The allowance migration adds `usage_allocations` and `generation_reservations`;
-there are now eleven billing tables. The server metering wrapper is implemented
-and tested, but the existing client AI generator must still be moved onto it.
-The landing page includes localized use cases, writing tools, preparation and
-review guidance in all seven locales. Pricing omits raw units and payment/access
-comparison rows.
+Public routes retain locale-prefixed URLs, canonical metadata, language alternates and contextual links. `/sitemap.xml` lists public pages only; private account/dashboard pages are noindex. Root and legacy redirects live in `next.config.mjs`. Check www/HTTPS, API availability and auth trusted origins on the hosted deployment after redeploying.
 
-Public resources now include `/features`, `/guides` and `/compare` (localized routes).
-English and Russian bodies are complete; other locales show a language notice.
-The comparison cites official Rezi/Teal prices verified October 12, 2026 and distinguishes planned pricing, free options and product scope.
-Draft review runs locally with Unicode word counts, optional length targets and common placeholder warnings. Guides can preload writing instructions; users can download TXT and multi-page PDF.
-Run `node --test --test-isolation=none tests/draft-review.test.mjs` for writing checks.
+Research and earlier product/cost evaluations remain under `research/`, `PRODUCT_REDESIGN_RESEARCH_2026-10-11.md` and the existing billing documentation. Browser AI-flow checks use mocked provider output; they do not establish live model quality or actual provider cost.
 
-Vercel must use the committed `vercel.json` build command (`npm run build`).
-A bare `vite build` skips prerendering and leaves localized rewrite destinations missing, returning platform 404s. The configured output directory is `dist`.
+## Blog pages
+
+`/[locale]/blog` lists three writing guides; `/[locale]/blog/[slug]` renders
+each article with the existing `PageArticle` template. Listing pages reuse
+the installed Card, Badge and Button components, typography and responsive
+grid styles. Both page folders reuse PageLoading and PageError.
+Titles, excerpts, section IDs and workflow destinations live in
+`services/blogContent.mjs`; detailed prose is reused from `pageArticles.mjs`.
+Add another post there with a unique slug and valid existing section IDs.
+Articles currently have English bodies and show a notice on other locales.
+Their canonical URLs and sitemap entries point to English; the blog index
+has localized navigation and introductions. No CMS or invented authors,
+publication dates or reviews are added.
+
+## Dependency check
+
+The official Neon SDK includes auth UI/adapter dependencies that pull Prisma CLI tooling into npm's production audit through optional peers. Current advisories include that tooling and Mammoth's CLI-only argument parser; this app uses Neon HTTP queries and Mammoth's browser build. No claim of a clean dependency audit is made. Review upstream fixes before production launch; do not force a Prisma downgrade or mismatched auth dependency versions merely to suppress the audit.

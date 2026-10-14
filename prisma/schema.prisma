@@ -1,6 +1,46 @@
 datasource db {
   provider = "postgresql"
-  schemas  = ["billing"]
+  schemas  = ["billing", "app"]
+}
+
+model Profile {
+  userId String @id @map("user_id")
+  name String @default("")
+  skills String @default("")
+  experience String @default("")
+  language String @default("English")
+  tone String @default("Professional")
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+  @@map("profiles")
+  @@schema("app")
+}
+
+model Document {
+  id String @id @db.Uuid
+  userId String @map("user_id")
+  kind String
+  title String
+  content String
+  context Json @default("{}")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+  @@index([userId, updatedAt(sort: Desc)], map: "documents_owner_updated")
+  @@map("documents")
+  @@schema("app")
+}
+
+model Review {
+  id String @id @db.Uuid
+  userId String @unique @map("user_id")
+  displayName String @map("display_name")
+  rating Int @db.SmallInt
+  content String
+  publishConsent Boolean @map("publish_consent")
+  status String @default("pending")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+  @@map("reviews")
+  @@schema("app")
 }
 
 model Plan {
