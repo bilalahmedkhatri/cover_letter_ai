@@ -1,3 +1,4 @@
+import { publicWorkflows } from '@/services/workflow.mjs';
 import CustomerReviews from './CustomerReviews';
 import BusinessLetterContent from './BusinessLetterContent';
 import React from 'react';
@@ -17,9 +18,10 @@ export default function LandingPage() {
   const { userData, setUserData } = useFormState();
   const copy = interfaceCopy(locale);
   const content = landingContent(locale);
-  const purpose = userData.documentType === 'email' ? 'email' : userData.letterType === 'university' ? 'university' : 'job';
+  const selectedPurpose = userData.documentType === 'email' ? 'email' : userData.letterType === 'university' ? 'university' : 'job';
   const choose = (value: string) => setUserData(previous => ({ ...previous, documentType: value === 'email' ? 'email' : 'letter', letterType: value === 'university' ? 'university' : 'job' }));
-  const purposes = [{ value: 'job', label: copy.job, Icon: FileText, text: t('landingForJobSeekersText') }, { value: 'university', label: copy.university, Icon: GraduationCap, text: t('landingForStudentsText') }, { value: 'email', label: copy.email, Icon: Mail, text: t('landingForProfessionalsText') }];
+  const purposes = [{ value: 'job', label: copy.job, Icon: FileText, text: t('landingForJobSeekersText') }, { value: 'university', label: copy.university, Icon: GraduationCap, text: t('landingForStudentsText') }, { value: 'email', label: copy.email, Icon: Mail, text: t('landingForProfessionalsText') }].filter(item=>publicWorkflows.includes(item.value==='job'?'cover-letter':item.value));
+  const purpose=purposes.some(item=>item.value===selectedPurpose)?selectedPurpose:'job';
   return <div className="landing space-y-16 sm:space-y-24">
     <section className="hero-grid grid items-center gap-12 pt-5 pb-4 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:pt-12">
       <div>
@@ -53,7 +55,7 @@ export default function LandingPage() {
     <section>
       <h2 className="section-title max-w-3xl">{content.title}</h2>
       <p className="mt-5 max-w-3xl text-base leading-8 text-text-secondary">{content.intro}</p>
-      <div className="mt-10 grid gap-8 md:grid-cols-3">{content.cases.map(([title, text], index) => {
+      <div className="mt-10 grid gap-8 md:grid-cols-3">{content.cases.filter((_,index)=>publicWorkflows.includes(['cover-letter','university','email'][index])).map(([title, text], index) => {
         const Icon = [FileText, GraduationCap, Mail][index];
         return <article key={title} className="rounded-xl border border-border bg-card p-6 sm:p-7"><Icon size={22} className="text-accent" aria-hidden="true"/><h3 className="mt-5 text-lg font-semibold leading-7">{title}</h3><p className="mt-4 text-sm leading-7 text-text-secondary">{text}</p></article>;
       })}</div>

@@ -14,8 +14,7 @@ interface FormStateContextType {
 
 const FormStateContext = createContext<FormStateContextType | undefined>(undefined);
 
-export const FormStateProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [userData, setUserData] = useState<UserData>({
+export const initialUserData: UserData = {
     name: '',
     skills: '',
     experience: '',
@@ -30,7 +29,10 @@ export const FormStateProvider: React.FC<{ children: ReactNode }> = ({ children 
     courseName: '',
     universityAnalysisInstruction: '',
     tone: 'Professional',
-  });
+  };
+
+export const FormStateProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [userData, setUserData] = useState<UserData>({ ...initialUserData });
 
   const [jobDetails, setJobDetails] = useState<JobDetails>({
     url: '',

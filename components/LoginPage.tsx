@@ -6,12 +6,14 @@ import { useLocale } from "../contexts/LocaleContext";
 import { localizedPath } from "../services/routing";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
+import { Spinner } from './ui/spinner';
 
 export default function LoginPage() {
   const router = useRouter();
   const { locale } = useLocale();
   const ru = locale === "ru";
   const { user, refresh } = useAccount();
+  useEffect(()=>{if(user)router.replace(localizedPath(locale,'/dashboard'));},[user,locale,router]);
   const [mode, setMode] = useState<"login" | "signup" | "reset">("login");
   const [ready, setReady] = useState(false);
   useEffect(() => setReady(true), []);
@@ -26,6 +28,7 @@ export default function LoginPage() {
     typeof window !== "undefined"
       ? new URLSearchParams(window.location.search).get("token")
       : null;
+  const unavailable=typeof window!=='undefined' && new URLSearchParams(window.location.search).get('unavailable')==='1';
   const go = () => {
     router.replace(localizedPath(locale, "/dashboard"));
     router.refresh();
@@ -107,14 +110,14 @@ export default function LoginPage() {
         </h1>
         <p className="mt-6 leading-8 text-text-secondary">
           {ru
-            ? "Сохраняйте черновики, сведения о себе и заметки об университетах. Продолжайте работу с другого устройства и проверяйте свой тариф."
-            : "Save drafts, reuse your background and keep university research notes together. Continue from another device and view your plan and payment history."}
+            ? "Открывайте историю сопроводительных писем, используйте сведения о себе и продолжайте работу с другого устройства. Проверяйте свой тариф и историю платежей."
+            : "Open your cover letter history, reuse your background and continue from another device. View your plan and payment history."}
         </p>
         <ul className="mt-8 space-y-4 text-text-secondary">
           <li>
             {ru
-              ? "Редактируемые письма и деловые сообщения"
-              : "Editable letters and professional emails"}
+              ? "Редактируемые сопроводительные письма"
+              : "Editable job cover letters"}
           </li>
           <li>
             {ru
@@ -123,21 +126,14 @@ export default function LoginPage() {
           </li>
           <li>
             {ru
-              ? "История исследований и платежей"
-              : "Research notes and payment history"}
+              ? "История чатов и платежей"
+              : "Chat history and payment history"}
           </li>
         </ul>
       </div>
       <div className="rounded-2xl border border-border bg-card p-7 sm:p-9">
         {user ? (
-          <>
-            <h2 className="text-xl font-semibold">
-              {ru ? "Вы уже вошли" : "You are signed in"}
-            </h2>
-            <Button className="mt-6" onClick={go}>
-              {ru ? "Открыть кабинет" : "Open account"}
-            </Button>
-          </>
+          <Spinner label={ru ? 'Открываем кабинет…' : 'Opening dashboard…'} />
         ) : (
           <>
             <h2 className="text-2xl font-semibold">
@@ -295,12 +291,12 @@ export default function LoginPage() {
             </div>
           </>
         )}
-        {message && (
+        {(message || unavailable) && (
           <p
             role="status"
             className="mt-5 rounded-lg border border-border p-3 text-sm"
           >
-            {message}
+            {message || (ru ? 'Вход временно недоступен. Попробуйте позже.' : 'Sign-in is temporarily unavailable. Please try again later.')}
           </p>
         )}
         {!authConfigured && (

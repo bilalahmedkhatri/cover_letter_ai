@@ -1,3 +1,4 @@
+import {publicWorkflows} from './workflow.mjs';
 import type { Locale } from '../types';
 import { businessLetterCopy } from './businessLetterCopy.mjs';
 const en = {
@@ -31,6 +32,6 @@ const localized: Record<Locale, InterfaceCopy> = {
 };
 export const interfaceCopy = (locale: Locale): InterfaceCopy => ({
   ...localized[locale],
-  hero: businessLetterCopy[locale].hero,
-  intro: businessLetterCopy[locale].intro,
+  hero: publicWorkflows.includes('email') ? businessLetterCopy[locale].hero : localized[locale].hero,
+  intro: publicWorkflows.includes('email') ? businessLetterCopy[locale].intro : localized[locale].intro,
 });

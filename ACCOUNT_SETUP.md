@@ -17,7 +17,7 @@ Never prefix credentials with `NEXT_PUBLIC_`. The old `VITE_NEON_AUTH_URL` is no
 
 Run `npm run dev` and use `http://localhost:3000`. Stop the older Vite server first if it still owns this port. Neon must allow the exact local origin; `127.0.0.1` is a different origin. Production preview uses production origin validation, so for local production-preview testing set `BILLING_SITE_URL=http://localhost:3000` in that process only.
 
-Sign up/sign in, reload a protected dashboard route, save a draft, reopen it and sign out. An anonymous nested dashboard URL must redirect to the locale's login page. `/api/account` and `/api/generate` must return 401 without a session. Profile/draft writes must reject foreign origins and cannot select another user's owner ID.
+Sign up/sign in, reload a protected dashboard route, save a draft, reopen it and sign out. An anonymous nested dashboard URL must redirect to the locale's login page. `/api/account` and `/api/generate` must return 401 without a session. Profile writes must reject foreign origins and cannot select another user's owner ID.
 
 ## Vercel
 
@@ -33,8 +33,8 @@ The read-only Google model metadata check rejected the current local key with `A
 
 ## Cloud features
 
-The account library supports searching, editing, deleting and reopening letters, emails and existing research notes. Profile preferences can be reused in the writing forms. Plan/balance and payment history come from durable billing storage. Original resume files are not saved. Rich-text formatting is currently transient; saved draft content is plain text.
+The sidebar chat history automatically stores generation requests and responses and supports reopening, renaming and deleting conversations. Manual Saved drafts and Share feedback submission have been removed. Profile preferences can be reused in the writing forms. Plan/balance and payment history come from durable billing storage. Original resume files are not saved. Rich-text formatting is currently transient; generated history content is plain text.
 
-The `app.profiles`, `app.documents` and `app.reviews` tables use verified identity and owner-scoped SQL. Neon owns its authentication tables. Existing billing customers map to the same authenticated account. No new migration is required for the App Router/UI change.
+The `app.profiles`, `app.conversations`, `app.messages` and `app.reviews` tables use verified identity and owner-scoped SQL. Neon owns its authentication tables. Existing billing customers map to the same authenticated account. Apply the current Prisma migrations, including removal of the former `app.documents` table.
 
-Consented reviews start pending. Moderate with `npm run reviews -- list`, then `npm run reviews -- publish UUID` or `reject UUID`. Private writing details must not be published as feedback. Public reference articles remain English where translations have not been reviewed; private screens intentionally remain concise.
+Existing consented reviews remain available for moderation; dashboard review submissions are disabled. Moderate with `npm run reviews -- list`, then `npm run reviews -- publish UUID` or `reject UUID`. Private writing details must not be published as feedback. Public reference articles remain English where translations have not been reviewed; private screens intentionally remain concise.

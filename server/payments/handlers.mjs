@@ -69,8 +69,15 @@ export function createHandlers({ config = paymentConfig(), store = createStore()
     async status(request) {
       try {
         if (!ready()) return json({ ready: false, checkoutEnabled: false, account: null, order: null });
-        const user = await owner(request, true);
         const id = new URL(request.url).searchParams.get('order');
+        let user;
+        try { user = await owner(request, true); }
+        catch (error) {
+          // Public pricing needs readiness only; individual orders still require a session.
+          if (error instanceof PaymentError && error.status === 401 && !id)
+            return json({ready:true,checkoutEnabled:config.enabled,sandbox:config.sandbox,account:null,order:null});
+          throw error;
+        }
         let order = null;
         if (id) {
           if (!orderPattern.test(id)) throw new PaymentError('Invalid order.');

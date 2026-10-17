@@ -1,0 +1,908 @@
+[
+  {
+    "url": "https://ailettergen.com/en",
+    "status": "200",
+    "canonical": "https://ailettergen.com/en",
+    "title": "AI Business Letter Generator & Online Editor | ailettergen",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 7296,
+    "privateLinks": [
+      "/en/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/en/pricing",
+    "status": "200",
+    "canonical": "https://ailettergen.com/en/pricing",
+    "title": "Pricing | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 21785,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/en/terms",
+    "status": "200",
+    "canonical": "https://ailettergen.com/en/terms",
+    "title": "Terms of Service | AI Professional Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 20347,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/en/about",
+    "status": "200",
+    "canonical": "https://ailettergen.com/en/about",
+    "title": "About Us | AI Professional Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 21108,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/en/features",
+    "status": "200",
+    "canonical": "https://ailettergen.com/en/features",
+    "title": "A writing workspace for your next opportunity. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 22777,
+    "privateLinks": [
+      "/en/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/en/privacy",
+    "status": "200",
+    "canonical": "https://ailettergen.com/en/privacy",
+    "title": "Privacy Policy | AI Professional Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 20044,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/en/guides",
+    "status": "200",
+    "canonical": "https://ailettergen.com/en/guides",
+    "title": "Make your next draft specific. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 23424,
+    "privateLinks": [
+      "/en/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/en/blog",
+    "status": "200",
+    "canonical": "https://ailettergen.com/en/blog",
+    "title": "Blog | ailettergen",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 23,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/en/compare",
+    "status": "200",
+    "canonical": "https://ailettergen.com/en/compare",
+    "title": "Compare the price—and the work you need to do. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 22123,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/es",
+    "status": "200",
+    "canonical": "https://ailettergen.com/es",
+    "title": "Generador de cartas comerciales con IA y editor | ailettergen",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 6681,
+    "privateLinks": [
+      "/es/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/es/terms",
+    "status": "200",
+    "canonical": "https://ailettergen.com/es/terms",
+    "title": "Términos de Servicio | Generador de Cartas Profesionales con IA",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 20471,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/es/pricing",
+    "status": "200",
+    "canonical": "https://ailettergen.com/es/pricing",
+    "title": "Precios | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 21901,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/es/guides",
+    "status": "200",
+    "canonical": "https://ailettergen.com/es/guides",
+    "title": "Make your next draft specific. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 23561,
+    "privateLinks": [
+      "/es/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/es/features",
+    "status": "200",
+    "canonical": "https://ailettergen.com/es/features",
+    "title": "A writing workspace for your next opportunity. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 22914,
+    "privateLinks": [
+      "/es/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/es/compare",
+    "status": "200",
+    "canonical": "https://ailettergen.com/es/compare",
+    "title": "Compare the price—and the work you need to do. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 22222,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/es/blog",
+    "status": "200",
+    "canonical": "https://ailettergen.com/es/blog",
+    "title": "Blog | ailettergen",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 23,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/fr",
+    "status": "200",
+    "canonical": "https://ailettergen.com/fr",
+    "title": "Générateur de lettres professionnelles IA et éditeur | ailettergen",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 7064,
+    "privateLinks": [
+      "/fr/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/fr/about",
+    "status": "200",
+    "canonical": "https://ailettergen.com/fr/about",
+    "title": "À Propos | Générateur de Lettres Professionnelles IA",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 21380,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/es/privacy",
+    "status": "200",
+    "canonical": "https://ailettergen.com/es/privacy",
+    "title": "Política de Privacidad | Generador de Cartas Profesionales con IA",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 20167,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/es/about",
+    "status": "200",
+    "canonical": "https://ailettergen.com/es/about",
+    "title": "Sobre Nosotros | Generador de Cartas Profesionales con IA",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 21269,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/fr/privacy",
+    "status": "200",
+    "canonical": "https://ailettergen.com/fr/privacy",
+    "title": "Politique de Confidentialité | Générateur de Lettres Professionnelles IA",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 20176,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/fr/features",
+    "status": "200",
+    "canonical": "https://ailettergen.com/fr/features",
+    "title": "A writing workspace for your next opportunity. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 23006,
+    "privateLinks": [
+      "/fr/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/fr/terms",
+    "status": "200",
+    "canonical": "https://ailettergen.com/fr/terms",
+    "title": "Conditions d'Utilisation | Générateur de Lettres Professionnelles IA",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 20479,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/fr/pricing",
+    "status": "200",
+    "canonical": "https://ailettergen.com/fr/pricing",
+    "title": "Tarifs | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 21901,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/fr/guides",
+    "status": "200",
+    "canonical": "https://ailettergen.com/fr/guides",
+    "title": "Make your next draft specific. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 23653,
+    "privateLinks": [
+      "/fr/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/fr/compare",
+    "status": "200",
+    "canonical": "https://ailettergen.com/fr/compare",
+    "title": "Compare the price—and the work you need to do. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 22226,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/fr/blog",
+    "status": "200",
+    "canonical": "https://ailettergen.com/fr/blog",
+    "title": "Blog | ailettergen",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 23,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/ru",
+    "status": "200",
+    "canonical": "https://ailettergen.com/ru",
+    "title": "Генератор деловых писем с ИИ и редактор онлайн | ailettergen",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 7112,
+    "privateLinks": [
+      "/ru/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/ru/about",
+    "status": "200",
+    "canonical": "https://ailettergen.com/ru/about",
+    "title": "О нас | Генератор деловых писем с ИИ",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 21301,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/ru/privacy",
+    "status": "200",
+    "canonical": "https://ailettergen.com/ru/privacy",
+    "title": "Политика конфиденциальности | Генератор деловых писем с ИИ",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 20177,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/ru/terms",
+    "status": "200",
+    "canonical": "https://ailettergen.com/ru/terms",
+    "title": "Условия использования | Генератор деловых писем с ИИ",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 20474,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/ru/pricing",
+    "status": "200",
+    "canonical": "https://ailettergen.com/ru/pricing",
+    "title": "Тарифы | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 21764,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/ru/compare",
+    "status": "200",
+    "canonical": "https://ailettergen.com/ru/compare",
+    "title": "Сравните цену и задачи, которые вам нужно решить. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 22235,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/ru/features",
+    "status": "200",
+    "canonical": "https://ailettergen.com/ru/features",
+    "title": "Рабочее пространство для вашего следующего письма. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 22780,
+    "privateLinks": [
+      "/ru/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/ru/blog",
+    "status": "200",
+    "canonical": "https://ailettergen.com/ru/blog",
+    "title": "Блог | ailettergen",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 23,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/ru/guides",
+    "status": "200",
+    "canonical": "https://ailettergen.com/ru/guides",
+    "title": "Сделайте следующий черновик конкретнее. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 23304,
+    "privateLinks": [
+      "/ru/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/nl",
+    "status": "200",
+    "canonical": "https://ailettergen.com/nl",
+    "title": "AI zakelijke brieven generator en online editor | ailettergen",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 6730,
+    "privateLinks": [
+      "/nl/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/nl/about",
+    "status": "200",
+    "canonical": "https://ailettergen.com/nl/about",
+    "title": "Over Ons | AI Professionele Brief Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 21279,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/nl/privacy",
+    "status": "200",
+    "canonical": "https://ailettergen.com/nl/privacy",
+    "title": "Privacybeleid | AI Professionele Brief Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 20167,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/nl/terms",
+    "status": "200",
+    "canonical": "https://ailettergen.com/nl/terms",
+    "title": "Servicevoorwaarden | AI Professionele Brief Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 20472,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/nl/pricing",
+    "status": "200",
+    "canonical": "https://ailettergen.com/nl/pricing",
+    "title": "Prijzen | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 21897,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/nl/features",
+    "status": "200",
+    "canonical": "https://ailettergen.com/nl/features",
+    "title": "A writing workspace for your next opportunity. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 22895,
+    "privateLinks": [
+      "/nl/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/nl/guides",
+    "status": "200",
+    "canonical": "https://ailettergen.com/nl/guides",
+    "title": "Make your next draft specific. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 23542,
+    "privateLinks": [
+      "/nl/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/nl/blog",
+    "status": "200",
+    "canonical": "https://ailettergen.com/nl/blog",
+    "title": "Blog | ailettergen",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 23,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/nl/compare",
+    "status": "200",
+    "canonical": "https://ailettergen.com/nl/compare",
+    "title": "Compare the price—and the work you need to do. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 22230,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/pt",
+    "status": "200",
+    "canonical": "https://ailettergen.com/pt",
+    "title": "Gerador de cartas comerciais com IA e editor | ailettergen",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 6655,
+    "privateLinks": [
+      "/pt/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/pt/about",
+    "status": "200",
+    "canonical": "https://ailettergen.com/pt/about",
+    "title": "Sobre Nós | Gerador de Cartas Profissionais com IA",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 21271,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/pt/pricing",
+    "status": "200",
+    "canonical": "https://ailettergen.com/pt/pricing",
+    "title": "Preços | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 21897,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/pt/privacy",
+    "status": "200",
+    "canonical": "https://ailettergen.com/pt/privacy",
+    "title": "Política de Privacidade | Gerador de Cartas Profissionais com IA",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 20162,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/pt/terms",
+    "status": "200",
+    "canonical": "https://ailettergen.com/pt/terms",
+    "title": "Termos de Serviço | Gerador de Cartas Profissionais com IA",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 20462,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/pt/guides",
+    "status": "200",
+    "canonical": "https://ailettergen.com/pt/guides",
+    "title": "Make your next draft specific. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 23525,
+    "privateLinks": [
+      "/pt/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/pt/features",
+    "status": "200",
+    "canonical": "https://ailettergen.com/pt/features",
+    "title": "A writing workspace for your next opportunity. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 22878,
+    "privateLinks": [
+      "/pt/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/pt/compare",
+    "status": "200",
+    "canonical": "https://ailettergen.com/pt/compare",
+    "title": "Compare the price—and the work you need to do. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 22223,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/pt/blog",
+    "status": "200",
+    "canonical": "https://ailettergen.com/pt/blog",
+    "title": "Blog | ailettergen",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 23,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/ar",
+    "status": "200",
+    "canonical": "https://ailettergen.com/ar",
+    "title": "مولد رسائل الأعمال بالذكاء الاصطناعي ومحرر | ailettergen",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 5573,
+    "privateLinks": [
+      "/ar/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/ar/privacy",
+    "status": "200",
+    "canonical": "https://ailettergen.com/ar/privacy",
+    "title": "سياسة الخصوصية | مولد الرسائل الاحترافية بالذكاء الاصطناعي",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 20144,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/ar/about",
+    "status": "200",
+    "canonical": "https://ailettergen.com/ar/about",
+    "title": "من نحن | مولد الرسائل الاحترافية بالذكاء الاصطناعي",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 21055,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/ar/terms",
+    "status": "200",
+    "canonical": "https://ailettergen.com/ar/terms",
+    "title": "شروط الخدمة | مولد الرسائل الاحترافية بالذكاء الاصطناعي",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 20441,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/ar/pricing",
+    "status": "200",
+    "canonical": "https://ailettergen.com/ar/pricing",
+    "title": "الأسعار | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 21887,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/ar/features",
+    "status": "200",
+    "canonical": "https://ailettergen.com/ar/features",
+    "title": "A writing workspace for your next opportunity. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 22689,
+    "privateLinks": [
+      "/ar/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/ar/blog",
+    "status": "200",
+    "canonical": "https://ailettergen.com/ar/blog",
+    "title": "المدونة | ailettergen",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 23,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/ar/guides",
+    "status": "200",
+    "canonical": "https://ailettergen.com/ar/guides",
+    "title": "Make your next draft specific. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 23336,
+    "privateLinks": [
+      "/ar/dashboard/email"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/ar/compare",
+    "status": "200",
+    "canonical": "https://ailettergen.com/ar/compare",
+    "title": "Compare the price—and the work you need to do. | AI Letter Generator",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 22215,
+    "privateLinks": []
+  },
+  {
+    "url": "https://ailettergen.com/en/blog/write-a-tailored-cover-letter",
+    "status": "200",
+    "canonical": "https://ailettergen.com/en/blog/write-a-tailored-cover-letter",
+    "title": "How to write a cover letter that connects your experience to the job | ailettergen",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 23,
+    "privateLinks": [
+      "/en/dashboard/cover-letter"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/en/blog/university-motivation-letter",
+    "status": "200",
+    "canonical": "https://ailettergen.com/en/blog/university-motivation-letter",
+    "title": "How to prepare a university motivation letter with a clear direction | ailettergen",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 23,
+    "privateLinks": [
+      "/en/dashboard/university"
+    ]
+  },
+  {
+    "url": "https://ailettergen.com/en/blog/professional-business-email",
+    "status": "200",
+    "canonical": "https://ailettergen.com/en/blog/professional-business-email",
+    "title": "How to write a professional business email with a clear next step | ailettergen",
+    "h1": 1,
+    "robots": [
+      "index, follow"
+    ],
+    "schemas": 0,
+    "mainCharacters": 23,
+    "privateLinks": [
+      "/en/dashboard/email"
+    ]
+  }
+]

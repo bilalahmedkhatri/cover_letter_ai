@@ -219,12 +219,8 @@ body {
   color: rgb(var(--color-text-primary));
   font-family: Arial, Helvetica, sans-serif;
 }
-.dashboard-sidebar[data-slot="sidebar-container"] {
-  top: 5rem;
-  height: calc(100svh - 5rem);
-}
 .draft-editor p {
-  margin: 0 0 1em;
+    margin: 0 0 1.08em;
 }
 .draft-editor ul {
   list-style: disc;
@@ -244,7 +240,7 @@ body {
 }
 .draft-editor {
   overflow-wrap: anywhere;
-  line-height: 1.8;
+    line-height: 1.2;
 }
 
 :root {
@@ -268,3 +264,14 @@ body {
   --sidebar-border: hsl(240 3.7% 15.9%);
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
 }
+
+/* One spacing scale for existing dashboard cards; public pages keep their styling. */
+.dashboard-workspace [data-slot="card"] { padding-block: 1rem; gap: 1rem; }
+.dashboard-workspace [data-slot="card-header"],
+.dashboard-workspace [data-slot="card-content"],
+.dashboard-workspace [data-slot="card-footer"] { padding-inline: 1rem; }
+
+.sidebar-scroll { scrollbar-width: thin; scrollbar-color: var(--sidebar-border) transparent; }
+.sidebar-scroll::-webkit-scrollbar { width: 6px; }
+.sidebar-scroll::-webkit-scrollbar-thumb { background: var(--sidebar-border); border-radius: 999px; }
+.sidebar-scroll::-webkit-scrollbar-thumb:hover { background: var(--sidebar-foreground); }

@@ -5,7 +5,7 @@ export const blogPosts = [
     title: 'How to write a cover letter that connects your experience to the job',
     intro: 'Prepare a clear brief, choose relevant evidence and shape a focused cover letter. This guide walks through structure, career changes and the final checks before sending.',
     ids: ['brief', 'evidence', 'job', 'structure', 'beginner', 'career', 'tone', 'prompts', 'editing', 'exports', 'checklist'],
-    action: '/dashboard/cover-letter',
+    action: '/dashboard',
   },
   {
     slug: 'university-motivation-letter', category: 'University applications',

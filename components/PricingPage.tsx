@@ -1,3 +1,4 @@
+import {publicWorkflows} from '@/services/workflow.mjs';
 import React from 'react';
 import { Check, ChevronDown } from 'lucide-react';
 import { useLocale } from '../contexts/LocaleContext';
@@ -15,11 +16,10 @@ export default function PricingPage() {
     { heading: copy.categoryUsage },
     { label: copy.standard, values: plans.map(p => String(billingLimits(p).standardLetters)) },
     { label: copy.premium, values: plans.map(p => String(billingLimits(p).premiumLetters)) },
-    { label: copy.research, values: plans.map(p => String(billingLimits(p).universityResearch)) },
+    ...(publicWorkflows.includes('research') ? [{ label: copy.research, values: plans.map(p => String(billingLimits(p).universityResearch)) }] : []),
     { heading: copy.categoryWriting },
-    ...copy.features.map((label, i) => ({ label, values: plans.map(() => i === 5 ? copy.noCredits : copy.included) })),
-    { heading: copy.categoryResearch },
-    ...[copy.report, copy.sources, copy.searches].map(label => ({ label, values: plans.map(() => copy.planned) })),
+    ...copy.features.flatMap((label,i)=> ((i===1 && !publicWorkflows.includes('university')) || (i===2 && !publicWorkflows.includes('email'))) ? [] : [{label,values:plans.map(()=>i===5 ? copy.noCredits : copy.included)}]),
+    ...(publicWorkflows.includes('research') ? [{heading:copy.categoryResearch}, ...[copy.report,copy.sources,copy.searches].map(label=>({label,values:plans.map(()=>copy.planned)}))] : []),
   ];
   return <div className="space-y-14 sm:space-y-20">
     {pricingNotice[locale] && <p className="rounded-lg border border-border px-5 py-3 text-sm text-text-secondary">{pricingNotice[locale]}</p>}
@@ -43,7 +43,7 @@ export default function PricingPage() {
           </table>
         </div>
       </section>
-      <section className="grid gap-8 lg:grid-cols-[.8fr_1.2fr]"><h2 className="section-title">{copy.faq}</h2><div>{copy.questions.map(([question, answer]) => <details key={question} className="group border-b border-border"><summary className="flex cursor-pointer list-none items-center justify-between gap-5 py-5 text-sm font-semibold">{question}<ChevronDown size={17} className="shrink-0 transition-transform group-open:rotate-180"/></summary><p className="pb-5 text-sm leading-7 text-text-secondary">{answer}</p></details>)}</div></section>
+      <section className="grid gap-8 lg:grid-cols-[.8fr_1.2fr]"><h2 className="section-title">{copy.faq}</h2><div>{copy.questions.filter((_,index)=>index!==2 || publicWorkflows.includes('research')).map(([question, answer]) => <details key={question} className="group border-b border-border"><summary className="flex cursor-pointer list-none items-center justify-between gap-5 py-5 text-sm font-semibold">{question}<ChevronDown size={17} className="shrink-0 transition-transform group-open:rotate-180"/></summary><p className="pb-5 text-sm leading-7 text-text-secondary">{answer}</p></details>)}</div></section>
     </div>
   </div>;
 }

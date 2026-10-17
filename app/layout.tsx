@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import "./globals.css";
+import { socialImage } from '@/services/seo';
 export const metadata: Metadata = {
   metadataBase: new URL("https://ailettergen.com"),
   title: {
@@ -10,6 +11,8 @@ export const metadata: Metadata = {
   description:
     "Write thoughtful job cover letters, university applications and professional outreach emails.",
   icons: { icon: "/icon.svg?v=3", apple: "/icon.svg?v=3" },
+  openGraph: {type:'website',siteName:'ailettergen',images:[socialImage]},
+  twitter: {card:'summary_large_image',images:[socialImage]},
 };
 export default async function RootLayout({
   children,

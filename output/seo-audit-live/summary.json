@@ -1,0 +1,256 @@
+[
+  {
+    "path": "/en",
+    "status": "200",
+    "url": "https://ailettergen.com/en",
+    "type": "text/html; charset=utf-8",
+    "title": "AI Business Letter Generator & Online Editor | ailettergen",
+    "description": "Draft business letters and professional emails with AI. Choose your tone, edit online and export a PDF. Also create job cover letters and university applications.",
+    "robots": [
+      "index, follow"
+    ],
+    "canonical": "https://ailettergen.com/en",
+    "alternates": [
+      {
+        "lang": "en",
+        "url": "https://ailettergen.com/en"
+      },
+      {
+        "lang": "es",
+        "url": "https://ailettergen.com/es"
+      },
+      {
+        "lang": "fr",
+        "url": "https://ailettergen.com/fr"
+      },
+      {
+        "lang": "ru",
+        "url": "https://ailettergen.com/ru"
+      },
+      {
+        "lang": "nl",
+        "url": "https://ailettergen.com/nl"
+      },
+      {
+        "lang": "pt",
+        "url": "https://ailettergen.com/pt"
+      },
+      {
+        "lang": "ar",
+        "url": "https://ailettergen.com/ar"
+      },
+      {
+        "lang": "x-default",
+        "url": "https://ailettergen.com/en"
+      }
+    ],
+    "lang": "en",
+    "h1": [
+      "AI business letters.\nYour words, your purpose."
+    ],
+    "twitter": "summary",
+    "mainText": "A little help finding the right words.AI business letters. Your words, your purpose.Draft a business letter, professional email, job cover letter or university application from your own details. Choose the tone, edit online and make the final message your own.Write my letterSee how it worksReviewable drafts. Your words, your final say.Example draftJob applicationAlex MorganENA thoughtful introductionDear hiring team,I’m applying for the product designer role. In my recent work, I turned customer",
+    "length": 7296,
+    "privateLinks": [
+      "/en/dashboard/email"
+    ]
+  },
+  {
+    "path": "/ru",
+    "status": "200",
+    "url": "https://ailettergen.com/ru",
+    "type": "text/html; charset=utf-8",
+    "title": "Генератор деловых писем с ИИ и редактор онлайн | ailettergen",
+    "description": "Генератор деловых писем с ИИ: создавайте деловые сообщения, редактируйте письма онлайн и экспортируйте PDF. Также доступны сопроводительные письма и заявления в вуз.",
+    "robots": [
+      "index, follow"
+    ],
+    "canonical": "https://ailettergen.com/ru",
+    "alternates": [
+      {
+        "lang": "en",
+        "url": "https://ailettergen.com/en"
+      },
+      {
+        "lang": "es",
+        "url": "https://ailettergen.com/es"
+      },
+      {
+        "lang": "fr",
+        "url": "https://ailettergen.com/fr"
+      },
+      {
+        "lang": "ru",
+        "url": "https://ailettergen.com/ru"
+      },
+      {
+        "lang": "nl",
+        "url": "https://ailettergen.com/nl"
+      },
+      {
+        "lang": "pt",
+        "url": "https://ailettergen.com/pt"
+      },
+      {
+        "lang": "ar",
+        "url": "https://ailettergen.com/ar"
+      },
+      {
+        "lang": "x-default",
+        "url": "https://ailettergen.com/en"
+      }
+    ],
+    "lang": "ru",
+    "h1": [
+      "Деловые письма с ИИ.\nВаши слова и ваша цель."
+    ],
+    "twitter": "summary",
+    "mainText": "Помогаем найти нужные слова.Деловые письма с ИИ. Ваши слова и ваша цель.Создайте деловое письмо, профессиональное электронное сообщение, сопроводительное письмо или заявление в университет на основе своих данных. Выберите тон и отредактируйте черновик онлайн.Создать письмоКак это работаетПроверяйте черновики. Последнее слово за вами.Пример черновикаЗаявление на работуAlex MorganRUПродуманное представлениеУважаемая команда по подбору персонала!Я хочу подать заявку на должность продуктового дизайн",
+    "length": 7112,
+    "privateLinks": [
+      "/ru/dashboard/email"
+    ]
+  },
+  {
+    "path": "/en/pricing",
+    "status": "200",
+    "url": "https://ailettergen.com/en/pricing",
+    "type": "text/html; charset=utf-8",
+    "title": "Pricing | AI Letter Generator",
+    "description": "Compare Starter $10, Plus $20 and Pro $28: shared credits, letter and research limits, features and 30-day prepaid renewal. Paid plans are being prepared.",
+    "robots": [
+      "index, follow"
+    ],
+    "canonical": "https://ailettergen.com/en/pricing",
+    "alternates": [
+      {
+        "lang": "en",
+        "url": "https://ailettergen.com/en/pricing"
+      },
+      {
+        "lang": "ru",
+        "url": "https://ailettergen.com/ru/pricing"
+      },
+      {
+        "lang": "x-default",
+        "url": "https://ailettergen.com/en/pricing"
+      }
+    ],
+    "lang": "en",
+    "h1": [
+      "A plan for your next application."
+    ],
+    "twitter": "summary",
+    "mainText": "PricingA plan for your next application.Choose how much writing support you need. Every plan supports job letters, university applications and professional emails.Compare every planChoose your planCheckout is being prepared. Payments are not available yet.StarterFor a focused shortlist of applications.$10USD · per 30 daysUp to 30 standard lettersor 8 premium lettersor 5 university research reportsThese are alternative maximums. Standard letters, premium letters and research share one plan allowa",
+    "length": 21785,
+    "privateLinks": []
+  },
+  {
+    "path": "/es/features",
+    "status": "200",
+    "url": "https://ailettergen.com/es/features",
+    "type": "text/html; charset=utf-8",
+    "title": "A writing workspace for your next opportunity. | AI Letter Generator",
+    "description": "Build a letter around your own experience. Bring in the opportunity details, choose how it should sound, and keep control of the final draft.",
+    "robots": [
+      "index, follow"
+    ],
+    "canonical": "https://ailettergen.com/es/features",
+    "alternates": [
+      {
+        "lang": "en",
+        "url": "https://ailettergen.com/en/features"
+      },
+      {
+        "lang": "ru",
+        "url": "https://ailettergen.com/ru/features"
+      },
+      {
+        "lang": "x-default",
+        "url": "https://ailettergen.com/en/features"
+      }
+    ],
+    "lang": "es",
+    "h1": [
+      "A writing workspace for your next opportunity."
+    ],
+    "twitter": "summary",
+    "mainText": "Esta página está disponible en inglés y ruso.A writing workspace for your next opportunity.Build a letter around your own experience. Bring in the opportunity details, choose how it should sound, and keep control of the final draft.01Three ways to writePrepare a job cover letter, university motivation letter or professional email. The same workspace adapts to your purpose, so you do not need to start over in a separate tool.02Context before the first sentenceAdd your experience and skills, uploa",
+    "length": 22914,
+    "privateLinks": [
+      "/es/dashboard/email"
+    ]
+  },
+  {
+    "path": "/en/blog/job-cover-letter-guide",
+    "status": "404",
+    "url": "https://ailettergen.com/en/blog/job-cover-letter-guide",
+    "type": "text/html; charset=utf-8",
+    "title": "AI Letter Generator",
+    "description": "Write thoughtful job cover letters, university applications and professional outreach emails.",
+    "robots": [],
+    "alternates": [],
+    "lang": "en",
+    "h1": [
+      "Page not found"
+    ],
+    "mainText": "Page not foundThis page may have moved. Return to the writing workspace.Go home",
+    "length": 79,
+    "privateLinks": []
+  },
+  {
+    "path": "/robots.txt",
+    "status": "200",
+    "url": "https://ailettergen.com/robots.txt",
+    "type": "text/plain; charset=utf-8",
+    "content": "User-Agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: https://ailettergen.com/sitemap.xml\n"
+  },
+  {
+    "path": "/sitemap.xml",
+    "status": "200",
+    "url": "https://ailettergen.com/sitemap.xml",
+    "type": "application/xml",
+    "content": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n<url>\n<loc>https://ailettergen.com/en</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/en/about</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/en/privacy</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/en/terms</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/en/pricing</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/en/features</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/en/guides</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/en/compare</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/en/blog</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/es</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/es/about</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/es/privacy</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/es/terms</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/es/pricing</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/es/features</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/es/guides</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/es/compare</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/es/blog</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/fr</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/fr/about</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/fr/privacy</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/fr/terms</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/fr/pricing</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/fr/features</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/fr/guides</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/fr/compare</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/fr/blog</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/ru</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/ru/about</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/ru/privacy</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/ru/terms</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/ru/pricing</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/ru/features</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/ru/guides</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/ru/compare</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/ru/blog</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/nl</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/nl/about</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/nl/privacy</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/nl/terms</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/nl/pricing</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/nl/features</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/nl/guides</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/nl/compare</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/nl/blog</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/pt</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/pt/about</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/pt/privacy</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/pt/terms</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/pt/pricing</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/pt/features</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/pt/guides</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/pt/compare</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/pt/blog</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/ar</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/ar/about</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/ar/privacy</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/ar/terms</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/ar/pricing</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/ar/features</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/ar/guides</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/ar/compare</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/ar/blog</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/en/blog/write-a-tailored-cover-letter</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/en/blog/university-motivation-letter</loc>\n</url>\n<url>\n<loc>https://ailettergen.com/en/blog/professional-business-email</loc>\n</url>\n</urlset>\n"
+  },
+  {
+    "path": "/llms.txt",
+    "status": "404",
+    "url": "https://ailettergen.com/llms.txt",
+    "type": "text/html; charset=utf-8",
+    "title": "AI Letter Generator",
+    "description": "Write thoughtful job cover letters, university applications and professional outreach emails.",
+    "robots": [],
+    "alternates": [],
+    "lang": "en",
+    "h1": [
+      "Page not found"
+    ],
+    "mainText": "Page not foundThis page may have moved. Return to the writing workspace.Go home",
+    "length": 79,
+    "privateLinks": []
+  },
+  {
+    "path": "/en/dashboard",
+    "status": "500",
+    "url": "https://ailettergen.com/en/dashboard",
+    "type": "",
+    "content": "Internal Server Error"
+  },
+  {
+    "path": "/this-page-should-not-exist",
+    "status": "404",
+    "url": "https://ailettergen.com/this-page-should-not-exist",
+    "type": "text/html; charset=utf-8",
+    "title": "AI Letter Generator",
+    "description": "Write thoughtful job cover letters, university applications and professional outreach emails.",
+    "robots": [],
+    "alternates": [],
+    "lang": "en",
+    "h1": [
+      "Page not found"
+    ],
+    "mainText": "Page not foundThis page may have moved. Return to the writing workspace.Go home",
+    "length": 79,
+    "privateLinks": []
+  }
+]

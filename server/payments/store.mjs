@@ -94,5 +94,13 @@ export function createStore(env = process.env, injectedQuery) {
         [environment, owner, id, success, new Date(now).toISOString()]);
       return rows[0]?.result;
     },
+    async reserveFreeGeneration(owner, id, now = Date.now()) {
+      return (await query('SELECT billing.reserve_free_generation($1,$2,$3,$4) AS result',
+        [environment, owner, id, new Date(now).toISOString()]))[0]?.result;
+    },
+    async settleFreeGeneration(owner, id, success, now = Date.now()) {
+      return (await query('SELECT billing.settle_free_generation($1,$2,$3,$4,$5) AS result',
+        [environment, owner, id, success, new Date(now).toISOString()]))[0]?.result;
+    },
   };
 }

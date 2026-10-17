@@ -15,20 +15,6 @@ model Profile {
   @@schema("app")
 }
 
-model Document {
-  id String @id @db.Uuid
-  userId String @map("user_id")
-  kind String
-  title String
-  content String
-  context Json @default("{}")
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
-  @@index([userId, updatedAt(sort: Desc)], map: "documents_owner_updated")
-  @@map("documents")
-  @@schema("app")
-}
-
 model Review {
   id String @id @db.Uuid
   userId String @unique @map("user_id")
@@ -40,6 +26,36 @@ model Review {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
   @@map("reviews")
+  @@schema("app")
+}
+
+model Conversation {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId String @map("user_id")
+  workflow String
+  title String
+  createdAt DateTime @default(dbgenerated("clock_timestamp()")) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(dbgenerated("clock_timestamp()")) @map("updated_at") @db.Timestamptz
+  messages ChatMessage[]
+  @@index([userId, updatedAt(sort: Desc), id(sort: Desc)], map: "conversations_owner_updated")
+  @@map("conversations")
+  @@schema("app")
+}
+
+model ChatMessage {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  conversationId String @map("conversation_id") @db.Uuid
+  requestId String @map("request_id") @db.Uuid
+  role String
+  content String @default("")
+  status String
+  context Json @default("{}")
+  sources Json @default("[]")
+  createdAt DateTime @default(dbgenerated("clock_timestamp()")) @map("created_at") @db.Timestamptz
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  @@unique([requestId, role], map: "messages_request_id_role_key")
+  @@index([conversationId, createdAt(sort: Desc), id(sort: Desc)], map: "messages_conversation_created")
+  @@map("messages")
   @@schema("app")
 }
 
@@ -69,6 +85,7 @@ model Customer {
   periods     Subscription[]
   allocations UsageAllocation[]
   reservations GenerationReservation[]
+    freeDailyUsage FreeDailyUsage[]
   ledger      CreditLedger[]
   @@id([environment, id])
   @@unique([environment, authUserId])
@@ -223,5 +240,31 @@ model GenerationReservation {
   @@id([environment, id])
   @@index([environment, customerId, createdAt], map: "generation_reservations_customer")
   @@map("generation_reservations")
+  @@schema("billing")
+}
+
+model FreeDailyUsage {
+  environment String
+  customerId String @map("customer_id")
+  day DateTime @db.Date
+  used Int @default(0)
+  customer Customer @relation(fields: [environment, customerId], references: [environment, id])
+  reservations FreeGenerationReservation[]
+  @@id([environment, customerId, day])
+  @@map("free_daily_usage")
+  @@schema("billing")
+}
+model FreeGenerationReservation {
+  environment String
+  id String
+  customerId String @map("customer_id")
+  day DateTime @db.Date
+  status String @default("reserved")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  settledAt DateTime? @map("settled_at") @db.Timestamptz
+  quota FreeDailyUsage @relation(fields: [environment, customerId, day], references: [environment, customerId, day])
+  @@id([environment, id])
+  @@index([environment, customerId, day, createdAt], map: "free_generation_reservations_customer")
+  @@map("free_generation_reservations")
   @@schema("billing")
 }

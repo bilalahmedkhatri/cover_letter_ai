@@ -5,7 +5,7 @@ export const siteOrigin = 'https://ailettergen.com';
 export const localeCodes: Locale[] = ['en', 'es', 'fr', 'ru', 'nl', 'pt', 'ar'];
 export const publicPages = ['/', '/about', '/privacy', '/terms', '/pricing', '/features', '/guides', '/compare', '/blog'] as const;
 export const accountPages = ['/login', '/account'] as const;
-export const dashboardPages = ['/dashboard','/dashboard/cover-letter','/dashboard/university','/dashboard/email','/dashboard/drafts','/dashboard/settings','/dashboard/billing','/dashboard/feedback'] as const;
+export const dashboardPages = ['/dashboard','/dashboard/university','/dashboard/research','/dashboard/email','/dashboard/settings','/dashboard/billing','/dashboard/cover-letter/result','/dashboard/university/result','/dashboard/email/result','/dashboard/research/result'] as const;
 export const allPages = [...publicPages, ...accountPages, ...dashboardPages];
 export type Page = typeof allPages[number] | `/blog/${string}` | '/404';
 
@@ -23,4 +23,15 @@ export function resolveRoute(pathname: string): { locale: Locale; page: Page; pa
   const page = blogArticle || allPages.includes(pagePath as typeof allPages[number]) ? pagePath as Page : '/404';
   // Preserve unknown URLs so the browser can show the actual missing address.
   return { locale, page, path: page === '/404' ? pathname : localizedPath(locale, page) };
+}
+
+// Index only pages whose primary content is available in the requested language.
+export function contentLocales(page: Page): Locale[] {
+  if (page.startsWith('/blog/') || ['/privacy','/terms'].includes(page)) return ['en'];
+  if (['/pricing','/features','/guides','/compare'].includes(page)) return ['en','ru'];
+  return localeCodes;
+}
+export function canonicalLocale(locale: Locale,page: Page): Locale { return contentLocales(page).includes(locale) ? locale : 'en'; }
+export function canonicalPublicPages() {
+  return [...publicPages.flatMap(page=>contentLocales(page).map(locale=>({locale,page,url:siteOrigin+localizedPath(locale,page)}))),...blogPosts.map(post=>({locale:'en' as Locale,page:`/blog/${post.slug}` as Page,url:siteOrigin+localizedPath('en',`/blog/${post.slug}`)}))];
 }

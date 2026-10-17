@@ -1,6 +1,6 @@
 # ailettergen
 
-Next.js App Router application for job cover letters, university applications and professional outreach emails. The existing Neon identities, cloud drafts and NOWPayments billing data are retained.
+Next.js App Router application for job cover letters, university applications and professional outreach emails. Neon identities, private chat history and NOWPayments billing data are used; manual Saved drafts and Share feedback submission have been removed.
 
 ## Local setup
 
@@ -28,8 +28,14 @@ npx tsc --noEmit
 
 ## Architecture
 
+### Deferred feature updates
+
+Professional emails, university applications and university research remain in development. Preserve their shared generators, routes, result pages and server-side developer access checks; they are intentionally absent from the main sidebar. Publish them only after an explicit release decision and end-to-end validation. Public cover-letter generation starts from **New Chat** at `/[locale]/dashboard`.
+
+The main sidebar contains New Chat and one Chat history section. Profile/settings and plan/usage remain accessible through the profile menu. History fetches on initial load and after generation, rename or delete events; it does not poll or reload on browser focus.
+
 - `app/[locale]`: localized public pages; each page owns `page.tsx`, `loading.tsx` and `error.tsx`.
-- `app/[locale]/dashboard`: protected overview, three writing workflows, cloud library, billing, profile and feedback pages.
+- `app/[locale]/dashboard`: protected overview, three writing workflows, private chat history, billing and profile pages.
 - `components/ui`: official shadcn/ui components installed through its registry. Product compositions reuse these primitives.
 - `components/dashboard` and `components/generator`: reusable sidebar, cards, form fields, resume upload and editor.
 - `lib/auth`: Neon same-origin auth proxy and server identity checks. Route protection runs in `proxy.ts`, the dashboard layout, individual dashboard pages and account/generation APIs.
@@ -44,9 +50,9 @@ Resume parsing is loaded only when needed: PDF through PDF.js, DOCX through Mamm
 
 Each workflow accepts an opportunity URL and/or description, recipient, tone, output language and length. Pasted requirements provide more reliable context than a URL alone. URL-based generation uses optional Google Search grounding; it does not guarantee access to every source page.
 
-The Tiptap editor supports bold, italic, lists, alignment, undo/redo, live preview and copying. PDF export opens a print view; choose **Save as PDF** in the browser's print dialog. Native browser rendering supports multilingual scripts without shipping a large font bundle. Cloud drafts store plain text and writing settings; editor formatting is not persisted between sessions.
+The Tiptap editor supports bold, italic, lists, alignment, undo/redo, live preview and copying. PDF export lazily loads html2pdf.js and downloads an A4 file directly, without a browser print dialog. It preserves the editor layout through canvas rendering, including multilingual glyphs, but the exported text is image-based rather than selectable/searchable. PDF.js remains the upload reader. Chat history stores generated plain text and writing settings; editor formatting is not persisted between sessions.
 
-The current configured provider is Gemini (`GEMINI_API_KEY`, optional `GEMINI_MODEL`). No GPT/Claude model is claimed to be connected. Free access allows up to three generation attempts per UTC day, with ten attempts per hour overall. Existing active paid accounts use atomic standard-letter reservations; failed paid provider calls refund reservations. Paid checkout remains disabled until launch validation. Premium generation and automatic research are not enabled by this migration.
+Cover letters use the external prompt-only `/api/v1/generate/` endpoint; other workflows retain `/api/v1/query/`. Both use a server-side `AI_GATEWAY_API_KEY`. Existing templates are preserved. Generation quota and credit charges are disabled; authentication and validation remain. Errors use the existing dialog. See [gateway and prompt implementation](docs/AI_ROUTING.md) for endpoint-specific limits and setup.
 
 ## Billing, data and deployment
 
@@ -54,7 +60,7 @@ Starter $10, Plus $20 and Pro $28 retain the shared weighted allowances in `serv
 
 Apply existing migrations with `npm run db:migrate`; inspect `DATABASE_SCHEMA.md`. Real reviews require publication consent and moderation (`npm run reviews -- list|publish UUID|reject UUID`). No invented testimonials are shown.
 
-Vercel now uses **Next.js** and `npm run build`; clear any dashboard override pointing to `dist` or Vite. Add server environment variables yourself, then redeploy. Secrets have not been uploaded by this change. Follow `ACCOUNT_SETUP.md` for the new cookie secret. Browser drafts from older versions are not deleted or silently uploaded; the current workspace saves only through **Save to account**. Export unsaved work before refreshing.
+Vercel now uses **Next.js** and `npm run build`; clear any dashboard override pointing to `dist` or Vite. Add server environment variables yourself, then redeploy. Secrets have not been uploaded by this change. Follow `ACCOUNT_SETUP.md` for the new cookie secret. Browser drafts from older versions are not deleted or silently uploaded; new requests and generated responses are saved automatically to private chat history. Export editor changes before refreshing.
 
 Public routes retain locale-prefixed URLs, canonical metadata, language alternates and contextual links. `/sitemap.xml` lists public pages only; private account/dashboard pages are noindex. Root and legacy redirects live in `next.config.mjs`. Check www/HTTPS, API availability and auth trusted origins on the hosted deployment after redeploying.
 
@@ -77,3 +83,5 @@ publication dates or reviews are added.
 ## Dependency check
 
 The official Neon SDK includes auth UI/adapter dependencies that pull Prisma CLI tooling into npm's production audit through optional peers. Current advisories include that tooling and Mammoth's CLI-only argument parser; this app uses Neon HTTP queries and Mammoth's browser build. No claim of a clean dependency audit is made. Review upstream fixes before production launch; do not force a Prisma downgrade or mismatched auth dependency versions merely to suppress the audit.
+
+Persistent sidebar chat history automatically saves prompts and responses and restores each workflow through its result URL. See [history implementation](docs/RESULTS_AND_HISTORY_PLAN.md).

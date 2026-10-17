@@ -15,6 +15,7 @@ before(async () => {
   db = new PGlite();
   await db.exec(await readFile('prisma/migrations/202610110001_billing/migration.sql', 'utf8'));
   await db.exec(await readFile('prisma/migrations/202610120001_generation_allowances/migration.sql', 'utf8'));
+  await db.exec(await readFile('prisma/migrations/202610150001_free_generation_quota/migration.sql', 'utf8'));
   const query = async (text, params) => (await db.query(text, params)).rows;
   live = createStore({ DATABASE_URL: 'test-only' }, query);
   sandbox = createStore({ DATABASE_URL: 'test-only', NOWPAYMENTS_SANDBOX: 'true' }, query);
@@ -28,9 +29,9 @@ async function order(store, owner = id(), plan = 'starter', orderId = id()) {
 }
 const paid = o => ({ payment_id: String(++payment), invoice_id: o.invoiceId, price_amount: o.price, pay_currency: 'usdtbsc', pay_amount: '10.123456789123456789', actually_paid: '10.123456789123456789' });
 
-test('migration builds eleven billing tables and seeds exact plan prices/allocations', async () => {
+test('migration builds thirteen billing tables and seeds exact plan prices/allocations', async () => {
   const tables = await db.query("SELECT table_name FROM information_schema.tables WHERE table_schema='billing'");
-  assert.equal(tables.rows.length, 11);
+  assert.equal(tables.rows.length, 13);
   const plans = (await db.query('SELECT id,price_cents,credits FROM billing.plans ORDER BY price_cents')).rows;
   assert.deepEqual(plans, [{ id: 'starter', price_cents: 1000, credits: 120 }, { id: 'plus', price_cents: 2000, credits: 630 }, { id: 'pro', price_cents: 2800, credits: 2100 }]);
 });
@@ -187,4 +188,52 @@ test('migration preserves existing purchased weights and refuses ambiguous used 
       }
     } finally { await old.close(); }
   }
+});
+
+const freeOwner = () => live.authenticatedOwner('free-'+id(),id());
+test('free quota atomically permits only three concurrent holds and blocks duplicate delivery',async()=>{
+ const owner=await freeOwner();
+ const results=await Promise.all(Array.from({length:12},()=>live.reserveFreeGeneration(owner,id(),instant)));
+ assert.equal(results.filter(r=>r==='created').length,3);assert.equal(results.filter(r=>r==='exhausted').length,9);
+ const second=await freeOwner();const request=id();
+ const retries=await Promise.all(Array.from({length:8},()=>live.reserveFreeGeneration(second,request,instant)));
+ assert.equal(retries.filter(r=>r==='created').length,1);assert.equal(retries.filter(r=>r==='reserved').length,7);
+ assert.equal(await live.settleFreeGeneration(owner,request,false,instant),'missing');
+ assert.equal(await live.settleFreeGeneration(second,request,true,instant),'completed');
+ assert.equal(await live.reserveFreeGeneration(second,request,instant),'completed');
+});
+test('free provider failures restore the slot once; successful requests consume it',async()=>{
+ const owner=await freeOwner();const failed=id();
+ assert.equal(await live.reserveFreeGeneration(owner,failed,instant),'created');
+ assert.equal(await live.settleFreeGeneration(owner,failed,false,instant),'released');
+ assert.equal(await live.settleFreeGeneration(owner,failed,false,instant),'released');
+ for(let i=0;i<3;i++){const request=id();assert.equal(await live.reserveFreeGeneration(owner,request,instant),'created');await live.settleFreeGeneration(owner,request,true,instant);}
+ assert.equal(await live.reserveFreeGeneration(owner,id(),instant),'exhausted');
+ const fresh=await freeOwner();
+ await assert.rejects(()=>runMeteredGeneration({store:live,owner:fresh,requestId:id(),operation:'standard',free:true,now:()=>instant,generate:async()=>{throw new Error('provider failed');}}),/provider failed/);
+ const count=(await db.query('SELECT used FROM billing.free_daily_usage WHERE customer_id=$1',[fresh])).rows[0].used;
+ assert.equal(count,0);
+});
+test('UTC reset, abandoned leases and late settlements never corrupt the current free quota',async()=>{
+ const owner=await freeOwner();const old=id();const midnight=Date.UTC(2026,9,11,23,59,30);
+ await live.reserveFreeGeneration(owner,old,midnight);
+ const fresh=id();await live.reserveFreeGeneration(owner,fresh,midnight+60000);
+ await live.settleFreeGeneration(owner,old,false,midnight+60000);
+ const counts=(await db.query('SELECT used FROM billing.free_daily_usage WHERE customer_id=$1 ORDER BY day',[owner])).rows;
+ assert.deepEqual(counts.map(r=>r.used),[0,1]);
+ const staleOwner=await freeOwner();const held=id();await live.reserveFreeGeneration(staleOwner,held,instant);
+ assert.equal(await live.reserveFreeGeneration(staleOwner,id(),instant+120001),'created');
+ assert.equal(await live.settleFreeGeneration(staleOwner,held,true,instant+120002),'released');
+ assert.equal((await db.query('SELECT used FROM billing.free_daily_usage WHERE customer_id=$1',[staleOwner])).rows[0].used,1);
+});
+test('free completion-storage errors hold usage and cannot repeat the provider; paid-only operations stay blocked',async()=>{
+ const owner=await freeOwner();const requestId=id();let calls=0;
+ const broken={...live,settleFreeGeneration:async()=>{throw new Error('storage failed');}};
+ const input={store:broken,owner,requestId,operation:'standard',free:true,now:()=>instant,generate:async()=>{calls++;return 'Draft';}};
+ await assert.rejects(()=>runMeteredGeneration(input),/storage failed/);
+ await assert.rejects(()=>runMeteredGeneration(input),e=>e.status===409);assert.equal(calls,1);
+ for(const operation of ['premium','research'])await assert.rejects(()=>runMeteredGeneration({...input,operation,requestId:id()}),e=>e.status===402);
+ const shared=id();const sandboxOwner=await sandbox.authenticatedOwner('free-sandbox-'+id(),owner);
+ assert.equal(await live.reserveFreeGeneration(owner,shared,instant),'created');
+ assert.equal(await sandbox.reserveFreeGeneration(sandboxOwner,shared,instant),'created');
 });

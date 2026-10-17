@@ -1,6 +1,6 @@
 # Database schema
 
-The Neon PostgreSQL database has eleven billing tables and three account tables in the `app` schema. Prisma also maintains `public._prisma_migrations`; Neon manages its own authentication schema. Temporary account test records were removed after browser verification. No test payments were made.
+The Neon PostgreSQL database has eleven billing tables and four account/history tables in the `app` schema. Prisma also maintains `public._prisma_migrations`; Neon manages its own authentication schema. Temporary account test records were removed after browser verification. No test payments were made.
 
 | Table | Purpose |
 | --- | --- |
@@ -20,7 +20,7 @@ Live and sandbox data are separated by environment keys. `billing.fulfill_order`
 
 Schema source: `prisma/schema.prisma`. Migration source: `prisma/migrations/202610110001_billing/migration.sql`. Database access stays on the server. Prisma handles migrations; the runtime uses the official Neon HTTP driver.
 
-Account migration: `prisma/migrations/202610120002_accounts/migration.sql`. `app.profiles` stores writing preferences, `app.documents` stores selected letter/email drafts and research notes, and `app.reviews` stores consent and moderation state. Queries enforce the signed-in user ID for reads, edits and deletes. File bodies and screenshots are not saved there. See ACCOUNT_SETUP.md.
+Account migration: `prisma/migrations/202610120002_accounts/migration.sql`. `app.profiles` stores writing preferences, `app.conversations` and `app.messages` store private generation history, and `app.reviews` stores consent and moderation state. Queries enforce the signed-in user ID for reads, edits and deletes. File bodies and screenshots are not saved there. See ACCOUNT_SETUP.md.
 
 ## Tables needed next
 
@@ -28,11 +28,9 @@ Create these alongside their actual features, rather than adding unused tables n
 
 | Priority | Tables / managed service | Why |
 | --- | --- | --- |
-| Implemented | Neon Auth + `app.profiles`, `app.documents`, `app.reviews` | Managed login, owner-scoped drafts/research, preferences and moderated consented reviews. Billing customers map to authentication identities. See ACCOUNT_SETUP.md for deployment configuration. |
+| Implemented | Neon Auth + `app.profiles`, `app.conversations`, `app.messages`, `app.reviews` | Managed login, owner-scoped chat history, preferences and moderated consented reviews. Billing customers map to authentication identities. See ACCOUNT_SETUP.md for deployment configuration. |
 | Before paid launch | `ai_requests` | Model/provider, request status, input/output/cached tokens, currency and measured cost; idempotency per request. |
 | Before paid launch | Connect existing `generation_reservations` to authenticated server AI calls | The reservation/settlement functions exist; the browser generator does not yet use them. |
-| Future feature | `letter_versions` | Optional revision history for the existing saved documents. |
-| Product feature | `documents` | Upload metadata, retention and ownership; keep resume/file bodies in private object storage. |
 | Future research automation | `research_reports`, `research_sources` | Structured report/source retrieval history and measured AI cost beyond the existing saved notes. |
 | Payment operations | `refunds`, `audit_events` | Refund reconciliation, credit/access adjustments and operator action history. |
 
@@ -50,3 +48,5 @@ node --env-file=.env.local scripts/database-inspect.mjs
 ```
 
 The 202610120001_generation_allowances migration was tested on an expiring production clone, applied to production, and verified. The temporary test branch was removed. Existing order weights are preserved; conflicting legacy usage requires reviewed backfill rather than guessed conversion.
+
+Migration `202610160002_remove_saved_drafts` drops the dedicated `app.documents` table without CASCADE. Manual Saved drafts and Share feedback submission have been removed; chat history, profiles, billing and published reviews remain. Historical migration files are retained.

@@ -15,11 +15,13 @@
     "db:validate": "prisma validate",
     "db:migrate": "prisma migrate deploy",
     "test:workflow": "node --test --test-isolation=none tests/workflow.test.mjs",
+    "eval:cover-letter": "node scripts/eval-cover-letter.mjs",
+    "test:cover-letter-eval": "node --test --test-isolation=none tests/cover-letter-eval.test.mjs",
+    "test:cover-letter": "node --test --test-isolation=none tests/cover-letter.test.mjs tests/cover-letter-review.test.mjs tests/direct-generation.test.mjs tests/workflow.test.mjs",
     "prebuild": "node scripts/prepare-pdf-worker.mjs",
     "postinstall": "node scripts/prepare-pdf-worker.mjs"
   },
   "dependencies": {
-    "@google/genai": "^2.28.0",
     "@neondatabase/auth": "^0.5.0-beta",
     "@neondatabase/serverless": "^1.2.0",
     "@radix-ui/react-dropdown-menu": "^2.1.25",
@@ -28,8 +30,10 @@
     "@tiptap/extension-text-align": "^3.31.4",
     "@tiptap/react": "^3.31.4",
     "@tiptap/starter-kit": "^3.31.4",
+    "cheerio": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "html2pdf.js": "^0.14.0",
     "jose": "^6.2.12",
     "lucide-react": "^1.55.0",
     "mammoth": "^1.13.0",
@@ -38,7 +42,9 @@
     "radix-ui": "^1.8.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "tailwind-merge": "^3.7.0"
+    "tailwind-merge": "^3.7.0",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
+    "zod": "4.6.5"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.3.2",

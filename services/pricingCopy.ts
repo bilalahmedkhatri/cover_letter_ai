@@ -1,4 +1,5 @@
 import type { Locale } from '../types';
+import {publicWorkflows} from './workflow.mjs';
 
 export const pricingLabel: Record<Locale, string> = { en: 'Pricing', ru: 'Тарифы', es: 'Precios', fr: 'Tarifs', nl: 'Prijzen', pt: 'Preços', ar: 'الأسعار' };
 export const pricingNotice: Record<Locale, string> = {
@@ -48,4 +49,11 @@ const ru: typeof en = {
   ],
   view: 'Тарифы и возможности', teaser: 'Выберите тариф под объём ваших заявок.', statusTitle: 'Ваш тариф',
 };
-export const pricingCopy = (locale: Locale) => locale === 'ru' ? ru : en;
+export const pricingCopy = (locale: Locale) => {
+  const copy=locale==='ru'?ru:en;
+  return publicWorkflows.length===1 ? {...copy,
+    intro:locale==='ru'?'Выберите объём помощи с сопроводительными письмами для работы.':'Choose writing support for your job cover letters.',
+    wallet:locale==='ru'?'Стандартные и премиальные сопроводительные письма используют общий лимит тарифа.':'Standard and premium cover letters share one plan allowance; these are alternative maximums.',
+    categoryUsage:locale==='ru'?'Лимит сопроводительных писем':'Cover letter allowance',
+  } : copy;
+};

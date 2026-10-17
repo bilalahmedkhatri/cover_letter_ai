@@ -8,5 +8,5 @@ export default async function Page({
 }) {
   const { locale } = await params;
   await requireUser(locale);
-  redirect("/" + locale + "/dashboard/drafts");
+  redirect("/" + locale + "/dashboard");
 }

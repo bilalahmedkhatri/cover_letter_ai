@@ -20,9 +20,9 @@ export async function accessToken() {
     throw error;
   }
 }
-export async function accountRequest(body?: object) {
+export async function accountRequest(body?: object, path = '/api/account') {
   let response: Response;
-  try { response = await fetch('/api/account', { method: body ? 'POST' : 'GET', credentials:'same-origin', cache: 'no-store', headers: { ...(body ? { 'Content-Type': 'application/json' } : {}) }, ...(body ? { body: JSON.stringify(body) } : {}) }); }
+  try { response = await fetch(path, { method: body ? 'POST' : 'GET', credentials:'same-origin', cache: 'no-store', headers: { ...(body ? { 'Content-Type': 'application/json' } : {}) }, ...(body ? { body: JSON.stringify(body) } : {}) }); }
   catch { throw new Error(process.env.NODE_ENV==='development' ? 'Cannot connect to the account API. Make sure npm run dev is running.' : 'Cannot connect to your account. Check your connection and try again.'); }
   if (response.status === 404) throw new Error('The account service is unavailable. Please try again later.');
   const result = await response.json().catch(() => { throw new Error('The account API returned an invalid response. Please try again.'); });

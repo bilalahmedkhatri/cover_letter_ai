@@ -1,0 +1,15 @@
+[
+  "en dashboard: safe 307",
+  "ru dashboard: safe 307",
+  "/en/login?unavailable=1: 200",
+  "/api/account: 401",
+  "/api/history: 401",
+  "/llms.txt: 200",
+  "/robots.txt: 200",
+  "/not-a-real-page: 404",
+  "sitemap: 34 canonical URLs",
+  "/es/features: canonical and social tags pass",
+  "/ru/features: canonical and social tags pass",
+  "/ru/privacy: canonical and social tags pass",
+  "social preview: HTTP 200 PNG 1200x630"
+]

@@ -1,5 +1,6 @@
 import { requireUser } from "@/lib/auth/access";
 import DashboardShell from "@/components/dashboard/DashboardShell";
+import { availableWorkflows } from '@/server/feature-access.mjs';
 export const metadata = {
   title: "Your writing dashboard",
   robots: { index: false, follow: true },
@@ -12,6 +13,6 @@ export default async function DashboardLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  await requireUser(locale);
-  return <DashboardShell>{children}</DashboardShell>;
+  const user=await requireUser(locale);
+  return <DashboardShell workflows={availableWorkflows(user)}>{children}</DashboardShell>;
 }

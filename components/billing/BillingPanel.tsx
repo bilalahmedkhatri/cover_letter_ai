@@ -1,3 +1,4 @@
+import {publicWorkflows} from '@/services/workflow.mjs';
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocale } from '../../contexts/LocaleContext';
 import { billingPlans, billingLimits } from '../../services/billingPlans.mjs';
@@ -6,7 +7,6 @@ import { pricingCopy } from '../../services/pricingCopy';
 import { localizedPath } from '../../services/routing';
 import { Button } from '../ui/button';
 import { useAccount } from '../../contexts/AccountContext';
-import { accessToken } from '../../services/authClient';
 
 type Order = { id: string; plan: string; status: string; invoiceUrl: string | null; fulfilledAt: number | null };
 type Billing = { ready: boolean; checkoutEnabled: boolean; sandbox?: boolean;
@@ -28,10 +28,9 @@ export default function BillingPanel({ compact = false }: { compact?: boolean })
   const polls = useRef(0);
 
   async function refresh(signal?: AbortSignal) {
-    const headers = user ? { Authorization: `Bearer ${await accessToken()}` } : {};
-    const response = await fetch('/api/billing/status' + (orderId.current ? '?order=' + encodeURIComponent(orderId.current) : ''), { cache: 'no-store', signal, headers });
+    const response = await fetch('/api/billing/status' + (orderId.current ? '?order=' + encodeURIComponent(orderId.current) : ''), { cache: 'no-store', credentials: 'same-origin', signal });
     const result = await response.json();
-    if (!response.ok) throw new Error(copy.retry);
+    if (!response.ok) throw new Error(result.error || copy.retry);
     if (alive.current) { setBilling(result); setError(''); }
   }
   useEffect(() => {
@@ -41,7 +40,7 @@ export default function BillingPanel({ compact = false }: { compact?: boolean })
     orderId.current = value && /^[a-f0-9]{64}$/.test(value) ? value : null;
     setCancelled(query.get('billingCancelled') === '1');
     const controller = new AbortController();
-    refresh(controller.signal).catch(() => { if (alive.current && !controller.signal.aborted) setError(copy.retry); });
+    refresh(controller.signal).catch(error => { if (alive.current && !controller.signal.aborted) setError(error instanceof Error ? error.message : copy.retry); });
     return () => { alive.current = false; controller.abort(); };
   }, [user?.id]);
   useEffect(() => {
@@ -60,7 +59,7 @@ export default function BillingPanel({ compact = false }: { compact?: boolean })
     try {
       requests.current[plan] ||= crypto.randomUUID();
       if (!user) { window.location.assign(localizedPath(locale, '/login')); return; }
-      const response = await fetch('/api/billing/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${await accessToken()}` },
+      const response = await fetch('/api/billing/checkout', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan, locale, requestId: requests.current[plan] }) });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || copy.retry);
@@ -85,7 +84,7 @@ export default function BillingPanel({ compact = false }: { compact?: boolean })
         <ul className="mt-4 space-y-3 text-sm text-text-secondary">
           <li>{pricing.upTo} {billingLimits(plan).standardLetters} {pricing.standard.toLowerCase()}</li>
           <li>{pricing.or} {billingLimits(plan).premiumLetters} {pricing.premium.toLowerCase()}</li>
-          <li>{pricing.or} {billingLimits(plan).universityResearch} {pricing.research.toLowerCase()}</li>
+          {publicWorkflows.includes('research') && <li>{pricing.or} {billingLimits(plan).universityResearch} {pricing.research.toLowerCase()}</li>}
         </ul>
         <p className="mt-5 text-xs leading-5 text-text-muted">{pricing.wallet}</p>
 
@@ -108,7 +107,7 @@ export default function BillingPanel({ compact = false }: { compact?: boolean })
         {compact && <p className="break-all text-xs text-text-muted">Order: {order.id}</p>}
       </>}
       {billing?.account && <div><p>{billing.account.active ? pricing.statusTitle : copy.expired}{' · '}{new Date(billing.account.expiresAt).toLocaleDateString(locale)}</p>
-        {billing.account.active && billing.account.remaining && <p className="mt-2">{pricing.upTo} {billing.account.remaining.standardLetters} {pricing.standard.toLowerCase()} {pricing.or} {billing.account.remaining.premiumLetters} {pricing.premium.toLowerCase()} {pricing.or} {billing.account.remaining.universityResearch} {pricing.research.toLowerCase()}</p>}
+        {billing.account.active && billing.account.remaining && <p className="mt-2">{pricing.upTo} {billing.account.remaining.standardLetters} {pricing.standard.toLowerCase()} {pricing.or} {billing.account.remaining.premiumLetters} {pricing.premium.toLowerCase()} {publicWorkflows.includes('research') && <>{pricing.or} {billing.account.remaining.universityResearch} {pricing.research.toLowerCase()}</>}</p>}
       </div>}
     </div>
 

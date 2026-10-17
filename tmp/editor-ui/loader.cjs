@@ -1,0 +1,1 @@
+module.exports=function(source){return require('typescript').transpileModule(source,{compilerOptions:{jsx:4,target:9,module:99}}).outputText}

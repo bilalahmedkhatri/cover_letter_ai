@@ -3,12 +3,20 @@ import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
 import { billingPlans } from '../services/billingPlans.mjs';
 import { createHandlers } from '../server/payments/handlers.mjs';
-import { verifySignature, sortedPayload, validatePayment, paymentConfig, checkoutUrl } from '../server/payments/nowpayments.mjs';
+import { verifySignature, sortedPayload, validatePayment, paymentConfig, checkoutUrl, PaymentError } from '../server/payments/nowpayments.mjs';
 import { session } from '../server/payments/http.mjs';
 import { createStore } from '../server/payments/store.mjs';
 
 const config = { apiKey: 'test-key', ipnKey: 'test-ipn-secret', origin: 'https://ailettergen.com', sandbox: false, enabled: true };
 const orderId = 'a'.repeat(64);
+test('public pricing can read checkout readiness without accessing private billing data',async()=>{
+ const handlers=createHandlers({config,store:{ready:true},provider:{},requireIdentity:true,identity:async()=>{throw new PaymentError('Please sign in.',401);}});
+ const response=await handlers.status(new Request(config.origin+'/api/billing/status'));
+ assert.equal(response.status,200);
+ assert.deepEqual(await response.json(),{ready:true,checkoutEnabled:true,sandbox:false,account:null,order:null});
+ assert.equal((await handlers.status(new Request(config.origin+'/api/billing/status?order='+orderId))).status,401);
+ assert.equal((await handlers.checkout(new Request(config.origin+'/api/billing/checkout',{method:'POST',headers:{Origin:config.origin,'Content-Type':'application/json'},body:JSON.stringify({plan:'starter',requestId:'12345678-1234-1234-1234-123456789012'})}))).status,401);
+});
 const fixture = () => {
   const orders = new Map(); const accounts = new Map(); const seen = new Set(); const calls = [];
   let creates = 0;

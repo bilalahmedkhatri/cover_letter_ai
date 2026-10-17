@@ -2,6 +2,7 @@ export type LetterTone = 'Professional' | 'Formal' | 'Enthusiastic' | 'Concise';
 export type Locale = 'en' | 'es' | 'fr' | 'ru' | 'nl' | 'pt' | 'ar';
 
 export interface UserData {
+  workflowKind?: 'cover-letter' | 'university' | 'email' | 'research';
   name: string;
   skills: string;
   experience: string;

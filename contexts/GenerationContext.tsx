@@ -1,8 +1,18 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { AdmissionInfo, ExtractedKeyword } from '../types';
+import { AdmissionInfo, ExtractedKeyword, UserData } from '../types';
 import { FriendlyError } from '../services/errorService';
+import type { infer as SchemaType } from 'zod';
+import type { coverLetterQualitySchema } from '@/services/coverLetterReview.mjs';
+
+export type DraftKind = NonNullable<UserData['workflowKind']>;
+export type CoverLetterQuality = SchemaType<typeof coverLetterQualitySchema>;
+export type GeneratedDraft = { id: string; chatId?: string; warning?: string; qualityWarning?: string; qualityReview?: CoverLetterQuality; reviewChanged?: boolean; text: string; title: string; context: Record<string, unknown>; sources: {url: string; title: string; type?: string}[] };
 
 interface GenerationContextType {
+  historyRevision: number;
+  setHistoryRevision: React.Dispatch<React.SetStateAction<number>>;
+  drafts: Partial<Record<DraftKind, GeneratedDraft>>;
+  setDrafts: React.Dispatch<React.SetStateAction<Partial<Record<DraftKind, GeneratedDraft>>>>;
   coverLetter: string;
   setCoverLetter: React.Dispatch<React.SetStateAction<string>>;
   isLoading: boolean;
@@ -33,6 +43,8 @@ const GenerationContext = createContext<GenerationContextType | undefined>(undef
 
 export const GenerationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [coverLetter, setCoverLetter] = useState('');
+  const [drafts, setDrafts] = useState<Partial<Record<DraftKind, GeneratedDraft>>>({});
+  const [historyRevision, setHistoryRevision] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<FriendlyError | null>(null);
 
@@ -49,6 +61,7 @@ export const GenerationProvider: React.FC<{ children: ReactNode }> = ({ children
   return (
     <GenerationContext.Provider
       value={{
+        drafts, setDrafts, historyRevision, setHistoryRevision,
         coverLetter, setCoverLetter,
         isLoading, setIsLoading,
         error, setError,

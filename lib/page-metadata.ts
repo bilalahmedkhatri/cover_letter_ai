@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getMetadata, alternateLocales } from "@/services/seo";
+import { getMetadata, alternateLocales, socialImage } from "@/services/seo";
 import { localizedPath, localeCodes, siteOrigin, type Page } from "@/services/routing";
 import type { Locale } from "@/types";
 export async function pageMetadata(
@@ -35,6 +35,10 @@ export async function pageMetadata(
       description: meta.description,
       url: meta.canonical,
       locale: meta.ogLocale,
+      type: "website",
+      siteName: "ailettergen",
+      images: [socialImage],
     },
+    twitter: {card:'summary_large_image', title:meta.title, description:meta.description, images:[socialImage]},
   };
 }

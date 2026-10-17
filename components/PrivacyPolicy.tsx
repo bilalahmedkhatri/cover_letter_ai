@@ -28,7 +28,7 @@ const PrivacyPolicy: React.FC = () => {
         <li>Information related to job or university applications (e.g., URLs, screenshots).</li>
       </ul>
       <p>
-        Your writing inputs are sent to the selected AI service to prepare a response. Unsaved drafts remain in the current workspace until you refresh. Older browser-local drafts, if present, remain on your device. If you create an account and explicitly save your profile, a draft or research notes, those items are stored in our Neon database so you can reopen them after signing in. Login sessions are managed by Neon Auth. Payment and usage records are stored separately for billing. Reviews are stored with publication consent and appear publicly only after approval. Raw resume uploads and screenshots are not part of the account document save flow.
+        Your writing inputs are sent to the selected AI service to prepare a response. New generation requests and responses are saved automatically to your private chat history. Editor changes remain in the current workspace until you export them. Older browser-local drafts, if present, remain on your device. Your conversation history and saved profile preferences are stored in our Neon database so you can reopen them after signing in. Login sessions are managed by Neon Auth. Payment and usage records are stored separately for billing. Reviews are stored with publication consent and appear publicly only after approval. Raw resume uploads and screenshots are not saved in chat history; extracted attachment text can be retained as part of your generation input.
       </p>
 
       <h2 className="text-xl font-semibold text-accent pt-4">3. How We Use Your Information</h2>
