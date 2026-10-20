@@ -18,6 +18,8 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Implemented integration conventions (18 October 2026)
 
+- Dashboard static copy is selected server-side by the dashboard layout from `services/dashboardCopy.ts` for all seven interface locales. Keep it out of public page payloads and client dictionary imports. Translate display labels only: preserve gateway/profile language and tone values, payment status codes, existing briefs, saved chat titles and paid plan product names. Account content must use the current locale and Arabic RTL direction.
+
 - Shared `useSignOut` clears personal form/output state, refreshes account state and redirects to the current locale's landing page (`/[locale]`). Preserve the explicit empty JSON sign-out body.
 - The shared generator shows a localized fixed status notification while generating or opening a result, using the existing Spinner. Keep it visible on mobile, clear it on completion/error, and do not invent progress percentages, stages or completion times.
 - Marketing routes reuse `PageLoading` and the shared Spinner through route loading boundaries; the landing page inherits `app/[locale]/loading.tsx`. Cached/prefetched navigation may not display the fallback.

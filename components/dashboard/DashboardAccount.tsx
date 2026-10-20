@@ -1,4 +1,5 @@
 'use client';
+import { useDashboardCopy } from '@/hooks/use-dashboard-copy';
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -15,6 +16,7 @@ const Context = createContext<{ data: Summary | null; refresh: () => Promise<voi
 export const useDashboardAccount = () => useContext(Context);
 
 export default function DashboardAccount({ children, workflows }: { children: ReactNode; workflows: string[] }) {
+  const d = useDashboardCopy();
   const { user } = useAccount();
   const { locale } = useLocale();
   const pathname = usePathname();
@@ -27,9 +29,9 @@ export default function DashboardAccount({ children, workflows }: { children: Re
   }, []);
   useEffect(() => { void refresh(); }, [refresh, user?.id, pathname]);
   return <Context.Provider value={{ data, refresh, workflows }}>
-    <div aria-label="Subscription and credits" className="mx-auto mb-6 flex min-h-5 w-full max-w-7xl justify-end text-sm">
-      {error ? <span role="status" aria-label="Plan unavailable">—</span> : data ?
-        <Link href={`/${locale}/dashboard/billing`} className="font-medium">{plan.charAt(0).toUpperCase() + plan.slice(1)} {data.account?.active ? data.account.credits : 0} Credits</Link>
+    <div aria-label={d('Subscription and credits')} className="mx-auto mb-6 flex min-h-5 w-full max-w-7xl justify-end text-sm">
+      {error ? <span role="status" aria-label={d('Plan unavailable')}>—</span> : data ?
+        <Link href={`/${locale}/dashboard/billing`} className="font-medium">{plan === 'Free' ? d('Free') : plan.charAt(0).toUpperCase() + plan.slice(1)} {new Intl.NumberFormat(locale).format(data.account?.active ? data.account.credits : 0)} {d('Credits')}</Link>
       : null}
     </div>
     {children}

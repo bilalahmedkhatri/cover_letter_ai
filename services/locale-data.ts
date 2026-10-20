@@ -12,6 +12,7 @@ import { footerContext } from './footerContext';
 import { getMetadata, legalLanguageNotice } from './seo';
 import { publicWorkflows } from './workflow.mjs';
 import type { Page } from './routing';
+import type { DashboardCopy } from './dashboardCopy';
 
 export function getLocaleData(locale: Locale) {
   const copy = interfaceCopy(locale);
@@ -30,6 +31,7 @@ export function getLocaleData(locale: Locale) {
 export type LocaleData = ReturnType<typeof getLocaleData>;
 
 export type PageCopy = {
+  dashboard?: DashboardCopy;
   messages?: Partial<Record<TranslationKeys, string>>;
   interface?: ReturnType<typeof interfaceCopy>;
   landing?: ReturnType<typeof landingContent>;

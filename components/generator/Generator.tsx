@@ -1,4 +1,6 @@
 'use client';
+import { useDashboardCopy } from '@/hooks/use-dashboard-copy';
+import { languageLabel } from '@/services/dashboardLabels';
 import { useEffect, useRef, useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -25,9 +27,12 @@ import FormField from './FormField';
 import ResumeUpload from './ResumeUpload';
 export type Kind = 'cover-letter' | 'university' | 'email' | 'research';
 function Choice({ id, value, onChange, options }: { id: string; value: string; onChange: (value: string) => void; options: readonly string[] }) {
-  return <Select value={value} onValueChange={onChange}><SelectTrigger id={id} className="w-full"><SelectValue placeholder="Choose an option" /></SelectTrigger><SelectContent>{options.map(value => <SelectItem key={value} value={value}>{value}</SelectItem>)}</SelectContent></Select>;
+  const { locale } = useLocale();
+  const d = useDashboardCopy();
+  return <Select value={value} onValueChange={onChange}><SelectTrigger id={id} className="w-full"><SelectValue /></SelectTrigger><SelectContent>{options.map(value => <SelectItem key={value} value={value}>{d(languageLabel(locale, value))}</SelectItem>)}</SelectContent></Select>;
 }
 export default function Generator({ kind, compact = false, onKindChange }: { kind: Kind; compact?: boolean; onKindChange?: (kind: Kind) => void }) {
+  const d = useDashboardCopy();
   const isResearch = kind === 'research';
   const search = useSearchParams();
   const chatId = search.get('chat');
@@ -110,7 +115,7 @@ export default function Generator({ kind, compact = false, onKindChange }: { kin
   const setUrl = (value: string) => setUserData(p => ({ ...p, [(kind === 'university' || isResearch) ? 'universityUrl' : 'opportunityUrl']: value }));
   const addUrl = () => { setPendingUrl(url); setUrlError(''); setUrlOpen(true); };
   const placeholders = {
-    'cover-letter': 'Write a cover letter for [role] at [company]. My name is [your name]. My relevant experience: [your main points and achievements]. Keep it professional and sign it [your signature].',
+    'cover-letter': d('Write a cover letter for [role] at [company]. My name is [your name]. My relevant experience: [your main points and achievements]. Keep it professional and sign it [your signature].'),
     university: 'Write an application letter for [programme] at [university]. My name is [your name]. My background, motivation and goals: [your main points]. Sign it [your signature].',
     research: 'Research [programme] at [university]. Check entry requirements, fees, scholarships and deadlines for [year]. Include official sources and mark anything that cannot be verified. Add the official programme URL using +.',
     email: 'Write an email to [recipient] about [purpose]. My name is [your name]. Include [your main points] and ask for [next step]. Sign it [your signature].',
@@ -119,18 +124,18 @@ export default function Generator({ kind, compact = false, onKindChange }: { kin
     <form onSubmit={generate} aria-busy={busy || openingDraft}>
       <fieldset disabled={busy || openingDraft} className="min-w-0 space-y-4">
         <div className="text-center">
-          {compact && <h2 className="text-2xl font-semibold tracking-tight">{isResearch ? 'Explore Universities' : 'Write Confidently'}</h2>}
+          {compact && <h2 className="text-2xl font-semibold tracking-tight">{isResearch ? d('Explore Universities') : d('Write Confidently')}</h2>}
         </div>
         {compact ? <div className="rounded-2xl border bg-muted/40 p-2 shadow-sm focus-within:border-emerald-500/50">
-          <Textarea ref={promptRef} aria-label="Writing prompt" required rows={6} maxLength={6000} placeholder={placeholders[kind]} value={description} onChange={e => setUserData(p => ({ ...p, opportunityDescription: e.target.value }))} className="min-h-36 resize-none border-0 bg-transparent px-3 py-3 shadow-none focus-visible:ring-0 dark:bg-transparent" />
+          <Textarea ref={promptRef} aria-label={d('Writing prompt')} required rows={6} maxLength={6000} placeholder={placeholders[kind]} value={description} onChange={e => setUserData(p => ({ ...p, opportunityDescription: e.target.value }))} className="min-h-36 resize-none border-0 bg-transparent px-3 py-3 shadow-none focus-visible:ring-0 dark:bg-transparent" />
           {isResearch && !url && <p className="px-3 pb-2 text-xs text-text-secondary">Add an official programme URL using +.</p>}
-          {url && <div className="mx-2 mb-2 flex min-w-0 items-center gap-1 text-xs"><Link2 className="size-3 shrink-0" /><span className="truncate">{url}</span><IconButton type="button" label="Remove URL" variant="ghost" className="size-6 shrink-0" onClick={() => setUrl('')}><X className="size-3" /></IconButton></div>}
-          <ResumeUpload attachments={attachments} onChange={updateAttachments} onError={setError} onBusy={setUploading} onAddUrl={addUrl} disabled={busy} allowFiles={!isResearch} controls={<Select value={outputLanguage} onValueChange={selectOutputLanguage}><SelectTrigger aria-label="Output language" className="h-8 w-28 border-0 bg-transparent px-2 text-xs shadow-none sm:w-36"><SelectValue placeholder="Language" /></SelectTrigger><SelectContent>{outputLanguages.map(language=><SelectItem key={language} value={language}>{language}</SelectItem>)}</SelectContent></Select>} actions={<div className="flex items-center gap-2">
-              {onKindChange && <Select value={kind} onValueChange={v => onKindChange(v as Kind)}><SelectTrigger aria-label="Writing type" className="h-8 max-w-40 border-0 bg-transparent px-2 text-xs shadow-none"><SelectValue /></SelectTrigger><SelectContent>{(Object.keys(workflows) as Kind[]).filter(key=>available.includes(key)).map(key => <SelectItem key={key} value={key}>{workflows[key].title}</SelectItem>)}</SelectContent></Select>}
-              <IconButton label={openingDraft ? 'Opening draft' : isResearch ? "Research university" : "Generate draft"} type="submit" disabled={busy || openingDraft || uploading || !description.trim() || (isResearch && !url)} className="size-9 rounded-xl">{busy || openingDraft ? <Spinner label={openingDraft ? 'Opening draft' : 'Writing draft'} /> : <ArrowUp className="size-5" />}</IconButton>
+          {url && <div className="mx-2 mb-2 flex min-w-0 items-center gap-1 text-xs"><Link2 className="size-3 shrink-0" /><span className="truncate">{url}</span><IconButton type="button" label={d('Remove URL')} variant="ghost" className="size-6 shrink-0" onClick={() => setUrl('')}><X className="size-3" /></IconButton></div>}
+          <ResumeUpload attachments={attachments} onChange={updateAttachments} onError={setError} onBusy={setUploading} onAddUrl={addUrl} disabled={busy} allowFiles={!isResearch} controls={<Select value={outputLanguage} onValueChange={selectOutputLanguage}><SelectTrigger aria-label={d('Output language')} className="h-8 w-28 border-0 bg-transparent px-2 text-xs shadow-none sm:w-36"><SelectValue placeholder={d('Language')} /></SelectTrigger><SelectContent>{outputLanguages.map(language=><SelectItem key={language} value={language}>{languageLabel(locale, language)}</SelectItem>)}</SelectContent></Select>} actions={<div className="flex items-center gap-2">
+              {onKindChange && <Select value={kind} onValueChange={v => onKindChange(v as Kind)}><SelectTrigger aria-label={d('Writing type')} className="h-8 max-w-40 border-0 bg-transparent px-2 text-xs shadow-none"><SelectValue /></SelectTrigger><SelectContent>{(Object.keys(workflows) as Kind[]).filter(key=>available.includes(key)).map(key => <SelectItem key={key} value={key}>{d(workflows[key].title)}</SelectItem>)}</SelectContent></Select>}
+              <IconButton label={openingDraft ? d('Opening draft') : isResearch ? d('Research university') : d('Generate draft')} type="submit" disabled={busy || openingDraft || uploading || !description.trim() || (isResearch && !url)} className="size-9 rounded-xl">{busy || openingDraft ? <Spinner label={openingDraft ? d('Opening draft') : d('Writing draft')} /> : <ArrowUp className="size-5" />}</IconButton>
           </div>} />
         </div> : <Card><CardContent className="space-y-4">
-          {onKindChange && <FormField id="writing-type" label="Writing type"><Select value={kind} onValueChange={v => onKindChange(v as Kind)}><SelectTrigger id="writing-type" className="w-full"><SelectValue /></SelectTrigger><SelectContent>{(Object.keys(workflows) as Kind[]).filter(key=>available.includes(key)).map(key => <SelectItem key={key} value={key}>{workflows[key].title}</SelectItem>)}</SelectContent></Select></FormField>}
+          {onKindChange && <FormField id="writing-type" label={d('Writing type')}><Select value={kind} onValueChange={v => onKindChange(v as Kind)}><SelectTrigger id="writing-type" className="w-full"><SelectValue /></SelectTrigger><SelectContent>{(Object.keys(workflows) as Kind[]).filter(key=>available.includes(key)).map(key => <SelectItem key={key} value={key}>{d(workflows[key].title)}</SelectItem>)}</SelectContent></Select></FormField>}
           <FormField id="name" label="Your name"><Input id="name" required maxLength={120} autoComplete="name" value={userData.name} onChange={e => setUserData(p => ({ ...p, name: e.target.value }))} /></FormField>
           <ResumeUpload attachments={attachments} onChange={updateAttachments} onError={setError} onBusy={setUploading} onAddUrl={addUrl} disabled={busy} />
           <FormField id="opportunity-url" label={compact ? 'Website URL (optional)' : flow.urlLabel}><Input id="opportunity-url" type="url" maxLength={2048} placeholder="https://…" value={url} onChange={e => setUserData(p => ({ ...p, [(kind === 'university' || isResearch) ? 'universityUrl' : 'opportunityUrl']: e.target.value }))} /></FormField>
@@ -141,13 +146,13 @@ export default function Generator({ kind, compact = false, onKindChange }: { kin
             <FormField id="skills" label="Relevant skills"><Input id="skills" maxLength={4000} value={userData.skills} onChange={e => setUserData(p => ({ ...p, skills: e.target.value }))} /></FormField>
             <FormField id="recipient" label="Target recipient (optional)"><Input id="recipient" maxLength={160} value={recipient} onChange={e => setUserData(p => ({ ...p, targetRecipient: e.target.value }))} /></FormField>
             <div className="grid gap-4 sm:grid-cols-2">
-              <FormField id="tone" label="Tone"><Choice id="tone" value={userData.tone} options={['Formal', 'Concise', 'Enthusiastic', 'Professional']} onChange={tone => setUserData(p => ({ ...p, tone: tone as typeof p.tone }))} /></FormField>
+              <FormField id="tone" label={d('Tone')}><Choice id="tone" value={userData.tone} options={['Formal', 'Concise', 'Enthusiastic', 'Professional']} onChange={tone => setUserData(p => ({ ...p, tone: tone as typeof p.tone }))} /></FormField>
               <FormField id="output-length" label="Output length"><Select value={length} onValueChange={outputLength => setUserData(p => ({ ...p, outputLength }))}><SelectTrigger id="output-length" className="w-full"><SelectValue /></SelectTrigger><SelectContent>{Object.entries(kind === 'cover-letter' ? coverLetterWordTargets : wordTargets[kind === 'email' ? 'email' : 'letter']).map(([key, words]) => <SelectItem key={key} value={key}>{key} · {String(words)}</SelectItem>)}</SelectContent></Select></FormField>
             </div>
-            <FormField id="language" label="Output language"><Choice id="language" value={outputLanguage} onChange={selectOutputLanguage} options={outputLanguages} /></FormField>
+            <FormField id="language" label={d('Output language')}><Choice id="language" value={outputLanguage} onChange={selectOutputLanguage} options={outputLanguages} /></FormField>
           </div></details>
           <p className="text-xs leading-5 text-text-secondary">Your inputs are sent to the writing provider when you generate. Review the draft before sending it.</p>
-          <Button type="submit" disabled={busy || openingDraft || uploading} className="w-full">{(busy || openingDraft) && <Spinner label={openingDraft ? 'Opening draft' : 'Writing draft'} />}{openingDraft ? 'Opening your draft…' : busy ? 'Writing your draft…' : 'Generate draft'}</Button>
+          <Button type="submit" disabled={busy || openingDraft || uploading} className="w-full">{(busy || openingDraft) && <Spinner label={openingDraft ? d('Opening draft') : d('Writing draft')} />}{openingDraft ? d('Opening your draft…') : busy ? d('Writing your draft…') : d('Generate draft')}</Button>
         </CardContent></Card>}
       </fieldset>
     </form>
@@ -161,12 +166,12 @@ export default function Generator({ kind, compact = false, onKindChange }: { kin
       <p className="text-center text-xs text-text-secondary">{templateCopy.tip}</p>
     </section>}
     <Dialog open={selectedTemplate!==null} onOpenChange={open=>{if(!open)setSelectedTemplate(null);}}><DialogContent><DialogHeader><DialogTitle>{templateCopy.replace}</DialogTitle><DialogDescription>{templateCopy.warning}</DialogDescription></DialogHeader><div className="flex justify-end gap-2"><Button type="button" variant="outline" onClick={()=>setSelectedTemplate(null)}>{templateCopy.cancel}</Button><Button type="button" onClick={()=>{if(selectedTemplate)applyTemplate(selectedTemplate);}}>{templateCopy.use}</Button></div></DialogContent></Dialog>
-    {draftPath && <p role="status" className="mt-4 text-sm text-text-secondary">{openingDraft ? 'Opening your draft…' : 'Your draft is ready.'} <Link href={draftPath} className="font-medium underline">Open draft</Link></p>}
-    <Dialog open={!!error} onOpenChange={open => { if (!open) setError(''); }}><DialogContent><DialogHeader><DialogTitle>Unable to generate</DialogTitle><DialogDescription>{error}</DialogDescription></DialogHeader><Button type="button" onClick={() => setError('')}>Close</Button></DialogContent></Dialog>
-    <Dialog open={urlOpen} onOpenChange={setUrlOpen}><DialogContent><DialogHeader><DialogTitle>Add website URL</DialogTitle><DialogDescription>Add a public job, programme or organisation link.</DialogDescription></DialogHeader>
-      <Input aria-label="Website URL" type="url" maxLength={2048} placeholder="https://…" value={pendingUrl} onChange={e => setPendingUrl(e.target.value)} />
+    {draftPath && <p role="status" className="mt-4 text-sm text-text-secondary">{openingDraft ? d('Opening your draft…') : d('Your draft is ready.')} <Link href={draftPath} className="font-medium underline">{d('Open draft')}</Link></p>}
+    <Dialog open={!!error} onOpenChange={open => { if (!open) setError(''); }}><DialogContent><DialogHeader><DialogTitle>{d('Unable to generate')}</DialogTitle><DialogDescription>{error}</DialogDescription></DialogHeader><Button type="button" onClick={() => setError('')}>{d('Close')}</Button></DialogContent></Dialog>
+    <Dialog open={urlOpen} onOpenChange={setUrlOpen}><DialogContent><DialogHeader><DialogTitle>{d('Add website URL')}</DialogTitle><DialogDescription>{d('Add a public job, programme or organisation link.')}</DialogDescription></DialogHeader>
+      <Input aria-label={d('Website URL')} type="url" maxLength={2048} placeholder="https://…" value={pendingUrl} onChange={e => setPendingUrl(e.target.value)} />
       {urlError && <p role="alert" className="text-sm text-destructive">{urlError}</p>}
-      <Button type="button" onClick={() => { try { const parsed = new URL(pendingUrl.trim()); if (!['http:', 'https:'].includes(parsed.protocol) || parsed.username || parsed.password) throw new Error(); setUrl(pendingUrl.trim()); setUrlOpen(false); } catch { setUrlError('Enter an HTTP or HTTPS URL without credentials.'); } }}>Add URL</Button>
+      <Button type="button" onClick={() => { try { const parsed = new URL(pendingUrl.trim()); if (!['http:', 'https:'].includes(parsed.protocol) || parsed.username || parsed.password) throw new Error(); setUrl(pendingUrl.trim()); setUrlOpen(false); } catch { setUrlError(d('Enter an HTTP or HTTPS URL without credentials.')); } }}>{d('Add URL')}</Button>
     </DialogContent></Dialog>
   </div>;
 }

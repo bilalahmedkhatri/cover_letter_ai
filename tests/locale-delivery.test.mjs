@@ -28,6 +28,8 @@ const { translations } = await import('../services/translations.ts');
 const { pricingCopy } = await import('../services/pricingCopy.ts');
 const { resourceCopy } = await import('../services/resourceCopy.ts');
 const { landingContent } = await import('../services/landingContent.ts');
+const { dashboardCopy } = await import('../services/dashboardCopy.ts');
+const { languageLabel, paymentStatusLabels } = await import('../services/dashboardLabels.ts');
 hooks.deregister();
 const locales = ['en', 'ru', 'es', 'fr', 'pt', 'nl', 'ar'];
 
@@ -70,4 +72,36 @@ test('route payloads preserve values while excluding unrelated pricing, guides a
     assert.equal(getPageCopy(locale, '/compare').resource.guides, undefined);
     assert.equal(getPageCopy(locale, '/privacy').aboutDescription, undefined);
   }
+});
+
+
+test('dashboard copy covers every selected locale and keeps public payloads small', () => {
+  const english = dashboardCopy('en');
+  for (const locale of locales) {
+    const selected = dashboardCopy(locale);
+    assert.deepEqual(Object.keys(selected), Object.keys(english));
+    for (const [key, value] of Object.entries(selected)) {
+      assert.ok(typeof value === 'string' && value.trim(), `${locale}: ${key}`);
+    }
+    if (locale !== 'en') {
+      for (const key of ['Write Confidently', 'Job cover letter', 'Output language', 'Waiting for payment', 'New Chat', 'Free']) {
+        assert.notEqual(selected[key], english[key], `${locale}: ${key}`);
+      }
+    }
+    assert.equal(getLocaleData(locale).dashboard, undefined);
+    assert.equal(getPageCopy(locale, '/').dashboard, undefined);
+  }
+});
+
+test('display translations preserve gateway language and payment status values', () => {
+  assert.equal(languageLabel('ru', 'Russian'), 'русский');
+  assert.equal(languageLabel('fr', 'Russian'), 'russe');
+  assert.equal(languageLabel('ar', 'French'), 'الفرنسية');
+  assert.equal(languageLabel('en', 'Unknown'), 'Unknown');
+  const expected = ['creating', 'waiting', 'confirming', 'confirmed', 'sending', 'partially_paid', 'finished', 'failed', 'refunded', 'expired'];
+  for (const status of expected) {
+    assert.ok(paymentStatusLabels[status]);
+    for (const locale of locales) assert.ok(dashboardCopy(locale)[paymentStatusLabels[status]]);
+  }
+  assert.equal(paymentStatusLabels.waiting, 'Waiting for payment');
 });

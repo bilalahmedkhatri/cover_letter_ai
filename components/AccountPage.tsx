@@ -1,3 +1,5 @@
+import { useDashboardCopy } from '@/hooks/use-dashboard-copy';
+import { languageLabel, paymentStatusLabels } from '@/services/dashboardLabels';
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import * as Tabs from "@radix-ui/react-tabs";
@@ -52,7 +54,7 @@ export default function AccountPage({
   const { workflows: available } = useDashboardAccount();
   const logout = useSignOut();
   const { locale } = useLocale();
-  const ru = locale === "ru";
+  const d = useDashboardCopy();
   const { setUserData } = useFormState();
   const [data, setData] = useState<Overview | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -90,9 +92,9 @@ export default function AccountPage({
     try {
       await accountRequest(value);
       await load();
-      setMessage(ru ? "Сохранено." : "Saved.");
+      setMessage(d('Saved.'));
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Please try again.");
+      setMessage(error instanceof Error ? error.message : d('Please try again.'));
     } finally {
       setBusy(false);
     }
@@ -103,53 +105,47 @@ export default function AccountPage({
       await logout();
     } catch {
       setMessage(
-        l(
-          "Unable to sign out. Please try again.",
-          "Не удалось выйти. Попробуйте снова.",
-        ),
+        d('Unable to sign out. Please try again.'),
       );
     } finally {
       setBusy(false);
     }
   }
-  const l = (en: string, russian: string) => (ru ? russian : en);
+
   if (loading)
-    return <Spinner className="flex w-full py-8" label={l("Loading your account…", "Загрузка…")} />;
+    return <Spinner className="flex w-full py-8" label={d('Loading your account…')} />;
   if (!user)
     return (
       <section className="mx-auto max-w-xl rounded-2xl border border-border bg-card p-9">
-        <h1 className="editorial-title">{l("Your account", "Ваш кабинет")}</h1>
+        <h1 className="editorial-title">{d('Your account')}</h1>
         <p className="mt-5 text-text-secondary">
-          {l(
-            "Sign in to access your chat history, profile and plan.",
-            "Войдите, чтобы открыть историю чатов, профиль и тариф.",
-          )}
+          {d('Sign in to access your chat history, profile and plan.')}
         </p>
         <Button asChild className="mt-7">
           <a href={localizedPath(locale, "/login")}>
-            {l("Sign in or create an account", "Войти или создать аккаунт")}
+            {d('Sign in or create an account')}
           </a>
         </Button>
       </section>
     );
   return (
-    <div lang={ru ? "ru" : "en"} dir="ltr" className="space-y-8">
+    <div lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} className="space-y-8">
       {!embedded && <header className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="eyebrow">{l("Your account", "Ваш кабинет")}</p>
+          <p className="eyebrow">{d('Your account')}</p>
           <h1 className="editorial-title mt-3 break-words">
-            {user.name || l("Writing workspace", "Рабочий кабинет")}
+            {user.name || d('Writing workspace')}
           </h1>
           <p className="mt-3 text-text-secondary">{user.email}</p>
         </div>
         <div className="flex gap-3">
           <Button asChild>
             <a href={localizedPath(locale, "/dashboard")}>
-              {l("Write a letter", "Создать письмо")}
+              {d('Write a letter')}
             </a>
           </Button>
           <Button variant="outline" disabled={busy} onClick={signOut}>
-            {l("Sign out", "Выйти")}
+            {d('Sign out')}
           </Button>
         </div>
       </header>}
@@ -161,22 +157,22 @@ export default function AccountPage({
           {message}
         </p>
       )}
-      {!data ? !message ? <Spinner className="flex w-full py-8" label={l('Loading your account…', 'Загрузка…')} /> : embedded ? <p role="status">{l('Unable to load your account.', 'Не удалось загрузить кабинет.')}</p> : (
+      {!data ? !message ? <Spinner className="flex w-full py-8" label={d('Loading your account…')} /> : embedded ? <p role="status">{d('Unable to load your account.')}</p> : (
         <Button
           onClick={() => load().catch((error) => setMessage(error.message))}
         >
-          {l("Reload account", "Загрузить кабинет")}
+          {d('Reload account')}
         </Button>
       ) : (
         <>
           <Tabs.Root key={initialTab} defaultValue={initialTab}>
             <Tabs.List
-              aria-label={l("Account sections", "Разделы кабинета")}
+              aria-label={d('Account sections')}
               className={embedded ? 'hidden' : 'flex flex-wrap gap-2 border-b border-border pb-4'}
             >
               {[
-                ["profile", l("Profile & preferences", "Профиль")],
-                ["billing", l("Plan & payments", "Тариф и платежи")],
+                ["profile", d('Profile & preferences')],
+                ["billing", d('Plan & payments')],
               ].map(([value, title]) => (
                 <Tabs.Trigger
                   key={value}
@@ -199,10 +195,10 @@ export default function AccountPage({
                   {(["name", "skills", "experience"] as const).map((field) => (
                     <label key={field} className="block text-sm capitalize">
                       {field === "name"
-                        ? l("Name", "Имя")
+                        ? d('Name')
                         : field === "skills"
-                          ? l("Skills", "Навыки")
-                          : l("Experience", "Опыт")}
+                          ? d('Skills')
+                          : d('Experience')}
                       <Textarea
                         rows={field === "name" ? 1 : 4}
                         maxLength={
@@ -222,7 +218,7 @@ export default function AccountPage({
                   ))}
                   <div className="grid gap-4 sm:grid-cols-2">
                     <label className="text-sm">
-                      {l("Writing language", "Язык письма")}
+                      {d('Writing language')}
                       <select
                         className="mt-2 w-full rounded-lg border border-border bg-card p-3"
                         value={profile.language}
@@ -243,12 +239,12 @@ export default function AccountPage({
                           "Slovak",
                           "Polish",
                         ].map((value) => (
-                          <option key={value}>{value}</option>
+                          <option key={value} value={value}>{languageLabel(locale, value)}</option>
                         ))}
                       </select>
                     </label>
                     <label className="text-sm">
-                      {l("Tone", "Тон")}
+                      {d('Tone')}
                       <select
                         className="mt-2 w-full rounded-lg border border-border bg-card p-3"
                         value={profile.tone}
@@ -265,14 +261,14 @@ export default function AccountPage({
                           "Enthusiastic",
                           "Concise",
                         ].map((value) => (
-                          <option key={value}>{value}</option>
+                          <option key={value} value={value}>{d(value)}</option>
                         ))}
                       </select>
                     </label>
                   </div>
                   <div className="flex flex-wrap gap-3">
                     <Button disabled={busy} type="submit">
-                      {l("Save profile", "Сохранить профиль")}
+                      {d('Save profile')}
                     </Button>
                     <Button
                       type="button"
@@ -287,10 +283,7 @@ export default function AccountPage({
                         );
                       }}
                     >
-                      {l(
-                        "Use profile in generator",
-                        "Использовать в генераторе",
-                      )}
+                      {d('Use profile in generator')}
                     </Button>
                   </div>
                 </form>
@@ -299,52 +292,46 @@ export default function AccountPage({
             <Tabs.Content value="billing" className="mt-6 space-y-7">
               <div className="rounded-xl border border-border bg-card p-6">
                 <h2 className="text-xl font-semibold">
-                  {l("Plan and remaining usage", "Тариф и доступный объём")}
+                  {d('Plan and remaining usage')}
                 </h2>
                 {data.account?.active ? (
                   <>
                     <p className="mt-3 capitalize">
-                      {data.account.plan} · {l("Until", "До")}{" "}
+                      {data.account.plan} · {d('Until')}{" "}
                       {new Date(data.account.expiresAt).toLocaleDateString(
                         locale,
                       )}
                     </p>
                     <p className="mt-3 text-text-secondary">
                       {data.account.remaining.standardLetters}{" "}
-                      {l("standard letters", "стандартных писем")} /{" "}
+                      {d('standard letters')} /{" "}
                       {data.account.remaining.premiumLetters}{" "}
-                      {l("premium letters", "премиум-писем")}
+                      {d('premium letters')}
                       {available.includes('research') && <> /{" "}
                       {data.account.remaining.universityResearch}{" "}
-                      {l("research requests", "исследований")}</>}
+                      {d('research requests')}</>}
                     </p>
                     <p className="mt-3 text-sm text-text-secondary">
-                      {l(
-                        "These are alternative maximums from one shared allowance. Mixed usage reduces the remaining amounts.",
-                        "Это альтернативные максимумы общего лимита. Смешанное использование уменьшает остатки.",
-                      )}
+                      {d('These are alternative maximums from one shared allowance. Mixed usage reduces the remaining amounts.')}
                     </p>
                   </>
                 ) : (
                   <p className="mt-4 text-text-secondary">
-                    {l(
-                      "No active paid plan. You can use the current writing workspace and chat history.",
-                      "Активного платного тарифа нет. Можно пользоваться редактором и сохранять черновики.",
-                    )}
+                    {d('No active paid plan. You can use the current writing workspace and chat history.')}
                   </p>
                 )}
                 <Button asChild variant="outline" className="mt-5">
                   <a href={localizedPath(locale, "/pricing")}>
-                    {l("View plans", "Посмотреть тарифы")}
+                    {d('View plans')}
                   </a>
                 </Button>
               </div>
               <h2 className="text-xl font-semibold">
-                {l("Payment history", "История платежей")}
+                {d('Payment history')}
               </h2>
               {!data.orders.length ? (
                 <p className="text-text-secondary">
-                  {l("No payments yet.", "Платежей пока нет.")}
+                  {d('No payments yet.')}
                 </p>
               ) : (
                 <ul className="space-y-3">
@@ -357,7 +344,7 @@ export default function AccountPage({
                         {order.plan} · ${(order.priceCents / 100).toFixed(2)}
                       </span>
                       <span>
-                        {order.status} ·{" "}
+                        {d(paymentStatusLabels[order.status] || 'Payment status unavailable')} ·{" "}
                         {new Date(order.createdAt).toLocaleDateString(locale)}
                       </span>
                     </li>
