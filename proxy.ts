@@ -11,7 +11,7 @@ export async function proxy(request: NextRequest) {
   headers.set("x-site-locale", locale);
   // Unknown prefixes otherwise match [locale] and can stream a 200 fallback.
   // Preserve the requested URL while rendering our existing 404 with its status.
-  const publicFiles = ["/", "/icon.svg", "/pdf.worker.min.mjs", "/robots.txt", "/sitemap.xml", "/llms.txt", "/opengraph-image", "/yandex_e414fd136d3a26e8.html"];
+  const publicFiles = ["/", "/icon.svg", "/pdf.worker.min.mjs", "/robots.txt", "/sitemap.xml", "/llms.txt", "/opengraph-image", "/yandex_e414fd136d3a26e8.html", "/BingSiteAuth.xml"];
   const missingArticle = supportedLocale && request.nextUrl.pathname.startsWith(`/${locale}/blog/`) && resolveRoute(request.nextUrl.pathname).page === '/404';
   if (missingArticle || (!supportedLocale && !publicFiles.includes(request.nextUrl.pathname))) {
     return NextResponse.rewrite(new URL(`/${locale}/__not-found`, request.url), {
