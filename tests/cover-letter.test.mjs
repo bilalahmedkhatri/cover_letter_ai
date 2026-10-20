@@ -8,7 +8,7 @@ import {createAIHandler} from '../server/ai/handler.mjs';
 
 const input={kind:'cover-letter',name:'Alex',recipient:'Hiring team',description:'The job needs team leadership and Python. My own project used HTML.',
   resumeText:'Built a portfolio.\n\nHelped a teammate with CSS.',skills:'HTML and CSS',experience:'Assisted with a website.',language:'English',tone:'Professional',length:'medium',url:''};
-const env={NODE_ENV:'development',AI_GATEWAY_API_KEY:'isolated-test-key'};
+const env={NODE_ENV:'development',AI_GATEWAY_GENERATE_URL:'https://gateway.example/api/v1/generate/',AI_GATEWAY_API_KEY:'isolated-test-key'};
 const requestId='11111111-1111-4111-8111-111111111111';
 
 test('cover-letter schema supports exactly five languages without changing private workflows',()=>{

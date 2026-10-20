@@ -1,0 +1,1 @@
+exports.getAuthClient=async()=>({getSession:async()=>({data:{user:{id:window.testOwner||'alice',name:'Test',email:'test@example.invalid'}}})});

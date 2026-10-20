@@ -1,8 +1,9 @@
-import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { translations, TranslationKeys } from '../services/translations';
-import { Locale } from '../types';
-import { resolveRoute } from '../services/routing';
-import { useRoutePath } from './RouteContext';
+import React, { createContext, useContext, useEffect, useLayoutEffect, ReactNode } from 'react';
+import type { TranslationKeys } from '../services/translations';
+import type { Locale } from '../types';
+import type { LocaleData } from '../services/locale-data';
+import { useOptionalPageCopy } from './PageCopyContext';
+
 
 export const locales: { code: Locale; name: string }[] = [
     { code: 'en', name: 'English' },
@@ -16,36 +17,31 @@ export const locales: { code: Locale; name: string }[] = [
 
 interface LocaleContextType {
   locale: Locale;
-  setLocale: React.Dispatch<React.SetStateAction<Locale>>;
+  shell: LocaleData['shell'];
   t: (key: TranslationKeys, replacements?: Record<string, string>) => string;
 }
 
 const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
 
-export const LocaleProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const pathname = useRoutePath();
-  const [locale, setLocale] = useState<Locale>(() => resolveRoute(pathname).locale);
-  useEffect(() => { setLocale(resolveRoute(pathname).locale); }, [pathname]);
+export const LocaleProvider = ({ children, locale, data }: { children: ReactNode; locale: Locale; data: LocaleData }) => {
 
-  // Effect to update everything when the locale changes
+  // Commit direction before paint when client navigation changes the locale.
+  useLayoutEffect(() => {
+    document.documentElement.lang = locale;
+    document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr';
+  }, [locale]);
+
   useEffect(() => {
     try {
         localStorage.setItem('locale', locale);
     } catch (error) {
         console.warn("Could not save locale to localStorage.", error);
     }
-    document.documentElement.lang = locale;
-    // Set text direction for RTL languages like Arabic
-    if (locale === 'ar') {
-        document.documentElement.dir = 'rtl';
-    } else {
-        document.documentElement.dir = 'ltr';
-    }
   }, [locale]);
 
   // The translation function
   const t = (key: TranslationKeys, replacements?: Record<string, string>): string => {
-    let translation = translations[locale][key] || translations['en'][key];
+    let translation = data.messages[key];
     
     // If no translation is found even in the fallback, return the key itself to avoid crashing.
     if (!translation) {
@@ -62,7 +58,7 @@ export const LocaleProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   };
 
   return (
-    <LocaleContext.Provider value={{ locale, setLocale, t }}>
+    <LocaleContext.Provider value={{ locale, shell: data.shell, t }}>
       {children}
     </LocaleContext.Provider>
   );
@@ -70,8 +66,15 @@ export const LocaleProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
 export const useLocale = (): LocaleContextType => {
   const context = useContext(LocaleContext);
+  const pageCopy = useOptionalPageCopy();
   if (!context) {
     throw new Error('useLocale must be used within a LocaleProvider');
   }
-  return context;
+  if (!pageCopy?.messages) return context;
+  return { ...context, t: (key, replacements) => {
+    let text = pageCopy.messages[key];
+    if (!text) return context.t(key, replacements);
+    for (const [name, value] of Object.entries(replacements || {})) text = text.replace(`{{${name}}}`, value);
+    return text;
+  } };
 };

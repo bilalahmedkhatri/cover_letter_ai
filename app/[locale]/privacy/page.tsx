@@ -1,3 +1,4 @@
+import Content from '@/components/PrivacyPolicy';
 import PublicPage from "@/components/PublicPage";
 import { pageMetadata } from "@/lib/page-metadata";
 export const generateMetadata = ({
@@ -5,6 +6,7 @@ export const generateMetadata = ({
 }: {
   params: Promise<{ locale: string }>;
 }) => pageMetadata(params, "/privacy");
-export default function Page() {
-  return <PublicPage page="/privacy" />;
+export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return <PublicPage locale={locale} page="/privacy"><Content/></PublicPage>;
 }

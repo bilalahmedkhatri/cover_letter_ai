@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createAIHandler} from '../server/ai/handler.mjs';
 import {gatewayQuery,generateWithModel,researchPrompt,researchSystemInstruction} from '../server/ai/providers.mjs';
 import {generationPrompt,generationSystemInstruction,validateGeneration} from '../services/workflow.mjs';
-const env={NODE_ENV:'development',BILLING_SITE_URL:'https://app.example',AI_GATEWAY_API_KEY:'test-gateway-key'};
+const env={NODE_ENV:'development',BILLING_SITE_URL:'https://app.example',AI_GATEWAY_QUERY_URL:'http://localhost:8000/api/v1/query/',AI_GATEWAY_API_KEY:'test-gateway-key'};
 const writing={kind:'university',name:'Alex',recipient:'Hiring team',description:'Write an application in Spanish. My experience is web development.',resumeText:'',skills:'',experience:'',language:'Spanish',url:'',tone:'Professional',length:'short'};
 const research={url:'https://example.edu/programme',programme:'Computing',questions:'Check entry requirements.',language:'English'};
 const request=(input,origin='https://app.example')=>new Request('https://app.example/api/generate',{method:'POST',headers:{'Content-Type':'application/json',origin},body:JSON.stringify(input)});

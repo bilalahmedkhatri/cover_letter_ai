@@ -1,0 +1,122 @@
+{
+  "note": "Initial HTML script tags only; gzip estimates, not browser timings or complete lazy dependency graphs.",
+  "routes": [
+    {
+      "path": "/en",
+      "lang": "en",
+      "dir": "ltr",
+      "heading": "Your experience.\nA better first draft.",
+      "mainTextHash": "e2ac4b858ea0d060e68dcc78d2187b9707453eb165559d8b143241a2fe26e7c7",
+      "mainTextLength": 5940,
+      "htmlBytes": 53144,
+      "htmlGzipBytes": 11612,
+      "scriptCount": 26,
+      "scriptBytes": 1250342,
+      "scriptGzipBytes": 394232
+    },
+    {
+      "path": "/fr",
+      "lang": "fr",
+      "dir": "ltr",
+      "heading": "Votre expérience.\nUn meilleur premier jet.",
+      "mainTextHash": "a65cc5246a5d5cdaf19644745ec93b0d89d81792020ed08d5c1c163ca2697358",
+      "mainTextLength": 5755,
+      "htmlBytes": 53370,
+      "htmlGzipBytes": 11829,
+      "scriptCount": 26,
+      "scriptBytes": 1250342,
+      "scriptGzipBytes": 394232
+    },
+    {
+      "path": "/ru",
+      "lang": "ru",
+      "dir": "ltr",
+      "heading": "Ваш опыт.\nУдачный первый черновик.",
+      "mainTextHash": "9b4ac2e57d407ba7af61a28098a65a23dc09bfdb431a75da8711eb97c8307f9f",
+      "mainTextLength": 5838,
+      "htmlBytes": 59420,
+      "htmlGzipBytes": 13088,
+      "scriptCount": 26,
+      "scriptBytes": 1250342,
+      "scriptGzipBytes": 394232
+    },
+    {
+      "path": "/ar",
+      "lang": "ar",
+      "dir": "rtl",
+      "heading": "خبرتك.\nمسودة أولى أفضل.",
+      "mainTextHash": "fcf2a21dfa3138984570786ff677b87a796178f8377ce31034e59bf79767660a",
+      "mainTextLength": 4648,
+      "htmlBytes": 55448,
+      "htmlGzipBytes": 12368,
+      "scriptCount": 26,
+      "scriptBytes": 1250342,
+      "scriptGzipBytes": 394232
+    },
+    {
+      "path": "/fr/features",
+      "lang": "fr",
+      "dir": "ltr",
+      "heading": "A writing workspace for your next opportunity.",
+      "mainTextHash": "04eaa99ebcc759688cde3b9d46a234867c704fbe8660777a16a99cdca77ff9b3",
+      "mainTextLength": 21916,
+      "htmlBytes": 60137,
+      "htmlGzipBytes": 15857,
+      "scriptCount": 27,
+      "scriptBytes": 1254070,
+      "scriptGzipBytes": 395725
+    },
+    {
+      "path": "/en/guides",
+      "lang": "en",
+      "dir": "ltr",
+      "heading": "Make your next draft specific.",
+      "mainTextHash": "47643c904a8fbc1f451529f7321e20a7ebf3dd9ebfc38abfed595676819a7a28",
+      "mainTextLength": 21170,
+      "htmlBytes": 61125,
+      "htmlGzipBytes": 15702,
+      "scriptCount": 27,
+      "scriptBytes": 1254070,
+      "scriptGzipBytes": 395724
+    },
+    {
+      "path": "/en/privacy",
+      "lang": "en",
+      "dir": "ltr",
+      "heading": "Privacy",
+      "mainTextHash": "2aea20c16b49db52a2b7ff386dd24343549373c74f587b1d8f8241e2fdfedbcd",
+      "mainTextLength": 20510,
+      "htmlBytes": 55426,
+      "htmlGzipBytes": 15007,
+      "scriptCount": 27,
+      "scriptBytes": 1254070,
+      "scriptGzipBytes": 395723
+    },
+    {
+      "path": "/en/blog",
+      "lang": "en",
+      "dir": "ltr",
+      "heading": "Practical notes for your next letter.",
+      "mainTextHash": "91bf928d3527fc161103a4b700e83aa9ba1c1ac020f719d9ef078f7bc355dfa4",
+      "mainTextLength": 12,
+      "htmlBytes": 45084,
+      "htmlGzipBytes": 7553,
+      "scriptCount": 25,
+      "scriptBytes": 1189744,
+      "scriptGzipBytes": 373879
+    },
+    {
+      "path": "/fr/blog/write-a-tailored-cover-letter",
+      "lang": "fr",
+      "dir": "ltr",
+      "heading": "How to write a cover letter that connects your experience to the job",
+      "mainTextHash": "91bf928d3527fc161103a4b700e83aa9ba1c1ac020f719d9ef078f7bc355dfa4",
+      "mainTextLength": 12,
+      "htmlBytes": 70469,
+      "htmlGzipBytes": 13503,
+      "scriptCount": 27,
+      "scriptBytes": 1252323,
+      "scriptGzipBytes": 395429
+    }
+  ]
+}

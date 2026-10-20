@@ -1,0 +1,1 @@
+const router={refresh(){window.refreshCount=(window.refreshCount||0)+1}};exports.useRouter=()=>router;

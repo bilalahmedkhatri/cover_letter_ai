@@ -33,7 +33,7 @@ export function useSignOut() {
     output.setAnalysisError(null);
     output.setKeywordError(null);
     await refresh();
-    router.replace(localizedPath(locale, '/login'));
+    router.replace(localizedPath(locale, '/'));
     router.refresh();
   };
 }

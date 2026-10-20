@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { localeCodes } from "@/services/routing";
 import AppProviders from "@/components/AppProviders";
 import SiteShell from "@/components/SiteShell";
+import { getLocaleData } from '@/lib/locale-data';
 export default async function LocaleLayout({
   children,
   params,
@@ -12,7 +13,7 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!localeCodes.includes(locale as (typeof localeCodes)[number])) notFound();
   return (
-    <AppProviders>
+    <AppProviders locale={locale as (typeof localeCodes)[number]} localeData={getLocaleData(locale as (typeof localeCodes)[number])}>
       <SiteShell>{children}</SiteShell>
     </AppProviders>
   );

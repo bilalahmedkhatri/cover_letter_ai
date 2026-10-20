@@ -1,11 +1,11 @@
-'use client';
 import React from 'react';
-import { useLocale } from '../contexts/LocaleContext';
+import type { Locale } from '../types';
+import 'server-only';
 import { localizedPath, type Page } from '../services/routing';
 import { pageArticles, articleSections } from '../services/pageArticles.mjs';
 type Article = { title: string; intro: string; sections: { id: string; title: string; paragraphs: string[]; link: string }[] };
-export default function PageArticle({ page, post }: { page?: Page; post?: Article }) {
-  const { locale } = useLocale(); const article = post ?? pageArticles[page!]; if (!article) return null;
+export default function PageArticle({ page, post, locale }: { page?: Page; post?: Article; locale: Locale }) {
+  const article = post ?? pageArticles[page!]; if (!article) return null;
   const sections = post?.sections ?? articleSections(page);
   const Heading = post ? 'h1' : 'h2';
   return <article data-page-article className={`mx-auto max-w-4xl ${post ? 'pt-6' : 'mt-20 border-t border-border pt-12'}`} lang="en" dir="ltr">

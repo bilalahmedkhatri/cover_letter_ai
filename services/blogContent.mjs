@@ -1,21 +1,22 @@
 // Reuse the existing editorial reference content and its section structure.
+import { blogSlugs } from './blogRoutes.mjs';
 export const blogPosts = [
   {
-    slug: 'write-a-tailored-cover-letter', category: 'Job applications',
+    slug: blogSlugs.coverLetter, category: 'Job applications',
     title: 'How to write a cover letter that connects your experience to the job',
     intro: 'Prepare a clear brief, choose relevant evidence and shape a focused cover letter. This guide walks through structure, career changes and the final checks before sending.',
     ids: ['brief', 'evidence', 'job', 'structure', 'beginner', 'career', 'tone', 'prompts', 'editing', 'exports', 'checklist'],
     action: '/dashboard',
   },
   {
-    slug: 'university-motivation-letter', category: 'University applications',
+    slug: blogSlugs.university, category: 'University applications',
     title: 'How to prepare a university motivation letter with a clear direction',
     intro: 'Connect your academic preparation to the programme you want to join. Gather verified programme details, explain your motivation and review the application requirements.',
     ids: ['brief', 'evidence', 'motivation', 'programme', 'research', 'structure', 'languages', 'tone', 'prompts', 'editing', 'checklist'],
     action: '/dashboard/university',
   },
   {
-    slug: 'professional-business-email', category: 'Business correspondence',
+    slug: blogSlugs.email, category: 'Business correspondence',
     title: 'How to write a professional business email with a clear next step',
     intro: 'Write introductions, inquiries and follow-ups that make the purpose easy to understand. Decide on the recipient, tone and requested action, then edit the draft before sending.',
     ids: ['email', 'brief', 'evidence', 'languages', 'tone', 'prompts', 'editing', 'exports', 'checklist'],

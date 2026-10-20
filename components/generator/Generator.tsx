@@ -19,6 +19,8 @@ import { useGeneration } from '@/contexts/GenerationContext';
 import { useDashboardAccount } from '@/components/dashboard/DashboardAccount';
 import { workflows, wordTargets } from '@/services/workflow.mjs';
 import { coverLetterLanguages, coverLetterWordTargets, parseCoverLetterInput } from '@/services/coverLetter.mjs';
+import { coverLetterTemplateCopy } from '@/services/coverLetterTemplateCopy.mjs';
+import { generationStatusCopy } from '@/services/generationStatusCopy';
 import FormField from './FormField';
 import ResumeUpload from './ResumeUpload';
 export type Kind = 'cover-letter' | 'university' | 'email' | 'research';
@@ -40,6 +42,13 @@ export default function Generator({ kind, compact = false, onKindChange }: { kin
   const { setDrafts, setHistoryRevision, setIsLoading } = useGeneration();
   const router = useRouter();
   const { locale } = useLocale();
+  const [templateSelection, setTemplateSelection] = useState<{ locale: typeof locale; language: string } | null>(null);
+  useEffect(() => { setTemplateSelection(null); setSelectedTemplate(null); }, [locale]);
+  function selectOutputLanguage(language: string) {
+    setUserData(previous => ({ ...previous, language }));
+    setTemplateSelection({ locale, language });
+    setSelectedTemplate(null);
+  }
   const { data, workflows: available } = useDashboardAccount();
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const updateAttachments = (items: Attachment[]) => { if (items.some(item => item.image)) throw new Error('This gateway accepts text only. Upload a document or paste the image text.'); setAttachments(items); };
@@ -50,11 +59,20 @@ export default function Generator({ kind, compact = false, onKindChange }: { kin
   const [uploading, setUploading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+  const promptRef = useRef<HTMLTextAreaElement>(null);
+  function applyTemplate(prompt: string) {
+    setUserData(previous=>({...previous,opportunityDescription:prompt}));
+    setSelectedTemplate(null);
+    requestAnimationFrame(()=>promptRef.current?.focus());
+  }
   const description = userData.opportunityDescription || '';
   const recipient = userData.targetRecipient || '';
   const length = userData.outputLength || 'medium';
   const outputLanguages = kind === 'cover-letter' ? coverLetterLanguages : ['English', 'Russian', 'Spanish', 'French', 'Arabic', 'Dutch', 'Portuguese', 'Bulgarian', 'Hungarian', 'Slovak', 'Polish'];
   const outputLanguage = outputLanguages.includes(userData.language) ? userData.language : '';
+  const templateCopy = coverLetterTemplateCopy(locale, templateSelection?.locale === locale ? templateSelection.language : undefined);
+  const statusCopy = generationStatusCopy(locale);
   const url = (kind === 'university' || isResearch) ? userData.universityUrl : userData.opportunityUrl || '';
   useEffect(() => {
     if (userData.letterType !== flow.letterType || userData.documentType !== flow.documentType || userData.workflowKind !== kind) {
@@ -80,7 +98,7 @@ export default function Generator({ kind, compact = false, onKindChange }: { kin
       const result = await response.json().catch(() => { throw new Error('The writing service returned an invalid response. Please try again.'); });
       if (!response.ok) { if(result.requestStatus!=='pending') pending.current=null; throw new Error(result.error || 'Unable to create your draft.'); }
       if (version === requestVersion.current) {
-        setDrafts(previous => ({ ...previous, [kind]: { id: result.messageId || crypto.randomUUID(), chatId:result.conversationId, warning:result.historyWarning, qualityWarning:result.qualityWarning, qualityReview:result.qualityReview, text: result.text, title: flow.title, sources: result.sources || [], context: { ...userData, resume: null, opportunityUrl: url, workflowKind: kind } } }));
+        setDrafts(previous => ({ ...previous, [kind]: { id: result.messageId || crypto.randomUUID(), chatId:result.conversationId, warning:result.historyWarning, qualityWarning:result.qualityWarning, qualityReview:result.qualityReview, text: result.text, title: result.title || flow.title, sources: result.sources || [], context: { ...userData, resume: null, opportunityUrl: url, workflowKind: kind } } }));
         pending.current=null;
         const path = localizedPath(locale, `/dashboard/${kind}/result`) + (result.conversationId ? `?chat=${encodeURIComponent(result.conversationId)}` : '');
         setDraftPath(path);
@@ -98,16 +116,16 @@ export default function Generator({ kind, compact = false, onKindChange }: { kin
     email: 'Write an email to [recipient] about [purpose]. My name is [your name]. Include [your main points] and ask for [next step]. Sign it [your signature].',
   };
   return <div className="mx-auto w-full min-w-0 max-w-3xl">
-    <form onSubmit={generate}>
+    <form onSubmit={generate} aria-busy={busy || openingDraft}>
       <fieldset disabled={busy || openingDraft} className="min-w-0 space-y-4">
         <div className="text-center">
           {compact && <h2 className="text-2xl font-semibold tracking-tight">{isResearch ? 'Explore Universities' : 'Write Confidently'}</h2>}
         </div>
         {compact ? <div className="rounded-2xl border bg-muted/40 p-2 shadow-sm focus-within:border-emerald-500/50">
-          <Textarea aria-label="Writing prompt" required rows={6} maxLength={6000} placeholder={placeholders[kind]} value={description} onChange={e => setUserData(p => ({ ...p, opportunityDescription: e.target.value }))} className="min-h-36 resize-none border-0 bg-transparent px-3 py-3 shadow-none focus-visible:ring-0 dark:bg-transparent" />
+          <Textarea ref={promptRef} aria-label="Writing prompt" required rows={6} maxLength={6000} placeholder={placeholders[kind]} value={description} onChange={e => setUserData(p => ({ ...p, opportunityDescription: e.target.value }))} className="min-h-36 resize-none border-0 bg-transparent px-3 py-3 shadow-none focus-visible:ring-0 dark:bg-transparent" />
           {isResearch && !url && <p className="px-3 pb-2 text-xs text-text-secondary">Add an official programme URL using +.</p>}
           {url && <div className="mx-2 mb-2 flex min-w-0 items-center gap-1 text-xs"><Link2 className="size-3 shrink-0" /><span className="truncate">{url}</span><IconButton type="button" label="Remove URL" variant="ghost" className="size-6 shrink-0" onClick={() => setUrl('')}><X className="size-3" /></IconButton></div>}
-          <ResumeUpload attachments={attachments} onChange={updateAttachments} onError={setError} onBusy={setUploading} onAddUrl={addUrl} disabled={busy} allowFiles={!isResearch} controls={<Select value={outputLanguage} onValueChange={language => setUserData(p => ({ ...p, language }))}><SelectTrigger aria-label="Output language" className="h-8 w-28 border-0 bg-transparent px-2 text-xs shadow-none sm:w-36"><SelectValue placeholder="Language" /></SelectTrigger><SelectContent>{outputLanguages.map(language=><SelectItem key={language} value={language}>{language}</SelectItem>)}</SelectContent></Select>} actions={<div className="flex items-center gap-2">
+          <ResumeUpload attachments={attachments} onChange={updateAttachments} onError={setError} onBusy={setUploading} onAddUrl={addUrl} disabled={busy} allowFiles={!isResearch} controls={<Select value={outputLanguage} onValueChange={selectOutputLanguage}><SelectTrigger aria-label="Output language" className="h-8 w-28 border-0 bg-transparent px-2 text-xs shadow-none sm:w-36"><SelectValue placeholder="Language" /></SelectTrigger><SelectContent>{outputLanguages.map(language=><SelectItem key={language} value={language}>{language}</SelectItem>)}</SelectContent></Select>} actions={<div className="flex items-center gap-2">
               {onKindChange && <Select value={kind} onValueChange={v => onKindChange(v as Kind)}><SelectTrigger aria-label="Writing type" className="h-8 max-w-40 border-0 bg-transparent px-2 text-xs shadow-none"><SelectValue /></SelectTrigger><SelectContent>{(Object.keys(workflows) as Kind[]).filter(key=>available.includes(key)).map(key => <SelectItem key={key} value={key}>{workflows[key].title}</SelectItem>)}</SelectContent></Select>}
               <IconButton label={openingDraft ? 'Opening draft' : isResearch ? "Research university" : "Generate draft"} type="submit" disabled={busy || openingDraft || uploading || !description.trim() || (isResearch && !url)} className="size-9 rounded-xl">{busy || openingDraft ? <Spinner label={openingDraft ? 'Opening draft' : 'Writing draft'} /> : <ArrowUp className="size-5" />}</IconButton>
           </div>} />
@@ -126,13 +144,23 @@ export default function Generator({ kind, compact = false, onKindChange }: { kin
               <FormField id="tone" label="Tone"><Choice id="tone" value={userData.tone} options={['Formal', 'Concise', 'Enthusiastic', 'Professional']} onChange={tone => setUserData(p => ({ ...p, tone: tone as typeof p.tone }))} /></FormField>
               <FormField id="output-length" label="Output length"><Select value={length} onValueChange={outputLength => setUserData(p => ({ ...p, outputLength }))}><SelectTrigger id="output-length" className="w-full"><SelectValue /></SelectTrigger><SelectContent>{Object.entries(kind === 'cover-letter' ? coverLetterWordTargets : wordTargets[kind === 'email' ? 'email' : 'letter']).map(([key, words]) => <SelectItem key={key} value={key}>{key} · {String(words)}</SelectItem>)}</SelectContent></Select></FormField>
             </div>
-            <FormField id="language" label="Output language"><Choice id="language" value={outputLanguage} onChange={language => setUserData(p => ({ ...p, language }))} options={outputLanguages} /></FormField>
+            <FormField id="language" label="Output language"><Choice id="language" value={outputLanguage} onChange={selectOutputLanguage} options={outputLanguages} /></FormField>
           </div></details>
           <p className="text-xs leading-5 text-text-secondary">Your inputs are sent to the writing provider when you generate. Review the draft before sending it.</p>
           <Button type="submit" disabled={busy || openingDraft || uploading} className="w-full">{(busy || openingDraft) && <Spinner label={openingDraft ? 'Opening draft' : 'Writing draft'} />}{openingDraft ? 'Opening your draft…' : busy ? 'Writing your draft…' : 'Generate draft'}</Button>
         </CardContent></Card>}
       </fieldset>
     </form>
+    {(busy || openingDraft) && <div role="status" aria-live="polite" aria-atomic="true" className="fixed bottom-4 end-4 z-50 flex w-[calc(100%_-_2rem)] max-w-sm items-start gap-3 rounded-xl border border-emerald-500/30 bg-card p-4 text-text-primary shadow-lg sm:bottom-6 sm:end-6">
+      <span aria-hidden="true" className="mt-0.5 shrink-0 text-emerald-500"><Spinner /></span>
+      <div className="min-w-0 space-y-1"><p className="text-sm font-semibold">{openingDraft ? statusCopy.opening : isResearch ? statusCopy.research : statusCopy.writing}</p><p className="text-xs leading-relaxed text-text-secondary">{statusCopy.wait}</p></div>
+    </div>}
+    {compact && kind==='cover-letter' && <section aria-label="Cover letter starter templates" className="mt-5 space-y-3">
+      <p className="text-center text-sm text-text-secondary">{templateCopy.intro}</p>
+      <div className="grid gap-2 sm:grid-cols-3">{templateCopy.templates.map(template=><Button key={template.title} type="button" variant="outline" disabled={busy || openingDraft} className="h-auto min-w-0 flex-col items-start gap-1 whitespace-normal px-4 py-3 text-start" onClick={()=>description.trim() ? setSelectedTemplate(template.prompt) : applyTemplate(template.prompt)}><span>{template.title}</span><span className="text-xs font-normal text-text-secondary">{template.hint}</span></Button>)}</div>
+      <p className="text-center text-xs text-text-secondary">{templateCopy.tip}</p>
+    </section>}
+    <Dialog open={selectedTemplate!==null} onOpenChange={open=>{if(!open)setSelectedTemplate(null);}}><DialogContent><DialogHeader><DialogTitle>{templateCopy.replace}</DialogTitle><DialogDescription>{templateCopy.warning}</DialogDescription></DialogHeader><div className="flex justify-end gap-2"><Button type="button" variant="outline" onClick={()=>setSelectedTemplate(null)}>{templateCopy.cancel}</Button><Button type="button" onClick={()=>{if(selectedTemplate)applyTemplate(selectedTemplate);}}>{templateCopy.use}</Button></div></DialogContent></Dialog>
     {draftPath && <p role="status" className="mt-4 text-sm text-text-secondary">{openingDraft ? 'Opening your draft…' : 'Your draft is ready.'} <Link href={draftPath} className="font-medium underline">Open draft</Link></p>}
     <Dialog open={!!error} onOpenChange={open => { if (!open) setError(''); }}><DialogContent><DialogHeader><DialogTitle>Unable to generate</DialogTitle><DialogDescription>{error}</DialogDescription></DialogHeader><Button type="button" onClick={() => setError('')}>Close</Button></DialogContent></Dialog>
     <Dialog open={urlOpen} onOpenChange={setUrlOpen}><DialogContent><DialogHeader><DialogTitle>Add website URL</DialogTitle><DialogDescription>Add a public job, programme or organisation link.</DialogDescription></DialogHeader>

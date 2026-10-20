@@ -25,7 +25,7 @@ export default async function BlogArticle({ params }: Props) {
   const article = { ...post, sections: articleSections(post.ids) };
   const enabled=canUseWorkflow(post.action === '/dashboard' ? 'cover-letter' : post.action.split('/').pop()!,await requestIdentity());
   return <>
-    <PageArticle post={article}/>
+    <PageArticle post={article} locale={locale}/>
     {enabled && <div className="mx-auto mt-12 max-w-4xl"><Button asChild><Link href={localizedPath(locale, post.action as Page)}>{copy.write}</Link></Button></div>}
     <section aria-labelledby="related-guides" className="mt-12 space-y-8 border-t border-border pt-8">
       <h2 id="related-guides" className="section-title">{copy.related}</h2>

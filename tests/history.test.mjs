@@ -8,13 +8,75 @@ import {createAccountHandlers} from '../server/accounts/handlers.mjs';
 import {createAIHandler} from '../server/ai/handler.mjs';
 import {generateWithCoverLetterReview} from '../server/ai/cover-letter-review.mjs';
 let db,store;
-before(async()=>{db=new PGlite();for(const name of ['202610120002_accounts','202610160001_chat_history','202610160002_remove_saved_drafts'])await db.exec(await readFile(`prisma/migrations/${name}/migration.sql`,'utf8'));store=createAccountStore({},async(text,params)=>(await db.query(text,params)).rows);});
+before(async()=>{db=new PGlite();for(const name of ['202610120002_accounts','202610160001_chat_history','202610160002_remove_saved_drafts','202610190001_conversation_titles','202610200001_generation_abuse_guards'])await db.exec(await readFile(`prisma/migrations/${name}/migration.sql`,'utf8'));store=createAccountStore({},async(text,params)=>(await db.query(text,params)).rows);});
 after(async()=>db.close());
 const user=()=>({id:randomUUID()});
 const input={kind:'cover-letter',name:'Alex',recipient:'Hiring team',description:'Write a letter from my verified web development experience.',resumeText:'',skills:'',experience:'',language:'English',url:'',tone:'Professional',length:'short'};
 const start=(owner,options={})=>store.startConversation(owner,{requestId:randomUUID(),workflow:'cover-letter',input,...options});
 const output={text:'A verified draft.',sources:[{url:'https://example.edu',title:'Official source',type:'search'}]};
 const request=(data=input,requestId=randomUUID())=>new Request('https://app.example/api/generate',{method:'POST',headers:{origin:'https://app.example','Content-Type':'application/json','x-generation-id':requestId},body:JSON.stringify(data)});
+
+test('title migration preserves legacy names and defaults only new conversations to fallback',async()=>{
+ const legacy=new PGlite();
+ try {
+  for(const name of ['202610120002_accounts','202610160001_chat_history'])await legacy.exec(await readFile(`prisma/migrations/${name}/migration.sql`,'utf8'));
+  await legacy.query("INSERT INTO app.conversations(user_id,workflow,title) VALUES('legacy','cover-letter','Previously renamed chat')");
+  await legacy.exec(await readFile('prisma/migrations/202610190001_conversation_titles/migration.sql','utf8'));
+  assert.deepEqual((await legacy.query("SELECT title,title_source FROM app.conversations WHERE user_id='legacy'")).rows,[{title:'Previously renamed chat',title_source:'manual'}]);
+  await legacy.query("INSERT INTO app.conversations(user_id,workflow,title) VALUES('new','cover-letter','Prompt fallback')");
+  assert.equal((await legacy.query("SELECT title_source FROM app.conversations WHERE user_id='new'")).rows[0].title_source,'fallback');
+ } finally {await legacy.close();}
+});
+
+test('AI titles persist in sidebar history only for the first successful answer',async()=>{
+ const owner=user(),requestId=randomUUID();const chat=await start(owner,{requestId});
+ assert.equal(await store.saveConversationTitle(owner,requestId,'Frontend Developer at Acme'),undefined);
+ await store.finishConversation(owner,requestId,true,output);
+ assert.equal(await store.saveConversationTitle(user(),requestId,'Wrong owner title'),undefined);
+ assert.equal(await store.saveConversationTitle(owner,requestId,'Frontend Developer at Acme'),'Frontend Developer at Acme');
+ assert.equal((await store.conversations(owner)).items[0].title,'Frontend Developer at Acme');
+ assert.equal((await store.conversation(owner,chat.chat_id)).title,'Frontend Developer at Acme');
+ const next=randomUUID();await start(owner,{chatId:chat.chat_id,requestId:next});await store.finishConversation(owner,next,true,output);
+ assert.equal(await store.saveConversationTitle(owner,next,'Another generated title'),undefined);
+ assert.equal((await store.conversation(owner,chat.chat_id)).title,'Frontend Developer at Acme');
+});
+
+test('manual renames before and after title saving are never overwritten',async()=>{
+ for(const renameFirst of [true,false]){
+  const owner=user(),requestId=randomUUID();const chat=await start(owner,{requestId});await store.finishConversation(owner,requestId,true,output);
+  if(renameFirst)await store.renameConversation(owner,chat.chat_id,'My chosen title');
+  await store.saveConversationTitle(owner,requestId,'Generated developer title');
+  if(!renameFirst)await store.renameConversation(owner,chat.chat_id,'My chosen title');
+  await store.saveConversationTitle(owner,requestId,'Delayed generated title');
+  assert.equal((await store.conversation(owner,chat.chat_id)).title,'My chosen title');
+  assert.equal((await db.query('SELECT title_source FROM app.conversations WHERE id=$1',[chat.chat_id])).rows[0].title_source,'manual');
+ }
+});
+
+test('a missing first title preserves the fallback; failed attempts do not consume naming eligibility',async()=>{
+ const owner=user(),first=randomUUID();const chat=await start(owner,{requestId:first});await store.finishConversation(owner,first,true,output);
+ assert.equal(await store.saveConversationTitle(owner,first,null),undefined);
+ const next=randomUUID();await start(owner,{chatId:chat.chat_id,requestId:next});await store.finishConversation(owner,next,true,output);
+ assert.equal(await store.saveConversationTitle(owner,next,'Later generated title'),undefined);
+ assert.equal((await store.conversation(owner,chat.chat_id)).title,input.description);
+ const retryOwner=user(),failedId=randomUUID();const retryChat=await start(retryOwner,{requestId:failedId});await store.finishConversation(retryOwner,failedId,false,output);
+ const retryId=randomUUID();await start(retryOwner,{chatId:retryChat.chat_id,requestId:retryId});await store.finishConversation(retryOwner,retryId,true,output);
+ assert.equal(await store.saveConversationTitle(retryOwner,retryId,'Successful retry title'),'Successful retry title');
+});
+
+test('title persistence failure does not fail the generated letter',async()=>{
+ const owner=user();const handler=createAIHandler({identity:async()=>owner,env:{BILLING_SITE_URL:'https://app.example'},storeFactory:()=>({...store,saveConversationTitle:async()=>{throw new Error('Private database detail');}}),generate:async()=>({...output,title:'Developer application title'})});
+ const response=await handler(request());assert.equal(response.status,200);const result=await response.json();
+ assert.equal(result.text,output.text);assert.equal(result.historySaved,true);assert.equal(result.title,undefined);
+});
+
+test('handler persists the initial title and duplicate requests do not regenerate it',async()=>{
+ const owner=user(),id=randomUUID();let calls=0;
+ const handler=createAIHandler({identity:async()=>owner,env:{BILLING_SITE_URL:'https://app.example'},storeFactory:()=>store,generate:async()=>{calls++;return {...output,title:'Developer application title'};}});
+ const response=await (await handler(request(input,id))).json();assert.equal(response.title,'Developer application title');
+ assert.equal((await store.conversations(owner)).items[0].title,response.title);
+ assert.equal((await handler(request(input,id))).status,200);assert.equal(calls,1);
+});
 
 test('history remains private after saved-document storage is removed',async()=>{
  const rows=(await db.query("SELECT relname,relrowsecurity FROM pg_class JOIN pg_namespace n ON n.oid=relnamespace WHERE n.nspname='app' AND relname IN ('conversations','messages','documents')")).rows;
@@ -55,8 +117,11 @@ test('failed and abandoned requests remain visible and cannot be delivered twice
  const nextId=randomUUID();await start(owner,{chatId:chat.chat_id,requestId:nextId});await db.query("UPDATE app.messages SET created_at=created_at-interval '6 minutes' WHERE request_id=$1",[nextId]);assert.ok((await store.conversation(owner,chat.chat_id)).messages.some(m=>m.status==='interrupted'));assert.equal((await start(owner,{chatId:chat.chat_id,requestId:nextId})).state,'failed');
 });
 test('conversation and message cursors return older records without duplication',async()=>{
- const owner=user();for(let i=0;i<22;i++)await start(owner);const first=await store.conversations(owner);assert.equal(first.items.length,20);assert.ok(first.cursor);const last=await store.conversations(owner,first.cursor);assert.equal(last.items.length,2);assert.equal(new Set([...first.items,...last.items].map(x=>x.id)).size,22);
- const other=user();let chatId;for(let i=0;i<26;i++){const requestId=randomUUID();const created=await start(other,{chatId,requestId});chatId=created.chat_id;await store.finishConversation(other,requestId,true,output);}
+ // Seed historical pages through the original SQL claim; abuse limits have their
+ // own tests, and this fixture represents more than one minute of past usage.
+ const seed=async(owner,chatId)=>{const id=randomUUID();const row=(await db.query('SELECT * FROM app.start_chat_generation($1,$2,$3,$4,$5,$6,$7)',[owner.id,chatId || null,id,'cover-letter','Fixture',input.description,JSON.stringify(input)])).rows[0];await db.query('SELECT app.finish_chat_generation($1,$2,true,$3,$4)',[owner.id,id,output.text,JSON.stringify(output.sources)]);return row;};
+ const owner=user();for(let i=0;i<22;i++)await seed(owner);const first=await store.conversations(owner);assert.equal(first.items.length,20);assert.ok(first.cursor);const last=await store.conversations(owner,first.cursor);assert.equal(last.items.length,2);assert.equal(new Set([...first.items,...last.items].map(x=>x.id)).size,22);
+ const other=user();let chatId;for(let i=0;i<26;i++){const created=await seed(other,chatId);chatId=created.chat_id;}
  const recent=await store.conversation(other,chatId);assert.equal(recent.messages.length,50);const earlier=await store.conversation(other,chatId,recent.cursor);assert.equal(earlier.messages.length,2);assert.equal(new Set([...earlier.messages,...recent.messages].map(x=>x.id)).size,52);
 });
 test('rename is owner-scoped and deleting a conversation cascades its messages',async()=>{

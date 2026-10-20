@@ -2,8 +2,7 @@ import {publicWorkflows} from '@/services/workflow.mjs';
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocale } from '../../contexts/LocaleContext';
 import { billingPlans, billingLimits } from '../../services/billingPlans.mjs';
-import { billingCopy } from '../../services/billingCopy';
-import { pricingCopy } from '../../services/pricingCopy';
+import { usePageCopy } from '@/contexts/PageCopyContext';
 import { localizedPath } from '../../services/routing';
 import { Button } from '../ui/button';
 import { useAccount } from '../../contexts/AccountContext';
@@ -16,8 +15,9 @@ const waiting = new Set(['creating', 'waiting', 'confirming', 'confirmed', 'send
 export default function BillingPanel({ compact = false }: { compact?: boolean }) {
   const { locale } = useLocale();
   const { user } = useAccount();
-  const copy = billingCopy(locale);
-  const pricing = pricingCopy(locale);
+  const pageCopy = usePageCopy();
+  const copy = pageCopy.billing!;
+  const pricing = pageCopy.pricing!;
   const [billing, setBilling] = useState<Billing | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState('');

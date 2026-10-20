@@ -1,15 +1,16 @@
-'use client';
-import dynamic from 'next/dynamic';
-import type {Page} from '@/services/routing';
+import type { ReactNode } from 'react';
+import { notFound } from 'next/navigation';
+import { localeCodes, type Page } from '@/services/routing';
+import type { Locale } from '@/types';
+import { getPageCopy } from '@/lib/locale-data';
+import { PageCopyProvider } from '@/contexts/PageCopyContext';
 import PageArticle from './PageArticle';
-const Landing=dynamic(()=>import('./LandingPage'));
-const Pricing=dynamic(()=>import('./PricingPage'));
-const About=dynamic(()=>import('./AboutUs'));
-const Privacy=dynamic(()=>import('./PrivacyPolicy'));
-const Terms=dynamic(()=>import('./TermsOfService'));
-const Resources=dynamic(()=>import('./ResourcePages'));
-const Login=dynamic(()=>import('./LoginPage'));
-export default function PublicPage({page}:{page:Page}) {
-  const content=page==='/'?<Landing/>:page==='/pricing'?<Pricing/>:page==='/about'?<About/>:page==='/privacy'?<Privacy/>:page==='/terms'?<Terms/>:page==='/login'?<Login/>:<Resources page={page as '/features'|'/guides'|'/compare'}/>;
-  return <main className="mx-auto max-w-screen-xl px-5 py-12 sm:px-8 lg:px-10">{content}<PageArticle page={page}/></main>;
+
+export default function PublicPage({ page, locale: code, children }: { page: Page; locale: string; children: ReactNode }) {
+  if (!localeCodes.includes(code as Locale)) notFound();
+  const locale = code as Locale;
+  return <main className="mx-auto max-w-screen-xl px-5 py-12 sm:px-8 lg:px-10">
+    <PageCopyProvider value={getPageCopy(locale, page)}>{children}</PageCopyProvider>
+    <PageArticle page={page} locale={locale}/>
+  </main>;
 }

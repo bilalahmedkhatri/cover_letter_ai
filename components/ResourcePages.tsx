@@ -1,3 +1,4 @@
+'use client';
 import {publicWorkflows} from '@/services/workflow.mjs';
 import React from 'react';
 import BusinessLetterContent from './BusinessLetterContent';
@@ -5,12 +6,13 @@ import { ArrowRight, Check, FileText, GraduationCap, Mail } from 'lucide-react';
 import { useLocale } from '../contexts/LocaleContext';
 import { useFormState } from '../contexts/FormStateContext';
 import { localizedPath } from '../services/routing';
-import { resourceCopy, resourceNotice, type ResourcePage } from '../services/resourceCopy';
+import type { ResourcePage } from '../services/resourceCopy';
+import { usePageCopy } from '@/contexts/PageCopyContext';
 import { Button } from './ui/button';
 
 export function PriceComparison({ compact = false }: { compact?: boolean }) {
   const { locale } = useLocale();
-  const c = resourceCopy(locale);
+  const c = usePageCopy().resource!;
   const rows = [
     ['ailettergen · Starter', '$10', c.ownPeriod, c.ownFocus, localizedPath(locale, '/pricing')],
     ['Rezi Pro', '$29', c.reziPeriod, c.reziFocus, 'https://www.rezi.ai/pricing'],
@@ -38,10 +40,11 @@ export function PriceComparison({ compact = false }: { compact?: boolean }) {
 
 export function LandingAdditions() {
   const { locale } = useLocale();
-  const c = resourceCopy(locale);
+  const pageCopy = usePageCopy();
+  const c = pageCopy.resource!;
   const contentLanguage = locale === 'ru' ? 'ru' : 'en';
   return <>
-    {resourceNotice[locale] && <p className="text-xs text-text-secondary">{resourceNotice[locale]}</p>}
+    {pageCopy.resourceNotice && <p className="text-xs text-text-secondary">{pageCopy.resourceNotice}</p>}
     <section lang={contentLanguage} dir="ltr" className="grid gap-9 lg:grid-cols-2 lg:gap-14">
       <div><p className="eyebrow">{c.beforeSend}</p><h2 className="section-title mt-4">{c.guideSection}</h2><p className="mt-5 text-sm leading-7 text-text-secondary">{c.guideSectionIntro}</p><ol className="mt-6 space-y-4">{c.reviewSteps.map((step, index) => <li key={step} className="flex gap-3 text-sm leading-6"><span className="text-accent">0{index + 1}</span>{step}</li>)}</ol><Button asChild variant="outline" className="mt-7"><a href={localizedPath(locale, '/guides')}>{c.viewGuides}<ArrowRight/></a></Button></div>
       <div className="rounded-2xl border border-border bg-card p-6 sm:p-8"><p className="eyebrow">{c.generic}</p><p className="mt-3 font-serif text-xl leading-8 text-text-secondary">{c.genericExample}</p><div className="my-6 h-px bg-border"/><p className="eyebrow text-accent">{c.specific}</p><p className="mt-3 font-serif text-xl leading-8">{c.specificExample}</p><p className="mt-6 text-xs leading-6 text-text-secondary">{c.exampleNote}</p></div>
@@ -53,11 +56,12 @@ export function LandingAdditions() {
 export default function ResourcePages({ page }: { page: ResourcePage }) {
   const { locale } = useLocale();
   const { setUserData, setCurrentStep } = useFormState();
-  const c = resourceCopy(locale);
+  const pageCopy = usePageCopy();
+  const c = pageCopy.resource!;
   const title = page === '/features' ? c.featuresTitle : page === '/guides' ? c.guidesTitle : c.compareTitle;
   const intro = page === '/features' ? c.featuresIntro : page === '/guides' ? c.guidesIntro : c.compareIntro;
   return <div className="space-y-12 sm:space-y-16">
-    {resourceNotice[locale] && <p className="rounded-lg border border-border p-4 text-sm text-text-secondary">{resourceNotice[locale]}</p>}
+    {pageCopy.resourceNotice && <p className="rounded-lg border border-border p-4 text-sm text-text-secondary">{pageCopy.resourceNotice}</p>}
     <div lang={locale === 'ru' ? 'ru' : 'en'} dir="ltr" className="space-y-12 sm:space-y-16">
       <header className="max-w-3xl pt-6"><h1 className="editorial-title">{title}</h1><p className="mt-6 text-lg leading-8 text-text-secondary">{intro}</p></header>
       {page === '/features' && <><div className="grid gap-6 md:grid-cols-2">{c.features.map(([heading, text], index) => <article key={heading} className="rounded-xl border border-border bg-card p-7"><span className="text-xs font-semibold text-accent">0{index + 1}</span><h2 className="mt-4 text-xl font-semibold">{heading}</h2><p className="mt-4 text-sm leading-7 text-text-secondary">{text}</p></article>)}</div><section className="max-w-3xl"><h2 className="section-title">{c.limitsTitle}</h2><p className="mt-4 text-sm leading-7 text-text-secondary">{c.limits}</p></section></>}

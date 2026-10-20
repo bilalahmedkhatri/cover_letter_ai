@@ -1,0 +1,1 @@
+exports.useLocale=()=>({locale:window.testLocale||'en',t:()=>''})

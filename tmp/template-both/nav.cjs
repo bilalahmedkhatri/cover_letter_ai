@@ -1,0 +1,1 @@
+exports.useRouter=()=>({push(){}});const search=new URLSearchParams();exports.useSearchParams=()=>search;

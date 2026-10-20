@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import { PaymentError } from '../payments/nowpayments.mjs';
 import { createStore as billingStore } from '../payments/store.mjs';
 import { readCoverLetterQuality } from '../../services/coverLetterReview.mjs';
+import { normalizeConversationTitle } from '../../services/conversationTitle.mjs';
 
 export function createAccountStore(env = process.env, injectedQuery) {
   let sql;
@@ -33,7 +34,7 @@ export function createAccountStore(env = process.env, injectedQuery) {
       return {...chat,messages:result.items.reverse(),cursor:result.cursor};
     },
     async renameConversation(user,id,title) {
-      if (!(await query('UPDATE app.conversations SET title=$3,updated_at=clock_timestamp() WHERE id=$1 AND user_id=$2 AND workflow=ANY($4::text[]) RETURNING id',[id,user.id,title,availableWorkflows(user,env)])).length) throw new PaymentError('Conversation not found.',404);
+      if (!(await query("UPDATE app.conversations SET title=$3,title_source='manual',updated_at=clock_timestamp() WHERE id=$1 AND user_id=$2 AND workflow=ANY($4::text[]) RETURNING id",[id,user.id,title,availableWorkflows(user,env)])).length) throw new PaymentError('Conversation not found.',404);
     },
     async removeConversation(user,id) {
       if (!(await query('DELETE FROM app.conversations WHERE id=$1 AND user_id=$2 AND workflow=ANY($3::text[]) RETURNING id',[id,user.id,availableWorkflows(user,env)])).length) throw new PaymentError('Conversation not found.',404);
@@ -41,10 +42,34 @@ export function createAccountStore(env = process.env, injectedQuery) {
     async startConversation(user,{chatId,requestId,workflow,input}) {
       if(!canUseWorkflow(workflow,user,env))throw new PaymentError('Feature not found.',404);
       const content=input.description || input.questions;
-      return (await query('SELECT * FROM app.start_chat_generation($1,$2::uuid,$3::uuid,$4,$5,$6,$7::jsonb)',[user.id,chatId || null,requestId,workflow,content.replace(/\s+/g,' ').slice(0,100),content,JSON.stringify(input)]))[0];
+      try {
+        return (await query('SELECT * FROM app.start_guarded_chat_generation($1,$2::uuid,$3::uuid,$4,$5,$6,$7::jsonb)',[user.id,chatId || null,requestId,workflow,content.replace(/\s+/g,' ').slice(0,100),content,JSON.stringify(input)]))[0];
+      } catch (error) {
+        if (error.code==='P0429' || error.code==='P0428') {
+          const limited=new PaymentError(error.code==='P0429' ? 'Too many new requests. Wait one minute before trying again.' : 'Two requests are already running. Wait for one to finish before trying again.',429);
+          limited.retryAfter=error.code==='P0429' ? 60 : 5;
+          throw limited;
+        }
+        throw error;
+      }
     },
     async finishConversation(user,requestId,success,output) {
-      return (await query('SELECT app.finish_chat_generation($1,$2::uuid,$3,$4,$5::jsonb) AS saved',[user.id,requestId,success,output.text,JSON.stringify((output.sources || []).slice(0,50))]))[0]?.saved === true;
+      return (await query('SELECT app.finish_guarded_chat_generation($1,$2::uuid,$3,$4,$5::jsonb) AS saved',[user.id,requestId,success,output.text,JSON.stringify((output.sources || []).slice(0,50))]))[0]?.saved === true;
+    },
+    async saveConversationTitle(user,requestId,value) {
+      const title=normalizeConversationTitle(value);
+      if(!title)return undefined;
+      // Atomic guard protects manual renames and allows only the first successful
+      // assistant response to name a new cover-letter conversation.
+      const rows=await query(`UPDATE app.conversations c SET title=$3,title_source='ai'
+        FROM app.messages m WHERE c.id=m.conversation_id AND c.user_id=$1
+        AND c.workflow='cover-letter' AND c.title_source='fallback'
+        AND m.request_id=$2::uuid AND m.role='assistant' AND m.status='completed'
+        AND NOT EXISTS (SELECT 1 FROM app.messages earlier
+          WHERE earlier.conversation_id=c.id AND earlier.role='assistant' AND earlier.status='completed'
+          AND (earlier.created_at,earlier.id)<(m.created_at,m.id))
+        RETURNING c.title`,[user.id,requestId,title]);
+      return rows[0]?.title;
     },
     async saveConversationReview(user,requestId,value) {
       const review=readCoverLetterQuality(value);

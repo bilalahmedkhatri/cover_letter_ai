@@ -1,14 +1,15 @@
+'use client';
 import {publicWorkflows} from '@/services/workflow.mjs';
 import Link from 'next/link';
 import { useLocale } from '../contexts/LocaleContext';
 import { localizedPath } from '../services/routing';
-import { businessLetterCopy } from '../services/businessLetterCopy.mjs';
+import { usePageCopy } from '@/contexts/PageCopyContext';
 import { Button } from './ui/button';
 
 export default function BusinessLetterContent({ showFreeFaq = true }: { showFreeFaq?: boolean }) {
   const { locale } = useLocale();
-  const copy = businessLetterCopy[locale];
-  if(!publicWorkflows.includes('email'))return null;
+  const copy = usePageCopy().business;
+  if(!publicWorkflows.includes('email') || !copy)return null;
   return <section id="business-letters" lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} className="scroll-mt-28 space-y-8">
     <div className="grid gap-8 lg:grid-cols-2">
       <div><h2 className="section-title">{copy.heading}</h2><p className="mt-5 text-sm leading-8 text-text-secondary">{copy.body}</p></div>

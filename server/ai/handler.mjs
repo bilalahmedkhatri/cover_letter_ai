@@ -47,15 +47,21 @@ export function createAIHandler({research=false,identity,env=process.env,generat
       const detail=await store.conversation(user,started.chat_id);
       const history=detail.messages.filter(message=>message.status==='completed').slice(-6).map(({role,content})=>({role,content}));
       const output = await generate({operation,input,history,requestId},{env});
+      const {title:proposedTitle,...draftOutput}=output;
       let historySaved=false;
       try { historySaved=await store.finishConversation(user,requestId,true,output); }
       catch { console.error('Chat result could not be saved',{requestId}); }
+      let title;
+      if(input.kind==='cover-letter' && historySaved && proposedTitle){
+        try { title=await store.saveConversationTitle?.(user,requestId,proposedTitle); }
+        catch { console.error('Chat title could not be saved',{requestId}); }
+      }
       let reviewSaved=false;
       if(output.qualityReview && historySaved){
         try { reviewSaved=await store.saveConversationReview?.(user,requestId,output.qualityReview) === true; }
         catch { console.error('Writing review could not be saved',{requestId}); }
       }
-      return Response.json({...output,operation,conversationId:started.chat_id,messageId:started.message_id,historySaved,
+      return Response.json({...draftOutput,...(title ? {title} : {}),operation,conversationId:started.chat_id,messageId:started.message_id,historySaved,
         ...(output.qualityReview && !reviewSaved ? {qualityWarning:'Review details could not be saved. Keep this page open to inspect them.'} : {}),
         ...(!historySaved ? {historyWarning:'Your draft was generated but could not be saved to chat history. Copy or export it before leaving this page.'} : {})},{headers:{'Cache-Control':'no-store'}});
     } catch (error) {
@@ -65,7 +71,7 @@ export function createAIHandler({research=false,identity,env=process.env,generat
       }
       return Response.json({error:error instanceof PaymentError ? error.message : started ? 'Unable to complete this request. Please try again.' : 'Unable to start or restore chat history. No AI request was sent.',
         ...(started?.chat_id ? {conversationId:started.chat_id,requestStatus:started.state==='created'?'failed':started.state} : {})},
-        {status:error instanceof PaymentError ? error.status : 503,headers:{'Cache-Control':'no-store'}});
+        {status:error instanceof PaymentError ? error.status : 503,headers:{'Cache-Control':'no-store',...(error.status===429 && error.retryAfter ? {'Retry-After':String(error.retryAfter)} : {})}});
     }
   };
 }

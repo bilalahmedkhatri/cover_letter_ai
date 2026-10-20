@@ -1,25 +1,18 @@
 "use client";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { LocaleProvider } from "@/contexts/LocaleContext";
-import { AccountProvider } from "@/contexts/AccountContext";
-import { FormStateProvider } from "@/contexts/FormStateContext";
-import { GenerationProvider } from "@/contexts/GenerationContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import type { Locale } from '@/types';
+import type { LocaleData } from '@/services/locale-data';
 export default function AppProviders({
-  children,
+  children, locale, localeData,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode; locale: Locale; localeData: LocaleData;
 }) {
   return (
     <ThemeProvider>
-      <LocaleProvider>
-        <AccountProvider>
-          <FormStateProvider>
-            <GenerationProvider>
-              <TooltipProvider>{children}</TooltipProvider>
-            </GenerationProvider>
-          </FormStateProvider>
-        </AccountProvider>
+      <LocaleProvider locale={locale} data={localeData}>
+        <TooltipProvider>{children}</TooltipProvider>
       </LocaleProvider>
     </ThemeProvider>
   );

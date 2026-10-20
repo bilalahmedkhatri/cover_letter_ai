@@ -1,0 +1,3017 @@
+{
+  "collectedAt": "2026-10-18",
+  "source": "Ubersuggest MCP",
+  "markets": {
+    "France": {
+      "locId": 2250,
+      "language": "fr",
+      "suggestions": {
+        "searched_keywords": [
+          {
+            "keyword": "lettre de motivation ia",
+            "competition": 0.65,
+            "volume": 1000,
+            "cpc": 0.9788944000000002,
+            "cpcDollars": 1.1,
+            "sd": 22,
+            "updated_at": 1791299629,
+            "pd": 65,
+            "searchIntent": [
+              1
+            ]
+          }
+        ],
+        "results": [
+          {
+            "keyword": "lettre de motivation ia gratuit",
+            "competition": 0.63,
+            "volume": 480,
+            "cpc": 1.04118768,
+            "cpcDollars": 1.17,
+            "sd": 21,
+            "updated_at": 1789293408,
+            "pd": 63,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "lettre de motivation ia chatgpt",
+            "competition": 0.53,
+            "volume": 70,
+            "cpc": 0.40935584,
+            "cpcDollars": 0.46,
+            "sd": 22,
+            "updated_at": 1785755190,
+            "pd": 53,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "lettre de motivation ia chatgpt gratuit",
+            "competition": 0.64,
+            "volume": 70,
+            "cpc": 0.7208222400000001,
+            "cpcDollars": 0.81,
+            "sd": 18,
+            "updated_at": 1772824996,
+            "pd": 64,
+            "searchIntent": [
+              3,
+              2
+            ]
+          },
+          {
+            "keyword": "lettre de motivation ia avec cv",
+            "competition": 0.67,
+            "volume": 30,
+            "cpc": 0.46275008,
+            "cpcDollars": 0.52,
+            "sd": 26,
+            "updated_at": 1776247973,
+            "pd": 67,
+            "searchIntent": null
+          },
+          {
+            "keyword": "création lettre de motivation ia gratuit",
+            "competition": 0.81,
+            "volume": 10,
+            "cpc": 0.63628136,
+            "cpcDollars": 0.715,
+            "sd": 30,
+            "updated_at": 1776247973,
+            "pd": 81,
+            "searchIntent": null
+          },
+          {
+            "keyword": "faire une lettre de motivation ia",
+            "competition": 0.55,
+            "volume": 10,
+            "cpc": 0.5917861600000001,
+            "cpcDollars": 0.665,
+            "sd": 22,
+            "updated_at": 1776247973,
+            "pd": 55,
+            "searchIntent": null
+          },
+          {
+            "keyword": "générateur de lettre de motivation ia gratuit",
+            "competition": 0.86,
+            "volume": 10,
+            "cpc": 0.55174048,
+            "cpcDollars": 0.62,
+            "sd": 31,
+            "updated_at": 1776247973,
+            "pd": 86,
+            "searchIntent": null
+          },
+          {
+            "keyword": "analyse lettre de motivation ia",
+            "competition": 0.33,
+            "volume": 10,
+            "cpc": 0,
+            "cpcDollars": 0,
+            "sd": 15,
+            "updated_at": 1776247973,
+            "pd": 33,
+            "searchIntent": null
+          },
+          {
+            "keyword": "lettre de motivation ia parcoursup",
+            "competition": 0.25,
+            "volume": 10,
+            "cpc": 0.49834624000000005,
+            "cpcDollars": 0.56,
+            "sd": 13,
+            "updated_at": 1776247973,
+            "pd": 25,
+            "searchIntent": null
+          },
+          {
+            "keyword": "lettre de motivation ia en ligne",
+            "competition": 0.86,
+            "volume": 10,
+            "cpc": 0,
+            "cpcDollars": 0,
+            "sd": 31,
+            "updated_at": 1776247973,
+            "pd": 86,
+            "searchIntent": null
+          },
+          {
+            "keyword": "lettre de motivation ia en ligne gratuit",
+            "competition": 0.61,
+            "volume": 10,
+            "cpc": 0.56953856,
+            "cpcDollars": 0.64,
+            "sd": 24,
+            "updated_at": 1776247973,
+            "pd": 61,
+            "searchIntent": null
+          },
+          {
+            "keyword": "aide pour lettre de motivation ia",
+            "competition": 0,
+            "volume": 0,
+            "cpc": 0,
+            "cpcDollars": 0,
+            "sd": 4,
+            "updated_at": 1776247973,
+            "pd": 1,
+            "searchIntent": null
+          },
+          {
+            "keyword": "humaniser lettre de motivation ia",
+            "competition": 0,
+            "volume": 0,
+            "cpc": 0,
+            "cpcDollars": 0,
+            "sd": 4,
+            "updated_at": 1776247973,
+            "pd": 1,
+            "searchIntent": null
+          },
+          {
+            "keyword": "création de lettre de motivation ia",
+            "competition": 0,
+            "volume": 0,
+            "cpc": 0,
+            "cpcDollars": 0,
+            "sd": 4,
+            "updated_at": 1776247973,
+            "pd": 1,
+            "searchIntent": null
+          },
+          {
+            "keyword": "lettre de motivation ia avis",
+            "competition": 0,
+            "volume": 0,
+            "cpc": 0,
+            "cpcDollars": 0,
+            "sd": 4,
+            "updated_at": 1776247973,
+            "pd": 1,
+            "searchIntent": null
+          },
+          {
+            "keyword": "lettre de motivation ia master",
+            "competition": 0,
+            "volume": 0,
+            "cpc": 0,
+            "cpcDollars": 0,
+            "sd": 4,
+            "updated_at": 1776247973,
+            "pd": 1,
+            "searchIntent": null
+          },
+          {
+            "keyword": "cv et lettre de motivation ia",
+            "competition": 0,
+            "volume": 0,
+            "cpc": 0,
+            "cpcDollars": 0,
+            "sd": 4,
+            "updated_at": 1776247973,
+            "pd": 1,
+            "searchIntent": null
+          },
+          {
+            "keyword": "lettre de motivation ia canva",
+            "competition": 0,
+            "volume": 0,
+            "cpc": 0,
+            "cpcDollars": 0,
+            "sd": 4,
+            "updated_at": 1776247973,
+            "pd": 1,
+            "searchIntent": null
+          },
+          {
+            "keyword": "lettre de motivation ia thotis",
+            "competition": 0,
+            "volume": 0,
+            "cpc": 0,
+            "cpcDollars": 0,
+            "sd": 4,
+            "updated_at": 1776247973,
+            "pd": 1,
+            "searchIntent": null
+          },
+          {
+            "keyword": "exemple lettre de motivation ia gratuit"
+          },
+          {
+            "keyword": "verification lettre de motivation ia"
+          },
+          {
+            "keyword": "modèle lettre de motivation ia"
+          },
+          {
+            "keyword": "lettre de motivation ia mon master"
+          },
+          {
+            "keyword": "lettre de motivation ia france travail"
+          },
+          {
+            "keyword": "mise en page lettre de motivation ia"
+          },
+          {
+            "keyword": "lettre de motivation ia reddit"
+          },
+          {
+            "keyword": "la lettre de motivation ia"
+          }
+        ]
+      },
+      "overview": {
+        "keyword": "lettre de motivation ia",
+        "search_volume": 1000,
+        "cpc": 1.1,
+        "seo_difficulty": 22,
+        "paid_difficulty": 65,
+        "competition": 0.65,
+        "search_intent": "Informational",
+        "language": "French",
+        "location": "France",
+        "monthly_searches": [
+          {
+            "period": "202606",
+            "search_volume": 720
+          },
+          {
+            "period": "202607",
+            "search_volume": 480
+          },
+          {
+            "period": "202608",
+            "search_volume": 480
+          },
+          {
+            "period": "202609",
+            "search_volume": 1000
+          }
+        ]
+      }
+    },
+    "Brazil": {
+      "locId": 2076,
+      "language": "pt",
+      "suggestions": {
+        "searched_keywords": [
+          {
+            "keyword": "carta de apresentação",
+            "competition": 0.14,
+            "volume": 12100,
+            "cpc": 1.82343744,
+            "cpcDollars": 0.36,
+            "sd": 18,
+            "updated_at": 1788915226,
+            "pd": 14,
+            "searchIntent": [
+              1
+            ]
+          }
+        ],
+        "results": [
+          {
+            "keyword": "carta de apresentação no curriculo",
+            "competition": 0.11,
+            "volume": 4400,
+            "cpc": 0.53183592,
+            "cpcDollars": 0.105,
+            "sd": 10,
+            "updated_at": 1776247998,
+            "pd": 11,
+            "searchIntent": null
+          },
+          {
+            "keyword": "carta de apresentação na empresa",
+            "competition": 0.16,
+            "volume": 4400,
+            "cpc": 0.60781248,
+            "cpcDollars": 0.12,
+            "sd": 11,
+            "updated_at": 1776247998,
+            "pd": 16,
+            "searchIntent": null
+          },
+          {
+            "keyword": "carta de apresentação para emprego",
+            "competition": 0.2,
+            "volume": 3600,
+            "cpc": 1.0130208,
+            "cpcDollars": 0.2,
+            "sd": 21,
+            "updated_at": 1789215321,
+            "pd": 20,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "carta de apresentação empresa",
+            "competition": 0.17,
+            "volume": 3600,
+            "cpc": 1.16497392,
+            "cpcDollars": 0.23,
+            "sd": 44,
+            "updated_at": 1776289573,
+            "pd": 17,
+            "searchIntent": [
+              3,
+              2
+            ]
+          },
+          {
+            "keyword": "carta de apresentação modelo",
+            "competition": 0.19,
+            "volume": 2900,
+            "cpc": 1.87408848,
+            "cpcDollars": 0.37,
+            "sd": 34,
+            "updated_at": 1784430887,
+            "pd": 19,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "modelo de carta de apresentação",
+            "competition": 0.22,
+            "volume": 2900,
+            "cpc": 1.4688801599999999,
+            "cpcDollars": 0.29,
+            "sd": 31,
+            "updated_at": 1789246158,
+            "pd": 22,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "carta de apresentação para currículo",
+            "competition": 0.17,
+            "volume": 2900,
+            "cpc": 1.87408848,
+            "cpcDollars": 0.37,
+            "sd": 39,
+            "updated_at": 1784435864,
+            "pd": 17,
+            "searchIntent": [
+              4,
+              1
+            ]
+          },
+          {
+            "keyword": "carta de apresentação para empresa",
+            "competition": 0.29,
+            "volume": 2900,
+            "cpc": 1.7727863999999998,
+            "cpcDollars": 0.35,
+            "sd": 18,
+            "updated_at": 1788889421,
+            "pd": 28,
+            "searchIntent": [
+              1,
+              3,
+              2
+            ]
+          },
+          {
+            "keyword": "modelos carta de apresentação",
+            "competition": 0.19,
+            "volume": 2400,
+            "cpc": 1.31692704,
+            "cpcDollars": 0.26,
+            "sd": 35,
+            "updated_at": 1788933296,
+            "pd": 19,
+            "searchIntent": [
+              3
+            ]
+          },
+          {
+            "keyword": "carta de apresentação e curriculo",
+            "competition": 0.18,
+            "volume": 2400,
+            "cpc": 1.87408848,
+            "cpcDollars": 0.37,
+            "sd": 25,
+            "updated_at": 1788973341,
+            "pd": 18,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "carta de apresentação simples pronta",
+            "competition": 0.08,
+            "volume": 1900,
+            "cpc": 1.92473952,
+            "cpcDollars": 0.38,
+            "sd": 35,
+            "updated_at": 1784494826,
+            "pd": 8,
+            "searchIntent": [
+              4,
+              1
+            ]
+          },
+          {
+            "keyword": "o que carta de apresentação",
+            "competition": 0.27,
+            "volume": 1900,
+            "cpc": 0.32923176,
+            "cpcDollars": 0.065,
+            "sd": 14,
+            "updated_at": 1776247998,
+            "pd": 27,
+            "searchIntent": null
+          },
+          {
+            "keyword": "como fazer carta de apresentação",
+            "competition": 0.38,
+            "volume": 1900,
+            "cpc": 1.82343744,
+            "cpcDollars": 0.36,
+            "sd": 23,
+            "updated_at": 1784491573,
+            "pd": 38,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "o que é carta de apresentação",
+            "competition": 0.29,
+            "volume": 1600,
+            "cpc": 0.81041664,
+            "cpcDollars": 0.16,
+            "sd": 19,
+            "updated_at": 1789127127,
+            "pd": 28,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "carta de apresentação simples e direta",
+            "competition": 0.04,
+            "volume": 1600,
+            "cpc": 1.5195311999999999,
+            "cpcDollars": 0.3,
+            "sd": 33,
+            "updated_at": 1784541184,
+            "pd": 4,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "modelo de carta de apresentação para emprego",
+            "competition": 0.36,
+            "volume": 1300,
+            "cpc": 1.266276,
+            "cpcDollars": 0.25,
+            "sd": 34,
+            "updated_at": 1784572833,
+            "pd": 36,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "carta de apresentação pronta",
+            "competition": 0.15,
+            "volume": 1300,
+            "cpc": 2.0260416,
+            "cpcDollars": 0.4,
+            "sd": 32,
+            "updated_at": 1789354418,
+            "pd": 15,
+            "searchIntent": [
+              4
+            ]
+          },
+          {
+            "keyword": "carta de apresentação para faculdade",
+            "competition": 0.09,
+            "volume": 1300,
+            "cpc": 1.266276,
+            "cpcDollars": 0.25,
+            "sd": 15,
+            "updated_at": 1784587073,
+            "pd": 9,
+            "searchIntent": [
+              1,
+              4,
+              2
+            ]
+          },
+          {
+            "keyword": "carta de apresentação de empresas",
+            "competition": 0.12,
+            "volume": 1000,
+            "cpc": 2.0766926399999996,
+            "cpcDollars": 0.41,
+            "sd": 28,
+            "updated_at": 1769256049,
+            "pd": 12,
+            "searchIntent": [
+              1,
+              2
+            ]
+          },
+          {
+            "keyword": "exemplo de carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação simples pronta para copiar"
+          },
+          {
+            "keyword": "como fazer carta de apresentação emprego"
+          },
+          {
+            "keyword": "como fazer carta de apresentação para emprego"
+          },
+          {
+            "keyword": "carta de apresentação para estágio"
+          },
+          {
+            "keyword": "carta de apresentação exemplo"
+          },
+          {
+            "keyword": "carta de apresentação profissional"
+          },
+          {
+            "keyword": "carta de apresentação de empresa"
+          },
+          {
+            "keyword": "chatgpt carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação de emprego"
+          },
+          {
+            "keyword": "carta de apresentação para vaga de emprego"
+          },
+          {
+            "keyword": "modelo de carta de apresentação para faculdade"
+          },
+          {
+            "keyword": "exemplo carta de apresentação"
+          },
+          {
+            "keyword": "exemplo de carta de apresentação para emprego"
+          },
+          {
+            "keyword": "modelo de carta de apresentação para empresa"
+          },
+          {
+            "keyword": "carta de apresentação autismo pdf grátis"
+          },
+          {
+            "keyword": "carta de apresentação para trabalho"
+          },
+          {
+            "keyword": "o que e carta de apresentação para emprego"
+          },
+          {
+            "keyword": "como fazer carta de apresentação para empresa"
+          },
+          {
+            "keyword": "carta de apresentação curriculo modelo"
+          },
+          {
+            "keyword": "como escrever carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação autismo para editar grátis"
+          },
+          {
+            "keyword": "como fazer carta de apresentação da empresa"
+          },
+          {
+            "keyword": "carta de apresentação para faculdade estácio pronta"
+          },
+          {
+            "keyword": "carta de apresentação simples pronta para currículo"
+          },
+          {
+            "keyword": "carta de apresentação pessoal"
+          },
+          {
+            "keyword": "carta de apresentação para o primeiro emprego"
+          },
+          {
+            "keyword": "carta de apresentação primeiro emprego"
+          },
+          {
+            "keyword": "carta de apresentação simples pronta word"
+          },
+          {
+            "keyword": "modelo carta de apresentação para emprego"
+          },
+          {
+            "keyword": "carta de apresentação autista"
+          },
+          {
+            "keyword": "carta de apresentação de trabalho"
+          },
+          {
+            "keyword": "modelos de carta de apresentação para faculdade"
+          },
+          {
+            "keyword": "carta de apresentação para emprego pdf"
+          },
+          {
+            "keyword": "carta de apresentação professor educação infantil"
+          },
+          {
+            "keyword": "carta de apresentação enfermeira"
+          },
+          {
+            "keyword": "o que escrever carta de apresentação"
+          },
+          {
+            "keyword": "modelo de carta de apresentação de empresa"
+          },
+          {
+            "keyword": "carta de apresentação word"
+          },
+          {
+            "keyword": "carta de apresentação ccb"
+          },
+          {
+            "keyword": "modelo de carta de apresentação para currículo"
+          },
+          {
+            "keyword": "o que colocar na carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação autismo pdf"
+          },
+          {
+            "keyword": "carta de apresentação recepcionista"
+          },
+          {
+            "keyword": "carta de apresentação de estágio"
+          },
+          {
+            "keyword": "carta de apresentação jovem aprendiz"
+          },
+          {
+            "keyword": "carta de apresentação emprego pronta"
+          },
+          {
+            "keyword": "carta de apresentação de aluno para escola"
+          },
+          {
+            "keyword": "carta de apresentação mestrado"
+          },
+          {
+            "keyword": "carta de apresentação o que escrever"
+          },
+          {
+            "keyword": "carta de apresentação como fazer"
+          },
+          {
+            "keyword": "carta de apresentação pdf"
+          },
+          {
+            "keyword": "carta de apresentação da empresa"
+          },
+          {
+            "keyword": "carta de apresentação de empresa para cliente"
+          },
+          {
+            "keyword": "carta de apresentação enfermagem pronta"
+          },
+          {
+            "keyword": "carta de apresentação simples"
+          },
+          {
+            "keyword": "carta de apresentação faculdade"
+          },
+          {
+            "keyword": "carta de apresentação do último emprego"
+          },
+          {
+            "keyword": "carta de apresentação para faculdade pronta pdf"
+          },
+          {
+            "keyword": "carta de apresentação em inglês"
+          },
+          {
+            "keyword": "carta de apresentação pronta para baixar"
+          },
+          {
+            "keyword": "criar carta de apresentação"
+          },
+          {
+            "keyword": "como fazer carta de apresentação de empresa"
+          },
+          {
+            "keyword": "carta de apresentação para faculdade estácio pronta pdf"
+          },
+          {
+            "keyword": "carta de apresentação para emprego modelo"
+          },
+          {
+            "keyword": "carta de apresentação enfermagem"
+          },
+          {
+            "keyword": "carta de apresentação técnico de enfermagem"
+          },
+          {
+            "keyword": "carta de apresentação para primeiro emprego"
+          },
+          {
+            "keyword": "carta de apresentação professor"
+          },
+          {
+            "keyword": "exemplos de carta de apresentação para currículo"
+          },
+          {
+            "keyword": "carta de apresentação estacio"
+          },
+          {
+            "keyword": "carta de apresentação modelo word"
+          },
+          {
+            "keyword": "modelo de carta de apresentação word"
+          },
+          {
+            "keyword": "modelo carta de apresentação empresa"
+          },
+          {
+            "keyword": "carta de apresentação porque devo ser contratado"
+          },
+          {
+            "keyword": "o que é carta de apresentação no currículo"
+          },
+          {
+            "keyword": "carta de apresentação igreja"
+          },
+          {
+            "keyword": "modelo carta de apresentação curriculo"
+          },
+          {
+            "keyword": "o que é carta de apresentação para empresa"
+          },
+          {
+            "keyword": "carta de apresentação emprego modelo"
+          },
+          {
+            "keyword": "carta de apresentação para empresa modelo"
+          },
+          {
+            "keyword": "carta de apresentação sem experiência"
+          },
+          {
+            "keyword": "carta de apresentação para tecnico de enfermagem"
+          },
+          {
+            "keyword": "carta de apresentação word grátis"
+          },
+          {
+            "keyword": "carta de apresentação comercial"
+          },
+          {
+            "keyword": "carta de apresentação simples e direta para copiar"
+          },
+          {
+            "keyword": "carta de apresentação e motivação"
+          },
+          {
+            "keyword": "carta de apresentação assistente administrativo"
+          },
+          {
+            "keyword": "carta de apresentação de empresa word"
+          },
+          {
+            "keyword": "carta de apresentação autismo word"
+          },
+          {
+            "keyword": "carta de apresentação advogado"
+          },
+          {
+            "keyword": "carta de apresentação igreja evangelica"
+          },
+          {
+            "keyword": "carta de apresentação estrutura"
+          },
+          {
+            "keyword": "carta de apresentação estágio pedagogia"
+          },
+          {
+            "keyword": "carta de apresentação curriculo primeiro emprego"
+          },
+          {
+            "keyword": "carta de apresentação de empresa para empresa"
+          },
+          {
+            "keyword": "carta de apresentação trabalho"
+          },
+          {
+            "keyword": "o que significa carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação uniasselvi"
+          },
+          {
+            "keyword": "como elaborar carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação linkedin"
+          },
+          {
+            "keyword": "carta de apresentação autismo para imprimir"
+          },
+          {
+            "keyword": "curriculo com carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação vaga"
+          },
+          {
+            "keyword": "carta de apresentação currículo simples"
+          },
+          {
+            "keyword": "carta de apresentação de produtos"
+          },
+          {
+            "keyword": "carta de apresentação de serviço"
+          },
+          {
+            "keyword": "carta de apresentação ingresso simplificado"
+          },
+          {
+            "keyword": "carta de apresentação vendedor"
+          },
+          {
+            "keyword": "carta de apresentação curriculo exemplo"
+          },
+          {
+            "keyword": "carta de apresentação de produtos para clientes"
+          },
+          {
+            "keyword": "carta de apresentação para hospital"
+          },
+          {
+            "keyword": "carta de apresentação de projeto de extensão"
+          },
+          {
+            "keyword": "carta de apresentação igreja assembleia de deus"
+          },
+          {
+            "keyword": "congregação cristã no brasil carta de apresentação"
+          },
+          {
+            "keyword": "o que seria carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação autismo para editar"
+          },
+          {
+            "keyword": "carta de apresentação técnico de enfermagem recém formado"
+          },
+          {
+            "keyword": "carta de apresentação email"
+          },
+          {
+            "keyword": "carta de apresentação aluno autista"
+          },
+          {
+            "keyword": "vagas com carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação escolar autismo"
+          },
+          {
+            "keyword": "carta de apresentação igreja word"
+          },
+          {
+            "keyword": "carta de apresentação técnico de enfermagem pronta"
+          },
+          {
+            "keyword": "carta de apresentação faculdade estácio"
+          },
+          {
+            "keyword": "carta de apresentação administrativo"
+          },
+          {
+            "keyword": "carta de apresentação da empresa para clientes"
+          },
+          {
+            "keyword": "carta de apresentação para estagio em pedagogia"
+          },
+          {
+            "keyword": "carta de apresentação ccb online"
+          },
+          {
+            "keyword": "como preencher carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação segurança do trabalho"
+          },
+          {
+            "keyword": "carta de apresentação de membro para outra igreja"
+          },
+          {
+            "keyword": "carta de apresentação cuidador de idosos"
+          },
+          {
+            "keyword": "carta de apresentação gratuito"
+          },
+          {
+            "keyword": "carta de apresentação canva"
+          },
+          {
+            "keyword": "carta de apresentação e mail"
+          },
+          {
+            "keyword": "carta de apresentação para jovem aprendiz pronta"
+          },
+          {
+            "keyword": "carta de apresentação faculdade pronta"
+          },
+          {
+            "keyword": "carta de apresentação acadêmica pronta"
+          },
+          {
+            "keyword": "carta de apresentação vaga de emprego"
+          },
+          {
+            "keyword": "frases para carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação de empresa modelo"
+          },
+          {
+            "keyword": "carta de apresentação ia"
+          },
+          {
+            "keyword": "carta de apresentação para autista"
+          },
+          {
+            "keyword": "criar carta de apresentação ia"
+          },
+          {
+            "keyword": "carta de apresentação do aluno autista"
+          },
+          {
+            "keyword": "carta de apresentação criança autista para editar"
+          },
+          {
+            "keyword": "carta de apresentação feita"
+          },
+          {
+            "keyword": "carta de apresentação perito judicial pdf"
+          },
+          {
+            "keyword": "carta de apresentação simples para curriculo"
+          },
+          {
+            "keyword": "criar carta de apresentação gratuito"
+          },
+          {
+            "keyword": "o que é carta de apresentação profissional"
+          },
+          {
+            "keyword": "carta de apresentação gupy"
+          },
+          {
+            "keyword": "carta de apresentação ingresso simplificado estácio"
+          },
+          {
+            "keyword": "carta de apresentação para faculdade de biomedicina"
+          },
+          {
+            "keyword": "carta de apresentação professora educação infantil pronta"
+          },
+          {
+            "keyword": "carta de apresentação perito judicial"
+          },
+          {
+            "keyword": "carta de apresentação vestibular"
+          },
+          {
+            "keyword": "carta de apresentação logistica"
+          },
+          {
+            "keyword": "carta de apresentação vendedor para cliente"
+          },
+          {
+            "keyword": "carta de apresentação educação infantil"
+          },
+          {
+            "keyword": "carta de apresentação menor aprendiz"
+          },
+          {
+            "keyword": "carta de apresentação síndico profissional"
+          },
+          {
+            "keyword": "carta de apresentação primeiro emprego sem experiência"
+          },
+          {
+            "keyword": "o que significa carta de apresentação no currículo"
+          },
+          {
+            "keyword": "carta de apresentação baba"
+          },
+          {
+            "keyword": "carta de apresentação intercambio"
+          },
+          {
+            "keyword": "como começar carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação estagio unopar"
+          },
+          {
+            "keyword": "carta de apresentação simples pronta para faculdade"
+          },
+          {
+            "keyword": "carta de apresentação jovem aprendiz exemplos"
+          },
+          {
+            "keyword": "carta de apresentação abnt"
+          },
+          {
+            "keyword": "carta de apresentação cruzeiro do sul"
+          },
+          {
+            "keyword": "o que é carta de apresentação do ultimo emprego"
+          },
+          {
+            "keyword": "como fazer carta de apresentação para estagio"
+          },
+          {
+            "keyword": "carta de apresentação simples e direta word"
+          },
+          {
+            "keyword": "carta de apresentação fisioterapeuta"
+          },
+          {
+            "keyword": "carta de apresentação a empresa"
+          },
+          {
+            "keyword": "para que serve a carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação simples e direta pronta"
+          },
+          {
+            "keyword": "carta de apresentação da empresa modelo"
+          },
+          {
+            "keyword": "texto para carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação representante comercial"
+          },
+          {
+            "keyword": "carta de apresentação digital"
+          },
+          {
+            "keyword": "carta de apresentação para emprego sem experiência"
+          },
+          {
+            "keyword": "carta de apresentação academica"
+          },
+          {
+            "keyword": "carta de apresentação da ultima empresa"
+          },
+          {
+            "keyword": "carta de apresentação autismo escola"
+          },
+          {
+            "keyword": "carta de apresentação banco"
+          },
+          {
+            "keyword": "carta de apresentação transportadora"
+          },
+          {
+            "keyword": "criar carta de apresentação online grátis"
+          },
+          {
+            "keyword": "carta de apresentação online"
+          },
+          {
+            "keyword": "carta de apresentação simples e direta para emprego"
+          },
+          {
+            "keyword": "carta de apresentação assembleia de deus"
+          },
+          {
+            "keyword": "carta de apresentação de obreiro"
+          },
+          {
+            "keyword": "carta de apresentação geral"
+          },
+          {
+            "keyword": "carta de apresentação 2019"
+          },
+          {
+            "keyword": "como preencher carta de apresentação uniasselvi"
+          },
+          {
+            "keyword": "carta de apresentação 1 emprego"
+          },
+          {
+            "keyword": "carta de apresentação em pdf"
+          },
+          {
+            "keyword": "carta de apresentação universidade"
+          },
+          {
+            "keyword": "carta de apresentação jornalista"
+          },
+          {
+            "keyword": "carta de apresentação uninter"
+          },
+          {
+            "keyword": "como preencher carta de apresentação cruzeiro do sul"
+          },
+          {
+            "keyword": "carta de apresentação 5"
+          },
+          {
+            "keyword": "carta de apresentação comercial empresa prestação serviços"
+          },
+          {
+            "keyword": "carta de apresentação simples e direta primeiro emprego"
+          },
+          {
+            "keyword": "carta de apresentação generica"
+          },
+          {
+            "keyword": "carta de apresentação em inglês pronta"
+          },
+          {
+            "keyword": "carta de apresentação operador de telemarketing"
+          },
+          {
+            "keyword": "carta de apresentação para banco sicoob"
+          },
+          {
+            "keyword": "prompt para carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação de produtos para venda"
+          },
+          {
+            "keyword": "carta de apresentação enfermagem modelo"
+          },
+          {
+            "keyword": "carta de apresentação para qualquer vaga"
+          },
+          {
+            "keyword": "carta de apresentação transição de carreira"
+          },
+          {
+            "keyword": "carta de apresentação professora educação infantil para os pais"
+          },
+          {
+            "keyword": "carta de apresentação e interesse"
+          },
+          {
+            "keyword": "fazer carta de apresentação online"
+          },
+          {
+            "keyword": "carta de apresentação brainly"
+          },
+          {
+            "keyword": "carta de apresentação espontanea para emprego"
+          },
+          {
+            "keyword": "carta de apresentação de empresa para banco"
+          },
+          {
+            "keyword": "carta de apresentação nutricionista"
+          },
+          {
+            "keyword": "carta de apresentação simples pronta tecnico de enfermagem"
+          },
+          {
+            "keyword": "formato carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação candidatura espontanea"
+          },
+          {
+            "keyword": "modelo de carta de apresentação word gratis"
+          },
+          {
+            "keyword": "carta de apresentação vagas exemplos"
+          },
+          {
+            "keyword": "carta de apresentação técnico de enfermagem primeiro emprego pronta"
+          },
+          {
+            "keyword": "carta de apresentação analista financeiro"
+          },
+          {
+            "keyword": "carta de apresentação gerente"
+          },
+          {
+            "keyword": "o que é carta de apresentação ingresso simplificado"
+          },
+          {
+            "keyword": "carta de apresentação anhanguera"
+          },
+          {
+            "keyword": "a carta de apresentação é um documento"
+          },
+          {
+            "keyword": "carta de apresentação limpeza"
+          }
+        ]
+      },
+      "overview": {
+        "keyword": "carta de apresentação",
+        "search_volume": 12100,
+        "cpc": 0.36,
+        "seo_difficulty": 18,
+        "paid_difficulty": 14,
+        "competition": 0.14,
+        "search_intent": "Informational",
+        "language": "Portuguese",
+        "location": "Brazil",
+        "monthly_searches": [
+          {
+            "period": "202605",
+            "search_volume": 12100
+          },
+          {
+            "period": "202606",
+            "search_volume": 8100
+          },
+          {
+            "period": "202607",
+            "search_volume": 8100
+          },
+          {
+            "period": "202608",
+            "search_volume": 12100
+          }
+        ]
+      }
+    },
+    "Portugal": {
+      "locId": 2620,
+      "language": "pt",
+      "suggestions": {
+        "searched_keywords": [
+          {
+            "keyword": "carta de apresentação",
+            "competition": 0.15,
+            "volume": 1900,
+            "cpc": 0.5606395200000001,
+            "cpcDollars": 0.63,
+            "sd": 27,
+            "updated_at": 1789406563,
+            "pd": 15,
+            "searchIntent": [
+              1
+            ]
+          }
+        ],
+        "results": [
+          {
+            "keyword": "carta de apresentação para emprego",
+            "competition": 0.21,
+            "volume": 1600,
+            "cpc": 0.43605296,
+            "cpcDollars": 0.49,
+            "sd": 27,
+            "updated_at": 1789937511,
+            "pd": 21,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "carta de apresentação emprego",
+            "competition": 0.2,
+            "volume": 1300,
+            "cpc": 0.29366832000000004,
+            "cpcDollars": 0.33,
+            "sd": 31,
+            "updated_at": 1769112165,
+            "pd": 20,
+            "searchIntent": [
+              2
+            ]
+          },
+          {
+            "keyword": "carta de apresentação exemplos",
+            "competition": 0.03,
+            "volume": 720,
+            "cpc": 0.51614432,
+            "cpcDollars": 0.58,
+            "sd": 19,
+            "updated_at": 1779757007,
+            "pd": 3,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "exemplo carta de apresentação",
+            "competition": 0.1,
+            "volume": 480,
+            "cpc": 0.38265872,
+            "cpcDollars": 0.43,
+            "sd": 26,
+            "updated_at": 1787849516,
+            "pd": 10,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "exemplo de carta de apresentação",
+            "competition": 0.1,
+            "volume": 480,
+            "cpc": 0.79201456,
+            "cpcDollars": 0.89,
+            "sd": 31,
+            "updated_at": 1762964950,
+            "pd": 10,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "carta de apresentação exemplo",
+            "competition": 0.09,
+            "volume": 390,
+            "cpc": 0.23137504,
+            "cpcDollars": 0.26,
+            "sd": 16,
+            "updated_at": 1791140541,
+            "pd": 9,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "modelo carta de apresentação",
+            "competition": 0.11,
+            "volume": 320,
+            "cpc": 0.77421648,
+            "cpcDollars": 0.87,
+            "sd": 29,
+            "updated_at": 1779391555,
+            "pd": 11,
+            "searchIntent": [
+              2
+            ]
+          },
+          {
+            "keyword": "carta de apresentação simples pronta",
+            "competition": 0.05,
+            "volume": 320,
+            "cpc": 0.5784376,
+            "cpcDollars": 0.65,
+            "sd": 25,
+            "updated_at": 1789395810,
+            "pd": 5,
+            "searchIntent": [
+              4,
+              1
+            ]
+          },
+          {
+            "keyword": "exemplos de carta de apresentação",
+            "competition": 0.14,
+            "volume": 260,
+            "cpc": 0.29366832000000004,
+            "cpcDollars": 0.33,
+            "sd": 26,
+            "updated_at": 1791071494,
+            "pd": 14,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "exemplo de carta de apresentação para emprego",
+            "competition": 0.12,
+            "volume": 260,
+            "cpc": 0.1334856,
+            "cpcDollars": 0.15,
+            "sd": 25,
+            "updated_at": 1787190876,
+            "pd": 12,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "como fazer carta de apresentação",
+            "competition": 0.29,
+            "volume": 210,
+            "cpc": 0.36486064,
+            "cpcDollars": 0.41,
+            "sd": 26,
+            "updated_at": 1789050176,
+            "pd": 28,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "modelo de carta de apresentação",
+            "competition": 0.1,
+            "volume": 210,
+            "cpc": 0.35596160000000004,
+            "cpcDollars": 0.4,
+            "sd": 26,
+            "updated_at": 1783180939,
+            "pd": 10,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "exemplos de carta de apresentação para emprego",
+            "competition": 0.15,
+            "volume": 210,
+            "cpc": 0.16908176,
+            "cpcDollars": 0.19,
+            "sd": 25,
+            "updated_at": 1789736148,
+            "pd": 15,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "carta de apresentação simples e direta",
+            "competition": 0.07,
+            "volume": 210,
+            "cpc": 0.47164912000000003,
+            "cpcDollars": 0.53,
+            "sd": 26,
+            "updated_at": 1789059214,
+            "pd": 7,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "carta de apresentação modelo",
+            "competition": 0.18,
+            "volume": 210,
+            "cpc": 0.39155776000000003,
+            "cpcDollars": 0.44,
+            "sd": 31,
+            "updated_at": 1787105112,
+            "pd": 18,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "carta de apresentação como fazer",
+            "competition": 0.3,
+            "volume": 210,
+            "cpc": 0.19577888000000002,
+            "cpcDollars": 0.22,
+            "sd": 18,
+            "updated_at": 1789600131,
+            "pd": 30,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "o que carta de apresentação",
+            "competition": 0.29,
+            "volume": 170,
+            "cpc": 0.20467792,
+            "cpcDollars": 0.23,
+            "sd": 22,
+            "updated_at": 1790042470,
+            "pd": 28,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "carta de apresentação europass",
+            "competition": 0.27,
+            "volume": 170,
+            "cpc": 0.51614432,
+            "cpcDollars": 0.58,
+            "sd": 23,
+            "updated_at": 1761201317,
+            "pd": 27,
+            "searchIntent": [
+              3,
+              2,
+              1
+            ]
+          },
+          {
+            "keyword": "carta de apresentação de empresa",
+            "competition": 0.02,
+            "volume": 140,
+            "cpc": 0,
+            "cpcDollars": 0,
+            "sd": 33,
+            "updated_at": 1764746806,
+            "pd": 2,
+            "searchIntent": [
+              3,
+              2
+            ]
+          },
+          {
+            "keyword": "modelo de carta de apresentação para emprego"
+          },
+          {
+            "keyword": "carta de apresentação simples"
+          },
+          {
+            "keyword": "como fazer carta de apresentação para emprego"
+          },
+          {
+            "keyword": "carta de apresentação empresa"
+          },
+          {
+            "keyword": "carta de apresentação portugal"
+          },
+          {
+            "keyword": "carta de apresentação de currículo"
+          },
+          {
+            "keyword": "carta de apresentação currículo"
+          },
+          {
+            "keyword": "carta de apresentação motivacional"
+          },
+          {
+            "keyword": "carta de apresentação em inglês"
+          },
+          {
+            "keyword": "carta de apresentação estagio"
+          },
+          {
+            "keyword": "carta de apresentação de emprego"
+          },
+          {
+            "keyword": "carta de apresentação word"
+          },
+          {
+            "keyword": "o que é carta de apresentação para emprego"
+          },
+          {
+            "keyword": "carta de apresentação estrutura"
+          },
+          {
+            "keyword": "carta de apresentação comercial"
+          },
+          {
+            "keyword": "carta de apresentação assistente administrativo"
+          },
+          {
+            "keyword": "carta de apresentação trabalho"
+          },
+          {
+            "keyword": "carta de apresentação canva"
+          },
+          {
+            "keyword": "ia para carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação loja"
+          },
+          {
+            "keyword": "carta de apresentação operador de caixa"
+          },
+          {
+            "keyword": "exemplo de carta de apresentação para primeiro emprego"
+          },
+          {
+            "keyword": "carta de apresentação porque devo ser contratado"
+          },
+          {
+            "keyword": "carta de apresentação radiologia"
+          },
+          {
+            "keyword": "carta de apresentação jornalista"
+          },
+          {
+            "keyword": "carta de apresentação curriculo primeiro emprego"
+          },
+          {
+            "keyword": "carta de apresentação recepcionista"
+          },
+          {
+            "keyword": "carta de apresentação minuta"
+          },
+          {
+            "keyword": "como fazer carta de apresentação exemplo"
+          },
+          {
+            "keyword": "exemplos de carta de apresentação de empresa"
+          },
+          {
+            "keyword": "carta de apresentação artigo"
+          },
+          {
+            "keyword": "curriculo ou carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação word grátis"
+          },
+          {
+            "keyword": "carta de apresentação ultimo emprego"
+          },
+          {
+            "keyword": "carta de apresentação de empresa modelo"
+          },
+          {
+            "keyword": "carta de apresentação template"
+          },
+          {
+            "keyword": "carta de apresentação novo emprego"
+          },
+          {
+            "keyword": "carta de apresentação para auxiliar educativa"
+          },
+          {
+            "keyword": "carta de apresentação representante comercial"
+          },
+          {
+            "keyword": "dicas para carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação ao juiz"
+          },
+          {
+            "keyword": "carta de apresentação tcc"
+          },
+          {
+            "keyword": "carta de apresentação texto"
+          },
+          {
+            "keyword": "carta de apresentação revista cientifica"
+          },
+          {
+            "keyword": "carta de apresentação jovem aprendiz"
+          },
+          {
+            "keyword": "carta de apresentação para emprego como fazer"
+          },
+          {
+            "keyword": "texto para carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação 2024"
+          },
+          {
+            "keyword": "carta de apresentação ou recomendação"
+          },
+          {
+            "keyword": "carta de apresentação simples para empresa"
+          },
+          {
+            "keyword": "carta de apresentação advogado"
+          },
+          {
+            "keyword": "como fazer carta de apresentação para primeiro emprego"
+          },
+          {
+            "keyword": "carta de apresentação universidade"
+          },
+          {
+            "keyword": "carta de apresentação nutricionista"
+          },
+          {
+            "keyword": "carta de apresentação feita"
+          },
+          {
+            "keyword": "carta de apresentação copiar e colar"
+          },
+          {
+            "keyword": "carta de apresentação igreja"
+          },
+          {
+            "keyword": "carta de apresentação e intenção"
+          },
+          {
+            "keyword": "carta de apresentação de empresa word"
+          },
+          {
+            "keyword": "o que colocar na carta de apresentação do curriculo"
+          },
+          {
+            "keyword": "carta de apresentação atendimento ao cliente"
+          },
+          {
+            "keyword": "diferença entre carta de apresentação e curriculo"
+          },
+          {
+            "keyword": "o que seria carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação gratuito"
+          },
+          {
+            "keyword": "carta de apresentação a empresa"
+          },
+          {
+            "keyword": "carta de apresentação recepcionista sem experiência"
+          },
+          {
+            "keyword": "carta de apresentação para linkedin"
+          },
+          {
+            "keyword": "o que colocar na carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação veterinaria"
+          },
+          {
+            "keyword": "carta de apresentação linkedin"
+          },
+          {
+            "keyword": "carta de apresentação para currículo pronta"
+          },
+          {
+            "keyword": "carta de apresentação vaga"
+          },
+          {
+            "keyword": "carta de apresentação no email"
+          },
+          {
+            "keyword": "carta de apresentação rh"
+          },
+          {
+            "keyword": "carta de apresentação para quem nunca trabalhou"
+          },
+          {
+            "keyword": "curriculo com carta de apresentação"
+          },
+          {
+            "keyword": "como finalizar carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação administrativa"
+          },
+          {
+            "keyword": "carta de apresentação simples e direta primeiro emprego"
+          },
+          {
+            "keyword": "carta de apresentação contabilidade"
+          },
+          {
+            "keyword": "carta de apresentação bombeiro civil"
+          },
+          {
+            "keyword": "carta de apresentação breve"
+          },
+          {
+            "keyword": "frases para carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação geral"
+          },
+          {
+            "keyword": "carta de apresentação segurança do trabalho"
+          },
+          {
+            "keyword": "carta de apresentação mestrado"
+          },
+          {
+            "keyword": "carta de apresentação para harvard"
+          },
+          {
+            "keyword": "carta de apresentação ufpr"
+          },
+          {
+            "keyword": "carta de apresentação o que precisa ter"
+          },
+          {
+            "keyword": "como começar uma carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação youtube"
+          },
+          {
+            "keyword": "carta de apresentação infantil"
+          },
+          {
+            "keyword": "carta de apresentação vestibular pronta"
+          },
+          {
+            "keyword": "carta de apresentação autismo word"
+          },
+          {
+            "keyword": "carta de apresentação agente imobiliário"
+          },
+          {
+            "keyword": "carta de apresentação modelo 2025"
+          },
+          {
+            "keyword": "carta de apresentação para whatsapp"
+          },
+          {
+            "keyword": "carta de apresentação video"
+          },
+          {
+            "keyword": "carta de apresentação pelo whatsapp"
+          },
+          {
+            "keyword": "carta de apresentação tem que ter foto"
+          },
+          {
+            "keyword": "carta de apresentação para home office"
+          },
+          {
+            "keyword": "carta de apresentação coelba"
+          },
+          {
+            "keyword": "como fazer uma carta de apresentação emprego"
+          },
+          {
+            "keyword": "carta de apresentação operador de loja"
+          },
+          {
+            "keyword": "carta de apresentação na faculdade"
+          },
+          {
+            "keyword": "carta de apresentação auxiliar veterinario"
+          },
+          {
+            "keyword": "carta de apresentação autismo para editar grátis"
+          },
+          {
+            "keyword": "carta de apresentação whatsapp"
+          },
+          {
+            "keyword": "como fazer carta de apresentação ccb"
+          },
+          {
+            "keyword": "carta de apresentação 8 ano"
+          },
+          {
+            "keyword": "carta de apresentação bacharel em direito"
+          },
+          {
+            "keyword": "carta de apresentação na escola"
+          },
+          {
+            "keyword": "carta de apresentação hospital"
+          },
+          {
+            "keyword": "carta de apresentação almoxarife"
+          },
+          {
+            "keyword": "carta de apresentação rede d'or"
+          },
+          {
+            "keyword": "carta de apresentação para teletrabalho"
+          },
+          {
+            "keyword": "carta de apresentação treinador de futebol"
+          },
+          {
+            "keyword": "com fazer uma carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação 8o ano"
+          },
+          {
+            "keyword": "carta de apresentação modelo para faculdade"
+          },
+          {
+            "keyword": "carta de apresentação ccb 2024"
+          },
+          {
+            "keyword": "carta de apresentação jovem aprendiz simples"
+          },
+          {
+            "keyword": "carta de apresentação o que falar"
+          },
+          {
+            "keyword": "carta de apresentação jovem aprendiz brainly"
+          },
+          {
+            "keyword": "carta de apresentação trabalho exemplo"
+          },
+          {
+            "keyword": "carta de apresentação graduação"
+          },
+          {
+            "keyword": "carta de apresentação tecnico em radiologia"
+          },
+          {
+            "keyword": "o que seria carta de apresentação para emprego"
+          },
+          {
+            "keyword": "como preencher carta de apresentação cruzeiro do sul"
+          },
+          {
+            "keyword": "carta de apresentação de trabalho word"
+          },
+          {
+            "keyword": "carta de apresentação gemini"
+          },
+          {
+            "keyword": "carta de apresentação estagio univesp"
+          },
+          {
+            "keyword": "carta de apresentação saúde"
+          },
+          {
+            "keyword": "carta de apresentação liga academica"
+          },
+          {
+            "keyword": "carta de apresentação texto pronto"
+          },
+          {
+            "keyword": "carta de apresentação genero textual"
+          },
+          {
+            "keyword": "carta de apresentação banco do brasil"
+          },
+          {
+            "keyword": "carta de apresentação modelo gratuito"
+          },
+          {
+            "keyword": "carta de apresentação jovem aprendiz administrativo"
+          },
+          {
+            "keyword": "carta de apresentação imagem"
+          },
+          {
+            "keyword": "carta de apresentação livro"
+          },
+          {
+            "keyword": "carta de apresentação ideias"
+          },
+          {
+            "keyword": "carta de apresentação visita tecnica"
+          },
+          {
+            "keyword": "carta de apresentação google"
+          },
+          {
+            "keyword": "carta de apresentação wyden"
+          },
+          {
+            "keyword": "carta de apresentação para faculdade com 200 caracteres"
+          },
+          {
+            "keyword": "carta de apresentação autismo"
+          },
+          {
+            "keyword": "carta de apresentação 5 modelos"
+          },
+          {
+            "keyword": "carta de apresentação perito judicial pdf"
+          },
+          {
+            "keyword": "carta de apresentação de uma empresa para outra"
+          },
+          {
+            "keyword": "carta de apresentação harvard"
+          },
+          {
+            "keyword": "carta de apresentação unimed"
+          },
+          {
+            "keyword": "carta de apresentação igreja evangélica word"
+          },
+          {
+            "keyword": "carta de apresentação bolsa"
+          },
+          {
+            "keyword": "carta de apresentação simples pronta para faculdade"
+          },
+          {
+            "keyword": "carta de apresentação para eventos"
+          },
+          {
+            "keyword": "carta de apresentação farmacêutico hospitalar"
+          },
+          {
+            "keyword": "como preencher carta de apresentação uniasselvi"
+          },
+          {
+            "keyword": "carta de apresentação para mudança de emprego"
+          },
+          {
+            "keyword": "modelo de carta de apresentação 2024"
+          },
+          {
+            "keyword": "carta de apresentação técnico de enfermagem sem experiência"
+          },
+          {
+            "keyword": "carta de apresentação tec de enfermagem"
+          },
+          {
+            "keyword": "como fazer uma carta de apresentação da minha empresa"
+          },
+          {
+            "keyword": "carta de apresentação recepcionista de hotel"
+          },
+          {
+            "keyword": "carta de apresentação basica para curriculo"
+          },
+          {
+            "keyword": "currículo ou carta de apresentação"
+          },
+          {
+            "keyword": "carta de apresentação o'que dizer"
+          },
+          {
+            "keyword": "carta de apresentação significado"
+          },
+          {
+            "keyword": "carta de apresentação unip"
+          },
+          {
+            "keyword": "carta de apresentação vaga de recepcionista"
+          },
+          {
+            "keyword": "carta de apresentação banda musical"
+          },
+          {
+            "keyword": "carta de apresentação manicure"
+          },
+          {
+            "keyword": "carta de apresentação zety"
+          },
+          {
+            "keyword": "carta de apresentação no linkedin"
+          },
+          {
+            "keyword": "carta de apresentação profissional word"
+          },
+          {
+            "keyword": "carta de apresentação uninter"
+          },
+          {
+            "keyword": "carta de apresentação copeira hospitalar"
+          }
+        ]
+      },
+      "overview": {
+        "error_code": "INVALID_ARGUMENT"
+      },
+      "overviewError": true
+    },
+    "Spain": {
+      "locId": 2724,
+      "language": "es",
+      "suggestions": {
+        "searched_keywords": [
+          {
+            "keyword": "carta de presentación",
+            "competition": 0.13,
+            "volume": 9900,
+            "cpc": 0.60513472,
+            "cpcDollars": 0.68,
+            "sd": 30,
+            "updated_at": 1788191958,
+            "pd": 13,
+            "searchIntent": [
+              1
+            ]
+          }
+        ],
+        "results": [
+          {
+            "keyword": "ejemplo carta de presentación",
+            "competition": 0.14,
+            "volume": 6600,
+            "cpc": 1.1835723200000001,
+            "cpcDollars": 1.33,
+            "sd": 47,
+            "updated_at": 1769370463,
+            "pd": 14,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "carta de presentación para un trabajo",
+            "competition": 0.25,
+            "volume": 6600,
+            "cpc": 1.01449056,
+            "cpcDollars": 1.14,
+            "sd": 45,
+            "updated_at": 1769442493,
+            "pd": 25,
+            "searchIntent": [
+              3,
+              1
+            ]
+          },
+          {
+            "keyword": "ejemplo de carta de presentación",
+            "competition": 0.07,
+            "volume": 5400,
+            "cpc": 0.24027408000000003,
+            "cpcDollars": 0.27,
+            "sd": 39,
+            "updated_at": 1773362055,
+            "pd": 7,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "carta de presentación para trabajo",
+            "competition": 0.29,
+            "volume": 4400,
+            "cpc": 0.50724528,
+            "cpcDollars": 0.57,
+            "sd": 27,
+            "updated_at": 1788299445,
+            "pd": 28,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "carta de presentación ejemplo",
+            "competition": 0.13,
+            "volume": 4400,
+            "cpc": 0.39155776000000003,
+            "cpcDollars": 0.44,
+            "sd": 26,
+            "updated_at": 1788300243,
+            "pd": 13,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "cómo hacer carta de presentación",
+            "competition": 0.32,
+            "volume": 1900,
+            "cpc": 0.85430784,
+            "cpcDollars": 0.96,
+            "sd": 44,
+            "updated_at": 1769140899,
+            "pd": 32,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "modelo de carta de presentación",
+            "competition": 0.14,
+            "volume": 1300,
+            "cpc": 0.4004568,
+            "cpcDollars": 0.45,
+            "sd": 40,
+            "updated_at": 1776814995,
+            "pd": 14,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "como hacer una carta de presentación",
+            "competition": 0.34,
+            "volume": 1300,
+            "cpc": 0.47164912000000003,
+            "cpcDollars": 0.53,
+            "sd": 21,
+            "updated_at": 1788447765,
+            "pd": 34,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "modelo carta de presentación",
+            "competition": 0.38,
+            "volume": 1000,
+            "cpc": 0.46275008,
+            "cpcDollars": 0.52,
+            "sd": 16,
+            "updated_at": 1791911959,
+            "pd": 38,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "carta de presentación modelos",
+            "competition": 0.38,
+            "volume": 1000,
+            "cpc": 0.4004568,
+            "cpcDollars": 0.45,
+            "sd": 37,
+            "updated_at": 1788563264,
+            "pd": 38,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "carta de presentación para trabajo ejemplo",
+            "competition": 0.21,
+            "volume": 1000,
+            "cpc": 0.56953856,
+            "cpcDollars": 0.64,
+            "sd": 25,
+            "updated_at": 1773097196,
+            "pd": 21,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "ejemplos de carta de presentación para un trabajo",
+            "competition": 0.21,
+            "volume": 880,
+            "cpc": 0.41825488,
+            "cpcDollars": 0.47,
+            "sd": 22,
+            "updated_at": 1788642927,
+            "pd": 21,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "plantilla de carta de presentación",
+            "competition": 0.43,
+            "volume": 880,
+            "cpc": 1.4238464000000002,
+            "cpcDollars": 1.6,
+            "sd": 39,
+            "updated_at": 1769582262,
+            "pd": 43,
+            "searchIntent": [
+              3,
+              1
+            ]
+          },
+          {
+            "keyword": "carta de presentación para un empleo",
+            "competition": 0.24,
+            "volume": 880,
+            "cpc": 0.42715392,
+            "cpcDollars": 0.48,
+            "sd": 27,
+            "updated_at": 1788651286,
+            "pd": 24,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "plantilla carta de presentación",
+            "competition": 0.29,
+            "volume": 720,
+            "cpc": 0.60513472,
+            "cpcDollars": 0.68,
+            "sd": 24,
+            "updated_at": 1785261367,
+            "pd": 28,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "que es una carta de presentación",
+            "competition": 0.19,
+            "volume": 720,
+            "cpc": 0.3114664,
+            "cpcDollars": 0.35,
+            "sd": 35,
+            "updated_at": 1775488261,
+            "pd": 19,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "carta de presentación de currículum",
+            "competition": 0.17,
+            "volume": 720,
+            "cpc": 0.41825488,
+            "cpcDollars": 0.47,
+            "sd": 25,
+            "updated_at": 1767896417,
+            "pd": 17,
+            "searchIntent": [
+              3,
+              1
+            ]
+          },
+          {
+            "keyword": "carta de presentación de curriculum",
+            "competition": 0.23,
+            "volume": 480,
+            "cpc": 0.5606395200000001,
+            "cpcDollars": 0.63,
+            "sd": 35,
+            "updated_at": 1788910481,
+            "pd": 23,
+            "searchIntent": [
+              2,
+              1
+            ]
+          },
+          {
+            "keyword": "carta de presentación corta",
+            "competition": 0.02,
+            "volume": 480,
+            "cpc": 0.43605296,
+            "cpcDollars": 0.49,
+            "sd": 16,
+            "updated_at": 1785867497,
+            "pd": 2,
+            "searchIntent": [
+              1
+            ]
+          },
+          {
+            "keyword": "carta de presentación de empresa"
+          },
+          {
+            "keyword": "carta de presentación ejemplos cortos"
+          },
+          {
+            "keyword": "carta de presentación para currículum"
+          },
+          {
+            "keyword": "como hacer carta de presentación para un trabajo"
+          },
+          {
+            "keyword": "como empezar carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación empresa"
+          },
+          {
+            "keyword": "carta de presentación para trabajo modelo"
+          },
+          {
+            "keyword": "carta de presentación formato"
+          },
+          {
+            "keyword": "carta de presentación de cv"
+          },
+          {
+            "keyword": "como hacer una carta de presentación para un trabajo"
+          },
+          {
+            "keyword": "como empezar una carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación de la empresa"
+          },
+          {
+            "keyword": "estructura carta de presentación"
+          },
+          {
+            "keyword": "formatos de carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación personal"
+          },
+          {
+            "keyword": "modelo de carta de presentación para un trabajo"
+          },
+          {
+            "keyword": "cómo empezar una carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación estructura"
+          },
+          {
+            "keyword": "carta de presentación de trabajo"
+          },
+          {
+            "keyword": "carta de presentación inglés"
+          },
+          {
+            "keyword": "cv carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación cv"
+          },
+          {
+            "keyword": "ejemplo de carta de presentación de empresa"
+          },
+          {
+            "keyword": "carta de presentación trabajo"
+          },
+          {
+            "keyword": "carta de presentación laboral ejemplo"
+          },
+          {
+            "keyword": "como escribir una carta de presentación"
+          },
+          {
+            "keyword": "que poner en una carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación de autocandidatura"
+          },
+          {
+            "keyword": "plantilla de carta de presentación gratis"
+          },
+          {
+            "keyword": "chatgpt carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación para trabajo sencilla"
+          },
+          {
+            "keyword": "canva carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación para una empresa"
+          },
+          {
+            "keyword": "carta de presentación curriculum ejemplo"
+          },
+          {
+            "keyword": "plantilla carta de presentación gratis"
+          },
+          {
+            "keyword": "ejemplo de carta de presentación laboral"
+          },
+          {
+            "keyword": "plantillas carta de presentación gratis"
+          },
+          {
+            "keyword": "carta de presentación sin experiencia"
+          },
+          {
+            "keyword": "carta de presentación de una empresa ofreciendo sus servicios"
+          },
+          {
+            "keyword": "hacer carta de presentación"
+          },
+          {
+            "keyword": "crear carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación para un trabajo sin experiencia"
+          },
+          {
+            "keyword": "modelo carta de presentación empresa"
+          },
+          {
+            "keyword": "tipo de carta de presentación"
+          },
+          {
+            "keyword": "la carta de presentación perfecta"
+          },
+          {
+            "keyword": "carta de presentación infojobs"
+          },
+          {
+            "keyword": "carta de presentación canva"
+          },
+          {
+            "keyword": "como redactar una carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación en inglés"
+          },
+          {
+            "keyword": "carta de presentación para cv"
+          },
+          {
+            "keyword": "carta de presentación europass"
+          },
+          {
+            "keyword": "como hacer una buena carta de presentación"
+          },
+          {
+            "keyword": "europass carta de presentación"
+          },
+          {
+            "keyword": "modelo carta de presentación laboral"
+          },
+          {
+            "keyword": "cómo crear una carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación para empresa"
+          },
+          {
+            "keyword": "carta de presentación gratis"
+          },
+          {
+            "keyword": "carta de presentación para trabajo sin experiencia"
+          },
+          {
+            "keyword": "plantillas carta de presentación word gratis"
+          },
+          {
+            "keyword": "carta de presentación simple"
+          },
+          {
+            "keyword": "carta de presentación que es"
+          },
+          {
+            "keyword": "plantilla para carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación de un producto"
+          },
+          {
+            "keyword": "carta de presentación para empleo ejemplos"
+          },
+          {
+            "keyword": "curriculum vitae y carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación general"
+          },
+          {
+            "keyword": "carta de presentación master"
+          },
+          {
+            "keyword": "que es carta de presentación laboral"
+          },
+          {
+            "keyword": "carta de presentación profesor sin experiencia"
+          },
+          {
+            "keyword": "como hacer carta de presentación laboral"
+          },
+          {
+            "keyword": "carta de presentación en inglés informal"
+          },
+          {
+            "keyword": "carta de presentación sin experiencia ejemplos"
+          },
+          {
+            "keyword": "carta de presentación laboral word"
+          },
+          {
+            "keyword": "carta de presentación enfermera sin experiencia"
+          },
+          {
+            "keyword": "carta de presentación niñera sin experiencia"
+          },
+          {
+            "keyword": "carta de presentación ventas y marketing"
+          },
+          {
+            "keyword": "carta de presentación en inglés ejemplos"
+          },
+          {
+            "keyword": "carta de presentación sin experiencia ni estudios"
+          },
+          {
+            "keyword": "carta de presentación personal en inglés ejemplo"
+          },
+          {
+            "keyword": "sin experiencia carta de presentación ejemplos cortos"
+          },
+          {
+            "keyword": "carta de presentación sin experiencia laboral ejemplos"
+          },
+          {
+            "keyword": "carta de presentación para ofrecer servicios a una empresa"
+          },
+          {
+            "keyword": "la carta de presentación perfecta ejemplo"
+          },
+          {
+            "keyword": "carta de presentación institucional"
+          },
+          {
+            "keyword": "formato para carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación de oferta licitación word"
+          },
+          {
+            "keyword": "la carta de presentación ejemplos"
+          },
+          {
+            "keyword": "carta de presentación para jardín infantil"
+          },
+          {
+            "keyword": "que es carta de presentación ejemplo"
+          },
+          {
+            "keyword": "carta de presentación para copiar y pegar"
+          },
+          {
+            "keyword": "carta de presentación para upwork"
+          },
+          {
+            "keyword": "carta de presentación hoja de vida"
+          },
+          {
+            "keyword": "que es carta de presentación para un trabajo"
+          },
+          {
+            "keyword": "carta de presentación aa"
+          },
+          {
+            "keyword": "carta de presentación a quien corresponda"
+          },
+          {
+            "keyword": "modelo de carta de presentación para un trabajo en inglés"
+          },
+          {
+            "keyword": "carta de presentación maestra infantil"
+          },
+          {
+            "keyword": "carta de presentación formal"
+          },
+          {
+            "keyword": "carta de presentación para eventos sociales"
+          },
+          {
+            "keyword": "carta de presentación personal word"
+          },
+          {
+            "keyword": "carta de presentación manuscrita ejemplo"
+          },
+          {
+            "keyword": "cual es la carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación word descargar"
+          },
+          {
+            "keyword": "generar carta de presentación con ia"
+          },
+          {
+            "keyword": "carta de presentación 1938 reparto"
+          },
+          {
+            "keyword": "carta de presentación sin oferta"
+          },
+          {
+            "keyword": "anexo 1 carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación fes zaragoza"
+          },
+          {
+            "keyword": "carta de presentación del joker"
+          },
+          {
+            "keyword": "por qué decimos que el cuerpo es carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación de 100 caracteres"
+          },
+          {
+            "keyword": "carta de presentación para profesores"
+          },
+          {
+            "keyword": "son elementos que puedes incluir en tu carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación cv en inglés"
+          },
+          {
+            "keyword": "carta de presentación con inteligencia artificial gratis"
+          },
+          {
+            "keyword": "carta de presentación del dictamen infonavit formato di 03"
+          },
+          {
+            "keyword": "carta de presentación 4"
+          },
+          {
+            "keyword": "carta de presentación para comunidades"
+          },
+          {
+            "keyword": "carta de presentación para cuidadora de personas mayores"
+          },
+          {
+            "keyword": "carta de presentación navideña"
+          },
+          {
+            "keyword": "formato 1 carta de presentación de la oferta icbf"
+          },
+          {
+            "keyword": "carta de presentación en inglés word"
+          },
+          {
+            "keyword": "mi carta de presentación en ingles"
+          },
+          {
+            "keyword": "carta de presentación para cualquier trabajo"
+          },
+          {
+            "keyword": "carta de presentación 1938"
+          },
+          {
+            "keyword": "resume y carta de presentación"
+          },
+          {
+            "keyword": "como se escribe carta de presentación en ingles"
+          },
+          {
+            "keyword": "carta de presentación bancaria"
+          },
+          {
+            "keyword": "carta de presentación original del banco y extracto bancario"
+          },
+          {
+            "keyword": "qué significa carta de presentación emitida"
+          },
+          {
+            "keyword": "plantillas para carta de presentación laboral"
+          },
+          {
+            "keyword": "carta de presentación del dictamen formato di 03"
+          },
+          {
+            "keyword": "qué escribir en una carta de presentación"
+          },
+          {
+            "keyword": "sin experiencia carta de presentación para un trabajo"
+          },
+          {
+            "keyword": "la carta de presentación se firma"
+          },
+          {
+            "keyword": "generador carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación o motivación"
+          },
+          {
+            "keyword": "cuando hacer una carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación para 15 años"
+          },
+          {
+            "keyword": "como se llama carta de presentación en ingles"
+          },
+          {
+            "keyword": "carta de presentación 140 caracteres"
+          },
+          {
+            "keyword": "carta de presentación recepcionista sin experiencia"
+          },
+          {
+            "keyword": "carta de presentación exemple"
+          },
+          {
+            "keyword": "generar carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación jw"
+          },
+          {
+            "keyword": "carta de presentación unsa"
+          },
+          {
+            "keyword": "carta de presentación jefe de almacén"
+          },
+          {
+            "keyword": "carta de presentación programador junior"
+          },
+          {
+            "keyword": "carta de presentación de una empresa de catering y eventos"
+          },
+          {
+            "keyword": "carta de presentación a clientes potenciales"
+          },
+          {
+            "keyword": "formato 1 carta de presentación de la oferta"
+          },
+          {
+            "keyword": "carta de presentación para empleo en inglés"
+          },
+          {
+            "keyword": "carta de presentación servicio social uam xochimilco"
+          },
+          {
+            "keyword": "carta de presentación programador"
+          },
+          {
+            "keyword": "carta de presentación ipn"
+          },
+          {
+            "keyword": "crear una carta de presentación con ia"
+          },
+          {
+            "keyword": "cómo hacer una carta de presentación de mi empresa"
+          },
+          {
+            "keyword": "una carta de presentación en inglés"
+          },
+          {
+            "keyword": "carta de presentación función y estructura"
+          },
+          {
+            "keyword": "cómo hacer carta de presentación para un trabajo"
+          },
+          {
+            "keyword": "carta de presentación que significa"
+          },
+          {
+            "keyword": "carta de presentación extranjero"
+          },
+          {
+            "keyword": "errores carta de presentación"
+          },
+          {
+            "keyword": "hace falta carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación generada por ia"
+          },
+          {
+            "keyword": "1 carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación del dictamen fiscal formato do 01"
+          },
+          {
+            "keyword": "cómo se dice carta de presentación en inglés"
+          },
+          {
+            "keyword": "como hacer una carta de presentación para infojobs"
+          },
+          {
+            "keyword": "carta de presentación servicio social fes zaragoza"
+          },
+          {
+            "keyword": "carta de presentación senati"
+          },
+          {
+            "keyword": "carta de presentación ejemplos cortos en ingles"
+          },
+          {
+            "keyword": "carta de presentación fol"
+          },
+          {
+            "keyword": "carta de presentación ventas ejemplo"
+          },
+          {
+            "keyword": "carta de presentación servicio social ipn"
+          },
+          {
+            "keyword": "adaptar carta de presentación al puesto"
+          },
+          {
+            "keyword": "carta de presentación visual"
+          },
+          {
+            "keyword": "carta de presentación uam xochimilco"
+          },
+          {
+            "keyword": "carta de presentación para agencia inmobiliaria"
+          },
+          {
+            "keyword": "carta de presentación de servicios para una empresa"
+          },
+          {
+            "keyword": "carta de presentación en inglés para una familia"
+          },
+          {
+            "keyword": "carta de presentación de candidatura"
+          },
+          {
+            "keyword": "carta de presentación cambio de profesión"
+          },
+          {
+            "keyword": "curriculum vitae o carta de presentación"
+          },
+          {
+            "keyword": "resume sin carta de presentación"
+          },
+          {
+            "keyword": "que es carta de presentación personal"
+          },
+          {
+            "keyword": "carta de presentación o carta de motivación"
+          },
+          {
+            "keyword": "resume para carta de presentación"
+          },
+          {
+            "keyword": "que es carta de presentación emotiva"
+          },
+          {
+            "keyword": "carta de presentación del sae"
+          },
+          {
+            "keyword": "carta de presentación para kiosco escolar"
+          },
+          {
+            "keyword": "carta de presentación del informe y anexos 2025"
+          },
+          {
+            "keyword": "cómo hacer una carta de presentación sencilla"
+          },
+          {
+            "keyword": "a carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación del informe y anexos 2024"
+          },
+          {
+            "keyword": "carta de presentación host family"
+          },
+          {
+            "keyword": "mejor carta de presentación para currículum"
+          },
+          {
+            "keyword": "por qué es importante una carta de presentación"
+          },
+          {
+            "keyword": "cómo crear una carta de presentación para un trabajo"
+          },
+          {
+            "keyword": "carta de presentación hotel ejemplo"
+          },
+          {
+            "keyword": "carta de presentación en castellano"
+          },
+          {
+            "keyword": "formulario de carta de presentación"
+          },
+          {
+            "keyword": "carta de presentación fes aragón"
+          },
+          {
+            "keyword": "carta de presentación visitador médico"
+          },
+          {
+            "keyword": "carta de presentación general ejemplo"
+          },
+          {
+            "keyword": "carta de presentación y curriculum coherentes"
+          }
+        ]
+      },
+      "aiSeed": {
+        "searched_keywords": [
+          {
+            "keyword": "carta de presentación ia"
+          }
+        ],
+        "results": []
+      },
+      "overview": {
+        "error_code": "INVALID_ARGUMENT"
+      },
+      "overviewError": true
+    }
+  }
+}

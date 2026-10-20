@@ -41,7 +41,7 @@ test('developer requests use existing generation and normal cover-letter request
 test('private history remains hidden on list, direct reads, rename, delete and append after access is lost', async () => {
   const db = new PGlite();
   try {
-    for (const migration of ['202610120002_accounts', '202610160001_chat_history']) await db.exec(await readFile(`prisma/migrations/${migration}/migration.sql`, 'utf8'));
+    for (const migration of ['202610120002_accounts', '202610160001_chat_history', '202610190001_conversation_titles','202610200001_generation_abuse_guards']) await db.exec(await readFile(`prisma/migrations/${migration}/migration.sql`, 'utf8'));
     const store = createAccountStore(env, async (text, args) => (await db.query(text, args)).rows);
     const started = await store.startConversation(user, { workflow: 'email', requestId: randomUUID(), input: brief });
     const ordinary = { id: user.id };

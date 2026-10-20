@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
+import PrivateAnalytics from '@/components/PrivateAnalytics';
 import "./globals.css";
 import { socialImage } from '@/services/seo';
+import WorkspaceProviders from '@/components/WorkspaceProviders';
 export const metadata: Metadata = {
   metadataBase: new URL("https://ailettergen.com"),
   title: {
@@ -28,7 +30,10 @@ export default async function RootLayout({
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
-      <body>{children}</body>
+      <body>
+        <WorkspaceProviders>{children}</WorkspaceProviders>
+        <PrivateAnalytics />
+      </body>
     </html>
   );
 }

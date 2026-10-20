@@ -1,0 +1,36 @@
+import assert from 'node:assert/strict';
+import {chromium} from 'file:///C:/Users/Bilal/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs';
+const browser=await chromium.launch({headless:true,channel:'msedge'});
+try{
+ const page=await browser.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.setContent('<div id="app"></div>');await page.addScriptTag({path:'tmp/security-fixes-ui/bundle.js'});
+ await page.waitForFunction(()=>!!window.seed);
+ await page.evaluate(()=>window.seed());
+ await page.waitForFunction(()=>document.getElementById('draft').textContent==='Private letter');
+ await page.evaluate(()=>window.emitSession({id:'alice'}));
+ assert.equal(await page.locator('#draft').textContent(),'Private letter');
+ await page.evaluate(()=>window.changePageLocale('fr'));
+ assert.equal(await page.locator('#brief').textContent(),'Private brief');
+ console.log('PASS anonymous/initial sign-in and same-user locale change preserve input');
+ await page.evaluate(()=>{window.mockUser={id:'bob'};return window.refreshSession()});
+ await page.waitForFunction(()=>document.getElementById('owner').textContent==='bob');
+ assert.equal(await page.locator('#brief').textContent(),'');assert.equal(await page.locator('#draft').textContent(),'');
+ await page.evaluate(()=>window.finishOld());
+ assert.equal(await page.locator('#brief').textContent(),'');assert.equal(await page.locator('#draft').textContent(),'');
+ console.log('PASS identity switch clears state and ignores old-owner async setters');
+ await page.evaluate(()=>{window.seed();window.emitSession(null)});
+ await page.waitForFunction(()=>document.getElementById('owner').textContent==='anonymous');
+ assert.equal(await page.locator('#draft').textContent(),'');
+ await page.evaluate(()=>window.emitSession({id:'alice'}));
+ await page.waitForFunction(()=>document.getElementById('owner').textContent==='alice');
+ assert.equal(await page.locator('#draft').textContent(),'');
+ console.log('PASS external SDK session notifications clear state on logout/re-login');
+ await page.evaluate(()=>{window.nextSession=()=>new Promise(resolve=>window.resolveOlder=()=>resolve({data:{user:{id:'alice'}}}));window.refreshSession()});
+ await page.waitForFunction(()=>!!window.resolveOlder);
+ await page.evaluate(()=>{window.nextSession=()=>Promise.resolve({data:{user:{id:'bob'}}});return window.refreshSession()});
+ await page.evaluate(()=>window.resolveOlder());
+ await page.waitForFunction(()=>document.getElementById('owner').textContent==='bob');
+ assert.ok(await page.evaluate(()=>window.refreshCount)>0);
+ assert.deepEqual(errors,[]);
+ console.log('PASS overlapping refresh ignores stale session and revalidates server route');
+}finally{await browser.close()}

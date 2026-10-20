@@ -1,3 +1,4 @@
+'use client';
 import { publicWorkflows } from '@/services/workflow.mjs';
 import CustomerReviews from './CustomerReviews';
 import BusinessLetterContent from './BusinessLetterContent';
@@ -8,16 +9,15 @@ import { ArrowRight, Check, FileText, GraduationCap, Mail, ChevronDown, PencilLi
 import { useLocale } from '../contexts/LocaleContext';
 import { useFormState } from '../contexts/FormStateContext';
 import { localizedPath } from '../services/routing';
-import { interfaceCopy } from '../services/interfaceCopy';
+import { usePageCopy } from '@/contexts/PageCopyContext';
 import { Button } from './ui/button';
-import { pricingCopy } from '../services/pricingCopy';
-import { landingContent } from '../services/landingContent';
 
 export default function LandingPage() {
   const { locale, t } = useLocale();
   const { userData, setUserData } = useFormState();
-  const copy = interfaceCopy(locale);
-  const content = landingContent(locale);
+  const pageCopy = usePageCopy();
+  const copy = pageCopy.interface!;
+  const content = pageCopy.landing!;
   const selectedPurpose = userData.documentType === 'email' ? 'email' : userData.letterType === 'university' ? 'university' : 'job';
   const choose = (value: string) => setUserData(previous => ({ ...previous, documentType: value === 'email' ? 'email' : 'letter', letterType: value === 'university' ? 'university' : 'job' }));
   const purposes = [{ value: 'job', label: copy.job, Icon: FileText, text: t('landingForJobSeekersText') }, { value: 'university', label: copy.university, Icon: GraduationCap, text: t('landingForStudentsText') }, { value: 'email', label: copy.email, Icon: Mail, text: t('landingForProfessionalsText') }].filter(item=>publicWorkflows.includes(item.value==='job'?'cover-letter':item.value));
@@ -71,7 +71,7 @@ export default function LandingPage() {
     <BusinessLetterContent showFreeFaq={false} />
     <LandingAdditions />
     <CustomerReviews />
-    <section id="pricing" className="flex flex-col items-start justify-between gap-6 border-y border-border py-9 sm:flex-row sm:items-center"><p className="text-lg font-semibold">{pricingCopy(locale).teaser}</p><Button asChild variant="outline"><a href={localizedPath(locale, '/pricing')}>{pricingCopy(locale).view}<ArrowRight className="rtl:rotate-180"/></a></Button></section>
+    <section id="pricing" className="flex flex-col items-start justify-between gap-6 border-y border-border py-9 sm:flex-row sm:items-center"><p className="text-lg font-semibold">{pageCopy.pricingTeaser!.teaser}</p><Button asChild variant="outline"><a href={localizedPath(locale, '/pricing')}>{pageCopy.pricingTeaser!.view}<ArrowRight className="rtl:rotate-180"/></a></Button></section>
     <section className="grid gap-8 lg:grid-cols-[.9fr_1.1fr] lg:gap-20">
       <div><p className="eyebrow">{t('landingFAQTitle')}</p><h2 className="section-title mt-4">{copy.faq}</h2></div>
       <div>{([1,2,3,4] as const).map(number => <details key={number} className="group border-b border-border py-1"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-sm font-semibold"><span>{t(`landingFAQ${number}Title`)}</span><ChevronDown size={17} className="shrink-0 transition-transform group-open:rotate-180"/></summary><p className="pb-5 text-sm leading-7 text-text-secondary">{t(`landingFAQ${number}Text`)}</p></details>)}</div>

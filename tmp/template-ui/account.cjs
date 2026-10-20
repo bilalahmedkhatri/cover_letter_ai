@@ -1,0 +1,1 @@
+const data={data:null,workflows:['cover-letter']};exports.useDashboardAccount=()=>data;

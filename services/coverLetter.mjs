@@ -112,6 +112,7 @@ export function coverLetterPrompt(input) {
 
 // This validates transport structure, not grammar, factuality or language quality.
 export const coverLetterGatewayResponseSchema = z.object({
+  title:z.unknown().optional(),
   answer:z.string().refine(value => value.isWellFormed() && Boolean(value.trim()) && !/^\s*\[LLM error:/i.test(value)),
   request_id:z.string().regex(/^[A-Za-z0-9._:-]{1,128}$/),
   finish_reason:z.enum(['stop','unknown']),

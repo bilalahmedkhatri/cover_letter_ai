@@ -20,6 +20,17 @@ test('clean draft receives one AI review, no repair, and never claims verified t
  assert.deepEqual(result.qualityReview.repair,{attempted:false,applied:false});
 });
 
+test('review and repair metadata never replace the initial generation title',async()=>{
+ let calls=0;
+ const result=await generateWithCoverLetterReview(job,{generate:async()=>{
+  calls++;
+  if(calls===1)return {...output(clean+'\n\n[Your name]'),title:'Frontend Developer — Acme'};
+  if(calls===2)return {...output(review([])),title:'Unwanted review title'};
+  return {...output(clean),title:'Unwanted repair title'};
+ }});
+ assert.equal(calls,3);assert.equal(result.title,'Frontend Developer — Acme');assert.equal(result.text,clean);
+});
+
 test('local checks flag multilingual placeholders, unsourced percentages and exact repeated paragraphs',()=>{
  const prepared=prepareCoverLetter(input);
  for(const token of ['[Your name]','[Adresse]','[Courriel]','[Телефон]','[Dirección]','[Endereço]'])assert.ok(localCoverLetterIssues(token,prepared).some(issue=>issue.kind==='placeholder'));
@@ -79,7 +90,7 @@ test('deadline exhaustion skips review and repair rather than starting more mode
 
 test('review context overflow is detected before a second HTTP request without truncation',async()=>{
  let calls=0;const large={...job,input:{...input,resumeText:'x'.repeat(12000)}};
- const result=await generateWithCoverLetterReview(large,{env:{AI_GATEWAY_API_KEY:'mock-key'},fetchImpl:async()=>{
+ const result=await generateWithCoverLetterReview(large,{env:{AI_GATEWAY_GENERATE_URL:'https://gateway.example/api/v1/generate/',AI_GATEWAY_API_KEY:'mock-key'},fetchImpl:async()=>{
   calls++;return Response.json({answer:'A'.repeat(25000),request_id:job.requestId,finish_reason:'stop'});
  }});
  assert.equal(calls,1);assert.equal(result.text.length,25000);assert.ok(result.qualityReview.warnings.includes('context_limit'));

@@ -8,6 +8,8 @@
     "build": "next build --webpack",
     "preview": "next start --port 3000",
     "test:seo": "node --test --test-isolation=none tests/routing.test.mjs",
+    "test:locale-delivery": "node --test tests/locale-delivery.test.mjs",
+    "test:security": "node --test --test-isolation=none tests/analytics-privacy.test.mjs tests/session-scope.test.mjs tests/security-headers.test.mjs tests/generation-guards.test.mjs tests/history.test.mjs tests/feature-access.test.mjs tests/account-token.test.mjs",
     "test:prerender": "node --test --test-isolation=none tests/prerender.test.mjs",
     "test:payments": "node --test --test-isolation=none tests/payments.test.mjs tests/billing-database.test.mjs",
     "test:accounts": "node --test --test-isolation=none tests/accounts.test.mjs tests/account-token.test.mjs",
@@ -30,6 +32,7 @@
     "@tiptap/extension-text-align": "^3.31.4",
     "@tiptap/react": "^3.31.4",
     "@tiptap/starter-kit": "^3.31.4",
+    "@vercel/analytics": "^2.0.1",
     "cheerio": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -56,7 +59,7 @@
     "autoprefixer": "^10.5.0",
     "dotenv": "^18.0.7",
     "postcss": "^8.5.10",
-    "prisma": "^7.2.0",
+    "prisma": "^7.10.1",
     "tailwindcss": "^4.2.2",
     "typescript": "~5.8.2"
   }

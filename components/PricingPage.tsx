@@ -1,14 +1,16 @@
+'use client';
 import {publicWorkflows} from '@/services/workflow.mjs';
 import React from 'react';
 import { Check, ChevronDown } from 'lucide-react';
 import { useLocale } from '../contexts/LocaleContext';
 import { billingPlans, billingLimits } from '../services/billingPlans.mjs';
-import { pricingCopy, pricingLabel, pricingNotice } from '../services/pricingCopy';
+import { usePageCopy } from '@/contexts/PageCopyContext';
 import BillingPanel from './billing/BillingPanel';
 
 export default function PricingPage() {
-  const { locale } = useLocale();
-  const copy = pricingCopy(locale);
+  const { locale, shell } = useLocale();
+  const pageCopy = usePageCopy();
+  const copy = pageCopy.pricing!;
   const plans = Object.values(billingPlans);
   const language = locale === 'ru' ? 'ru' : 'en';
 
@@ -22,10 +24,10 @@ export default function PricingPage() {
     ...(publicWorkflows.includes('research') ? [{heading:copy.categoryResearch}, ...[copy.report,copy.sources,copy.searches].map(label=>({label,values:plans.map(()=>copy.planned)}))] : []),
   ];
   return <div className="space-y-14 sm:space-y-20">
-    {pricingNotice[locale] && <p className="rounded-lg border border-border px-5 py-3 text-sm text-text-secondary">{pricingNotice[locale]}</p>}
+    {pageCopy.pricingNotice && <p className="rounded-lg border border-border px-5 py-3 text-sm text-text-secondary">{pageCopy.pricingNotice}</p>}
     <div lang={language} dir="ltr" className="space-y-14 sm:space-y-20">
       <section className="mx-auto max-w-3xl pt-4 text-center sm:pt-8">
-        <p className="eyebrow justify-center">{pricingLabel[locale]}</p>
+        <p className="eyebrow justify-center">{shell.pricing}</p>
         <h1 className="editorial-title mt-5">{copy.heading}</h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-text-secondary">{copy.intro}</p>
         <a href="#compare-plans" className="mt-6 inline-block text-sm font-semibold text-accent underline underline-offset-4">{copy.compare}</a>

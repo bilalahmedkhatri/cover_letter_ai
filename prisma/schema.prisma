@@ -34,6 +34,7 @@ model Conversation {
   userId String @map("user_id")
   workflow String
   title String
+  titleSource String @default("fallback") @map("title_source")
   createdAt DateTime @default(dbgenerated("clock_timestamp()")) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(dbgenerated("clock_timestamp()")) @map("updated_at") @db.Timestamptz
   messages ChatMessage[]
@@ -205,6 +206,14 @@ model RateLimit {
   @@id([environment, id])
   @@map("rate_limits")
   @@schema("billing")
+}
+
+model GenerationGuard {
+  userId String @id @map("user_id")
+  recent Json @default("{}")
+  active Json @default("{}")
+  @@map("generation_guards")
+  @@schema("app")
 }
 
 model UsageAllocation {

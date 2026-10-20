@@ -1,0 +1,1 @@
+const React=require('react');exports.useLocale=()=>{const[locale,setLocale]=React.useState(window.testLocale||'en');React.useEffect(()=>{const update=()=>setLocale(window.testLocale);window.addEventListener('test-locale',update);return()=>window.removeEventListener('test-locale',update)},[]);return{locale,t:()=>''}};

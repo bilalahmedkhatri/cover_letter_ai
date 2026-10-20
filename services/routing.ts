@@ -1,5 +1,5 @@
 import type { Locale } from '../types';
-import { blogPosts } from './blogContent.mjs';
+import { blogSlugs } from './blogRoutes.mjs';
 
 export const siteOrigin = 'https://ailettergen.com';
 export const localeCodes: Locale[] = ['en', 'es', 'fr', 'ru', 'nl', 'pt', 'ar'];
@@ -19,7 +19,7 @@ export function resolveRoute(pathname: string): { locale: Locale; page: Page; pa
   const hasLocale = localeCodes.includes(parts[0] as Locale);
   const locale = hasLocale ? parts[0] as Locale : 'en';
   const pagePath = hasLocale ? '/' + parts.slice(1).join('/') : normalized;
-  const blogArticle = blogPosts.some(post => pagePath === '/blog/' + post.slug);
+  const blogArticle = Object.values(blogSlugs).some(slug => pagePath === '/blog/' + slug);
   const page = blogArticle || allPages.includes(pagePath as typeof allPages[number]) ? pagePath as Page : '/404';
   // Preserve unknown URLs so the browser can show the actual missing address.
   return { locale, page, path: page === '/404' ? pathname : localizedPath(locale, page) };
@@ -33,5 +33,5 @@ export function contentLocales(page: Page): Locale[] {
 }
 export function canonicalLocale(locale: Locale,page: Page): Locale { return contentLocales(page).includes(locale) ? locale : 'en'; }
 export function canonicalPublicPages() {
-  return [...publicPages.flatMap(page=>contentLocales(page).map(locale=>({locale,page,url:siteOrigin+localizedPath(locale,page)}))),...blogPosts.map(post=>({locale:'en' as Locale,page:`/blog/${post.slug}` as Page,url:siteOrigin+localizedPath('en',`/blog/${post.slug}`)}))];
+  return [...publicPages.flatMap(page=>contentLocales(page).map(locale=>({locale,page,url:siteOrigin+localizedPath(locale,page)}))),...Object.values(blogSlugs).map(slug=>({locale:'en' as Locale,page:`/blog/${slug}` as Page,url:siteOrigin+localizedPath('en',`/blog/${slug}`)}))];
 }

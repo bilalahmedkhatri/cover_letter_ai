@@ -40,7 +40,7 @@ The main sidebar contains New Chat and one Chat history section. Profile/setting
 - `components/dashboard` and `components/generator`: reusable sidebar, cards, form fields, resume upload and editor.
 - `lib/auth`: Neon same-origin auth proxy and server identity checks. Route protection runs in `proxy.ts`, the dashboard layout, individual dashboard pages and account/generation APIs.
 - `server/accounts` and `server/payments`: owner-scoped durable storage, signed payment callbacks and atomic usage reservations.
-- `app/api/generate`: server-only provider calls. The browser receives output and token metadata, never provider credentials.
+- `app/api/generate`: server-only gateway calls. The browser receives draft text, sources, quality review and chat persistence metadata, never provider credentials or upstream request/finish metadata.
 
 `app/globals.css` shares emerald/zinc tokens between the public UI and dashboard. `components/Brand.tsx` and `public/icon.svg` share the minimalist document emblem. Shadcn Sidebar, Sheet, Select, Tabs, Tooltip, Dialog, Card, Badge, Input, Textarea, Skeleton and Button handle common UI behavior.
 
@@ -48,11 +48,49 @@ The main sidebar contains New Chat and one Chat history section. Profile/setting
 
 Resume parsing is loaded only when needed: PDF through PDF.js, DOCX through Mammoth's browser build, TXT through the browser File API. Limits: 5 MB, 30 PDF pages and 12,000 extracted characters. Scanned PDFs without text require pasted background; OCR is not included. The original file is not stored. Extracted text is submitted to the writing provider only when the user generates a draft.
 
-Each workflow accepts an opportunity URL and/or description, recipient, tone, output language and length. Pasted requirements provide more reliable context than a URL alone. URL-based generation uses optional Google Search grounding; it does not guarantee access to every source page.
+Each workflow accepts an opportunity URL and/or description, recipient, tone, output language and length. Pasted requirements provide more reliable context than a URL alone. Cover-letter generation sends a prompt only and does not request search or URL retrieval. Other workflows use the query gateway; a supplied URL does not guarantee its page was retrieved.
 
 The Tiptap editor supports bold, italic, lists, alignment, undo/redo, live preview and copying. PDF export lazily loads html2pdf.js and downloads an A4 file directly, without a browser print dialog. It preserves the editor layout through canvas rendering, including multilingual glyphs, but the exported text is image-based rather than selectable/searchable. PDF.js remains the upload reader. Chat history stores generated plain text and writing settings; editor formatting is not persisted between sessions.
 
-Cover letters use the external prompt-only `/api/v1/generate/` endpoint; other workflows retain `/api/v1/query/`. Both use a server-side `AI_GATEWAY_API_KEY`. Existing templates are preserved. Generation quota and credit charges are disabled; authentication and validation remain. Errors use the existing dialog. See [gateway and prompt implementation](docs/AI_ROUTING.md) for endpoint-specific limits and setup.
+Cover letters use the external prompt-only `/api/v1/generate/` endpoint; other workflows retain `/api/v1/query/`. Both use a server-side `AI_GATEWAY_API_KEY`. Existing templates are preserved. Billing quotas and credit charges are disabled; independent abuse limits allow 10 new requests per rolling minute and two running requests per user. Apply migration `202610200001_generation_abuse_guards` before running/deploying updated generation; otherwise it fails closed without calling AI. Errors use the existing dialog. See [gateway and prompt implementation](docs/AI_ROUTING.md) for endpoint-specific limits and setup.
+
+### Gateway configuration and response
+
+The supplied hosted gateway address is `https://ai-api.fastapicloud.dev`. Configure the complete endpoints (availability has not yet been verified):
+
+```dotenv
+AI_GATEWAY_QUERY_URL=https://ai-api.fastapicloud.dev/api/v1/query/
+AI_GATEWAY_GENERATE_URL=https://ai-api.fastapicloud.dev/api/v1/generate/
+AI_GATEWAY_GENERATE_MAX_PROMPT_CHARS=32768
+AI_GATEWAY_GENERATE_MAX_BODY_BYTES=524288
+```
+
+Keep the existing `AI_GATEWAY_API_KEY` server-only. Both endpoint variables require plain absolute URLs, without Markdown link syntax. Configure production variables separately in Vercel and redeploy; `.env.local` changes affect local runs only. Match prompt/body limits to the deployed gateway's settings.
+
+| Workflow | Gateway POST endpoint | JSON request |
+| --- | --- | --- |
+| Cover letter | `/api/v1/generate/` | `{prompt}` |
+| Professional email, university application, university research | `/api/v1/query/` | `{query,input_type:"text",search_engine:"auto"}` |
+
+The last three workflows remain deferred and restricted to developer access. A cover-letter gateway success must provide `answer` (nonempty letter text), `request_id` and `finish_reason` (`stop` or `unknown`), and may include a separate optional `title`. The adapter returns `{text,sources:[]}` with a validated title when available; local checks and a separate AI review add `qualityReview`, with one optional repair pass. Review results do not certify factual correctness.
+
+The app's `/api/generate` response includes `text`, `sources`, `qualityReview`, `operation`, `conversationId`, `messageId` and `historySaved`. It may include `qualityWarning` or `historyWarning` when persistence fails. Upstream `request_id` and `finish_reason` are not forwarded. New chats initially use the first 100 characters of the normalized brief. Only the first successful cover-letter response can replace that fallback with a valid AI title (up to 80 Unicode characters and seven words); missing/invalid titles leave the letter usable. Titles containing obvious contact information, URLs or HTML are ignored. The server returns a title when it was saved, and sidebar history already displays the persisted title. Manual renames, follow-up requests and review/repair calls cannot overwrite it.
+
+Apply migration `202610190001_conversation_titles` using `npm run db:migrate` before deploying title support. It adds `title_source`, preserves existing titles as manual, and marks newly created titles as fallback. No existing chat backfill or additional title-generation AI request is performed. Database title failures preserve the generated letter and fallback title. The local migration/tests do not deploy or change the production database.
+
+Known unresolved issue observed on 18 October 2026: stray `http://localhost:8000` text immediately after `try {` in `server/ai/providers.mjs` causes a JavaScript syntax error. The documentation update does not repair this issue. Hosted gateway connectivity and the production environment remain unverified; the Vercel connector returned 403 during inspection.
+
+### Logout, loading and analytics
+
+The shared logout hook clears personal form/output state and redirects to the selected locale's landing page (`/en`, `/ru`, etc.). Dashboard and account logout actions share this behavior.
+
+During generation, the shared generator displays a fixed, localized status notification with the existing Spinner. It remains visible while awaiting/opening the result and clears on success or error. It supports all seven interface languages and announces status accessibly without invented progress percentages or time estimates. Mocked browser checks cover desktop/mobile placement and success/error cleanup.
+
+Marketing pages use route `loading.tsx` boundaries with the shared `PageLoading` Spinner; the landing page inherits the locale boundary. Prefetched/cached pages can navigate without showing the loading fallback.
+
+`app/layout.tsx` mounts `<Analytics />` from `@vercel/analytics/next` once for all routes. Enable Web Analytics for the Vercel project and deploy to activate hosted collection. Analytics import/TSX checks passed; live collection has not been verified.
+
+Environment cleanup removed unused `VITE_NEON_AUTH_URL` from the local file and example template. Current auth uses `NEON_AUTH_BASE_URL` and `NEON_AUTH_COOKIE_SECRET`; legacy JWT helpers retain `NEON_AUTH_JWKS_URL`, `NEON_AUTH_ISSUER` and `NEON_AUTH_AUDIENCE`. The issuer/audience values differ from the base URL and must not be removed as duplicate settings.
 
 ## Billing, data and deployment
 
@@ -80,8 +118,22 @@ Their canonical URLs and sitemap entries point to English; the blog index
 has localized navigation and introductions. No CMS or invented authors,
 publication dates or reviews are added.
 
+## Language loading and performance
+
+Public routes render their own content component and the server-rendered `PageArticle` reference. `lib/locale-data.ts` selects the current language's shared labels and the current page's copy before passing data to client components; combined locale dictionaries are not client imports. Keep static copy selection in this server entry point. `services/blogRoutes.mjs` contains the route identifiers without importing editorial data into navigation.
+
+Language switching uses Next navigation, retains query parameters and disables prefetching all language variants. Root `WorkspaceProviders` preserves account/form/generation context across locale navigation; a document reload still resets browser-only state. Auth and history access checks remain server enforced. Existing missing translations and English fallback notices remain unchanged.
+
+Run `npm run test:locale-delivery`, `npm run test:seo`, `npm run test:prerender` and `npm run build` for focused checks. See [implementation measurements](docs/LANGUAGE_LOADING_PERFORMANCE_RESULTS_2026-10-19.md) and [the delivery plan](docs/LANGUAGE_LOADING_PERFORMANCE_PLAN_2026-10-19.md). Production field timings and CDN/static delivery have not been established.
+
 ## Dependency check
 
-The official Neon SDK includes auth UI/adapter dependencies that pull Prisma CLI tooling into npm's production audit through optional peers. Current advisories include that tooling and Mammoth's CLI-only argument parser; this app uses Neon HTTP queries and Mammoth's browser build. No claim of a clean dependency audit is made. Review upstream fixes before production launch; do not force a Prisma downgrade or mismatched auth dependency versions merely to suppress the audit.
+Prisma was updated compatibly to 7.10.1 and its dependency tree refreshed; browser-mapping data was patched. The 20 October production audit fell from 18 affected entries (nine high) to three moderate entries: Mammoth and its CLI-only argparse/sprintf-js chain. The app uses `mammoth/mammoth.browser` with `extractRawText`, not that CLI chain. No clean-audit claim is made; do not force the suggested Mammoth downgrade or mismatched auth dependency versions merely to suppress it. The existing Neon Auth UI dependency tree still emits optional peer warnings; the installed Next Auth SDK version was retained and its session-store initialization was browser-checked with mock session responses.
+
+## Security fixes (20 October 2026)
+
+`PrivateAnalytics` strips all query parameters/fragments before page telemetry. Identity-scoped root state preserves same-user locale navigation while clearing former-user briefs/drafts on account changes and SDK logout notifications; stale refresh responses and old-provider state callbacks cannot repopulate a new identity's workspace. Initial anonymous input is retained on first sign-in. Server-side history ownership remains authoritative.
+
+Global response headers disable framing and MIME sniffing and send only origin referrers. The limited CSP restricts framing, objects and base URLs while preserving Next scripts, auth popups and export functionality; it is not a complete script CSP. This site can no longer be embedded in an iframe. Run `npm run test:security`, `npm run db:validate` and `npm run build`. See [security review/remediation status](security_best_practices_report.md). Local isolated checks do not verify production migration state, real account sessions, provider costs or hosted header overrides.
 
 Persistent sidebar chat history automatically saves prompts and responses and restores each workflow through its result URL. See [history implementation](docs/RESULTS_AND_HISTORY_PLAN.md).

@@ -1,8 +1,6 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { resourceLabels } from "../services/resourceCopy";
-import { blogCopy } from "../services/blogContent.mjs";
 import { Menu, X, Moon, Sun, ChevronDown } from "lucide-react";
 import { useAccount } from "../contexts/AccountContext";
 import { useTheme } from "../contexts/ThemeContext";
@@ -10,14 +8,12 @@ import Brand from "./Brand";
 import { useLocale } from "../contexts/LocaleContext";
 import { useRoutePath } from "../contexts/RouteContext";
 import { localizedPath } from "../services/routing";
-import { interfaceCopy } from "../services/interfaceCopy";
-import { pricingLabel } from "../services/pricingCopy";
 import { Button } from "./ui/button";
 import LanguageSelector from "./LanguageSelector";
 
 export default function Header() {
-  const { locale, t } = useLocale();
-  const copy = interfaceCopy(locale);
+  const { locale, t, shell } = useLocale();
+  const copy = shell.interface;
   const { user } = useAccount();
   const accountLabels = {
     en: ["Account", "Sign in"],
@@ -37,7 +33,7 @@ export default function Header() {
   const pathname = useRoutePath();
   const [open, setOpen] = useState(false);
   useEffect(() => setOpen(false), [pathname]);
-  const resources = resourceLabels[locale];
+  const resources = shell.resources;
   const resourceLinks = (["/blog", "/guides", "/compare", "/about"] as const).map(
     (page, index) => (
       <Link
@@ -46,7 +42,7 @@ export default function Header() {
         aria-current={pathname.endsWith(page) ? "page" : undefined}
         className="rounded-lg px-3 py-2.5 text-sm outline-none focus:bg-card-secondary"
       >
-        {[blogCopy[locale].label, resources[1], resources[2], t("about")][index]}
+        {[shell.blog, resources[1], resources[2], t("about")][index]}
       </Link>
     ),
   );
@@ -68,7 +64,7 @@ export default function Header() {
         href={localizedPath(locale, "/pricing")}
         aria-current={pathname.endsWith("/pricing") ? "page" : undefined}
       >
-        {pricingLabel[locale]}
+        {shell.pricing}
       </Link>
     </>
   );

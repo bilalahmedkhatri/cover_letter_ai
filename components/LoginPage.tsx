@@ -1,3 +1,4 @@
+'use client';
 import { Input } from "./ui/input";
 import React, { useState, useEffect } from "react";
 import { getAuthClient, authConfigured } from "../services/authClient";

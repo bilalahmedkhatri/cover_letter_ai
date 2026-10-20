@@ -1,16 +1,18 @@
+'use client';
 import React from 'react';
 import { Button } from './ui/button';
 import { useLocale } from '../contexts/LocaleContext';
 import { localizedPath } from '../services/routing';
-import { getMetadata } from '../services/seo';
+import { usePageCopy } from '@/contexts/PageCopyContext';
 
 const AboutUs: React.FC = () => {
   const { t, locale } = useLocale();
+  const { aboutDescription } = usePageCopy();
   return (
     <div className="mx-auto max-w-3xl space-y-5 text-text-primary leading-relaxed">
       <h1 className="editorial-title mb-8">{t('about')}</h1>
       
-      <p>{getMetadata(locale, '/about').description}</p>
+      <p>{aboutDescription}</p>
       <h2 className="text-xl font-semibold text-accent pt-4">{t('landingStepsTitle')}</h2>
       {(['1', '2', '3'] as const).map(step => (
         <section key={step} className="space-y-2">

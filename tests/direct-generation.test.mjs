@@ -9,6 +9,19 @@ const requestId='11111111-1111-4111-8111-111111111111';
 const job={operation:'standard',input,requestId};
 const result=(answer='A finished letter',finish_reason='stop')=>Response.json({answer,finish_reason,request_id:requestId,sources:[{url:'https://unrequested.example'}]});
 
+test('optional titles preserve localized text and invalid metadata never loses a letter',async()=>{
+ for(const title of ['Frontend Developer — Acme','Веб-разработчик — Acme','Développeur web chez Acme','Desarrollador web en Acme','Desenvolvedor web na Acme']){
+  const output=await generateWithModel(job,{env,fetchImpl:async()=>Response.json({answer:'Letter',title:'  '+title+'  ',request_id:requestId,finish_reason:'stop'})});
+  assert.equal(output.title,title);assert.equal(output.text,'Letter');
+ }
+ for(const title of [undefined,null,42,{},'', 'x'.repeat(81),'one two three four five six seven eight','Call 03213000022','Email abc@example.com','<b>Developer</b>']){
+  const output=await generateWithModel(job,{env,fetchImpl:async()=>Response.json({answer:'Letter',title,request_id:requestId,finish_reason:'stop'})});
+  assert.deepEqual(output,{text:'Letter',sources:[]});
+ }
+ const review=await generateWithModel(job,{env,promptOverride:'Review this letter.',fetchImpl:async()=>Response.json({answer:'Review',title:'Wrong review title',request_id:requestId,finish_reason:'stop'})});
+ assert.equal(review.title,undefined);
+});
+
 test('cover letter sends only prompt to direct generation with service key and trace ID',async()=>{
  let sent;
  const output=await generateWithModel(job,{env,fetchImpl:async(url,options)=>{sent={url,options};return result();}});

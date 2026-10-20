@@ -1,15 +1,17 @@
+'use client';
 import React from 'react';
 import { Button } from './ui/button';
 import { useLocale } from '../contexts/LocaleContext';
 import { localizedPath } from '../services/routing';
-import { legalLanguageNotice } from '../services/seo';
+import { usePageCopy } from '@/contexts/PageCopyContext';
 
 const TermsOfService: React.FC = () => {
   const { t, locale } = useLocale();
+  const { legalNotice } = usePageCopy();
   return (
     <div className="mx-auto max-w-3xl space-y-5 text-text-primary leading-relaxed">
       <h1 className="editorial-title mb-8">{t('terms')}</h1>
-      {locale !== 'en' && <p className="p-3 bg-amber-900/50 border border-amber-700 text-amber-300 text-sm rounded-lg italic">{legalLanguageNotice[locale]}</p>}
+      {locale !== 'en' && <p className="p-3 bg-amber-900/50 border border-amber-700 text-amber-300 text-sm rounded-lg italic">{legalNotice}</p>}
       <div lang="en" dir="ltr" className="space-y-4">
 
       <h2 className="text-xl font-semibold text-accent pt-4">1. Acceptance of Terms</h2>
