@@ -30,8 +30,53 @@ const { resourceCopy } = await import('../services/resourceCopy.ts');
 const { landingContent } = await import('../services/landingContent.ts');
 const { dashboardCopy } = await import('../services/dashboardCopy.ts');
 const { languageLabel, paymentStatusLabels } = await import('../services/dashboardLabels.ts');
+const { privacyPolicyCopy } = await import('../services/privacyPolicyCopy.ts');
+const { privacyGuideCopy } = await import('../services/privacyGuideCopy.ts');
+const { getMetadata, alternateLocales } = await import('../services/seo.ts');
 hooks.deregister();
 const locales = ['en', 'ru', 'es', 'fr', 'pt', 'nl', 'ar'];
+
+test('privacy has complete policy and reference copy in every locale without English fallback notices', () => {
+  const englishPolicy = privacyPolicyCopy.en;
+  const englishGuide = privacyGuideCopy('en');
+  for (const locale of locales) {
+    const policy = privacyPolicyCopy[locale];
+    const guide = privacyGuideCopy(locale);
+    assert.equal(policy.sections.length, 7, locale);
+    assert.ok(policy.title && policy.back, locale);
+    assert.deepEqual(guide.sections.map(section => section.id), englishGuide.sections.map(section => section.id));
+    assert.equal(guide.sections.length, 14, locale);
+    assert.ok(guide.reference && guide.contents && guide.title && guide.intro, locale);
+    for (const [index, section] of policy.sections.entries()) {
+      const original = englishPolicy.sections[index];
+      assert.deepEqual(Object.keys(section).sort(), Object.keys(original).sort(), `${locale}: policy ${index}`);
+      assert.equal(section.items?.length, original.items?.length, `${locale}: list ${index}`);
+      for (const value of [section.title, section.intro, section.body, ...(section.items ?? [])].filter(Boolean)) assert.ok(value.trim());
+      if (locale !== 'en' && section.body) assert.notEqual(section.body, original.body, `${locale}: policy ${index}`);
+    }
+    // Preserve the data-processing and contact disclosures in each policy.
+    for (const name of ['Neon', 'Neon Auth', 'Google Gemini', 'NOWPayments', 'support@ailettergen.com']) {
+      assert.ok(JSON.stringify(policy).includes(name), `${locale}: ${name}`);
+    }
+    for (const [index, section] of guide.sections.entries()) {
+      assert.equal(section.link, englishGuide.sections[index].link, `${locale}: destination ${index}`);
+      assert.ok(guide.links[section.link], `${locale}: link label ${section.id}`);
+      assert.equal(section.paragraphs.length, 2, `${locale}: paragraphs ${section.id}`);
+      if (locale !== 'en') {
+        assert.notEqual(section.title, englishGuide.sections[index].title);
+        for (const paragraph of section.paragraphs) {
+          assert.ok(paragraph.trim());
+          assert.ok(!englishGuide.sections[index].paragraphs.includes(paragraph), `${locale}: untranslated ${section.id}`);
+        }
+      }
+    }
+    assert.equal(getPageCopy(locale, '/privacy').legalNotice, undefined);
+    assert.ok(getPageCopy(locale, '/terms').legalNotice);
+    assert.equal(getMetadata(locale, '/privacy').canonical, `https://ailettergen.com/${locale}/privacy`);
+  }
+  assert.deepEqual(new Set(alternateLocales('/privacy')), new Set(locales));
+  assert.deepEqual(alternateLocales('/terms'), []);
+});
 
 test('selected locale preserves existing copy without shipping other language dictionaries', () => {
   for (const locale of locales) {

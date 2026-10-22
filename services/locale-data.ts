@@ -78,7 +78,7 @@ export function getPageCopy(locale: Locale, page: Page): PageCopy {
     copy.pricingNotice = pricingNotice[locale];
   }
   if (page === '/about') copy.aboutDescription = getMetadata(locale, page).description;
-  if (page === '/privacy' || page === '/terms') copy.legalNotice = legalLanguageNotice[locale];
+  if (page === '/terms') copy.legalNotice = legalLanguageNotice[locale];
   return copy;
 }
 

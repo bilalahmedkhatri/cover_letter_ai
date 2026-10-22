@@ -53,7 +53,7 @@ test('published blog articles keep their locale and unknown slugs remain missing
 test('the sitemap contains exactly the canonical public language URLs', () => {
   const entries=sitemap();
   const urls=entries.map(entry=>entry.url);
-  const expected = [...publicPages.map(page=>siteOrigin+localizedPath('en',page)),...['/','/about','/blog','/pricing','/features','/guides','/compare'].map(page=>siteOrigin+localizedPath('ru',page)),...['es','fr','nl','pt','ar'].flatMap(locale=>['/','/about','/blog'].map(page=>siteOrigin+localizedPath(locale,page))),...blogPosts.map(post=>siteOrigin+localizedPath('en',`/blog/${post.slug}`))];
+  const expected = [...publicPages.map(page=>siteOrigin+localizedPath('en',page)),...['/','/about','/blog','/privacy','/pricing','/features','/guides','/compare'].map(page=>siteOrigin+localizedPath('ru',page)),...['es','fr','nl','pt','ar'].flatMap(locale=>['/','/about','/blog','/privacy'].map(page=>siteOrigin+localizedPath(locale,page))),...blogPosts.map(post=>siteOrigin+localizedPath('en',`/blog/${post.slug}`))];
   assert.equal(new Set(urls).size, urls.length);
   assert.deepEqual(urls.slice().sort(), expected.sort());
   for (const url of urls) {

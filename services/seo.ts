@@ -74,12 +74,12 @@ export const legalLanguageNotice: Record<Locale, string> = {
   ar: 'نص هذه السياسة متاح حاليًا باللغة الإنجليزية.',
 };
 
-// Legal bodies remain the original English text until full policy translations are reviewed.
+// Terms and blog article bodies remain English; privacy content is localized.
 export function alternateLocales(page: Page): Locale[] {
   if (page.startsWith('/blog/')) return []; // Article bodies currently remain English.
   if (['/login','/account'].includes(page) || page.startsWith('/dashboard')) return [];
   if (['/pricing', '/features', '/guides', '/compare'].includes(page)) return ['en', 'ru'];
-  return page === '/privacy' || page === '/terms' ? [] : localeCodes;
+  return page === '/terms' ? [] : localeCodes;
 }
 export function getMetadata(locale: Locale, page: Page) {
   const resource = ['/features', '/guides', '/compare'].includes(page) ? resourceMetadata(locale, page as ResourcePage) : null;

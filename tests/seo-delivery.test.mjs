@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { GET } from '../app/llms.txt/route.ts';
 import sitemap from '../app/sitemap.ts';
-import { canonicalLocale,contentLocales } from '../services/routing.ts';
+import { canonicalLocale,contentLocales,localeCodes } from '../services/routing.ts';
 
 test('untranslated page aliases consolidate to real content languages',()=>{
   for(const page of ['/features','/pricing','/guides','/compare']){
@@ -10,7 +10,8 @@ test('untranslated page aliases consolidate to real content languages',()=>{
     assert.equal(canonicalLocale('ru',page),'ru');
     assert.deepEqual(contentLocales(page),['en','ru']);
   }
-  for(const page of ['/privacy','/terms','/blog/university-motivation-letter'])assert.equal(canonicalLocale('ru',page),'en');
+  for(const page of ['/terms','/blog/university-motivation-letter'])assert.equal(canonicalLocale('ru',page),'en');
+  for(const locale of localeCodes)assert.equal(canonicalLocale(locale,'/privacy'),locale);
   assert.equal(canonicalLocale('ar','/'),'ar');
 });
 

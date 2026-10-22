@@ -27,7 +27,7 @@ export function resolveRoute(pathname: string): { locale: Locale; page: Page; pa
 
 // Index only pages whose primary content is available in the requested language.
 export function contentLocales(page: Page): Locale[] {
-  if (page.startsWith('/blog/') || ['/privacy','/terms'].includes(page)) return ['en'];
+  if (page.startsWith('/blog/') || page === '/terms') return ['en'];
   if (['/pricing','/features','/guides','/compare'].includes(page)) return ['en','ru'];
   return localeCodes;
 }
