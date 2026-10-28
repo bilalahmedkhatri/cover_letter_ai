@@ -2,34 +2,66 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import PageArticle from '@/components/PageArticle';
 import { Button } from '@/components/ui/button';
-import { ContentCard } from '@/components/ui/content-card';
-import { blogCopy, blogPosts, findBlogPost } from '@/services/blogContent.mjs';
+import { findBlogPost } from '@/services/blogContent.mjs';
 import { localizedPath, localeCodes, type Page } from '@/services/routing';
-import { pageMetadata } from '@/lib/page-metadata';
 import type { Locale } from '@/types';
-import { articleSections, articleReadingMinutes } from '@/services/pageArticles.mjs';
 import { canUseWorkflow } from '@/server/feature-access.mjs';
 import { requestIdentity } from '@/lib/auth/access';
+import { getBlogPost, listBlogPosts } from '@/lib/blog/data';
+import { blogConfig } from '@/lib/blog/adapters/config';
+import { blogPostMetadata } from '@/lib/blog/adapters/seo';
+import { getBlogCopy } from '@/lib/blog/adapters/copy';
+import { articleStyles, BlogByline, BlogCover, BlogPreview, BlogPostMetadata, BlogTableOfContents } from '@/lib/blog/adapters/ui';
+import { BlogContent } from '@/lib/blog/core/renderer';
+import { postSeo, serializeJsonLd } from '@/lib/blog/core/seo';
+
 type Props = { params: Promise<{ locale: string; slug: string }> };
+
 export async function generateMetadata({ params }: Props) {
-  const { slug } = await params;
-  if (!findBlogPost(slug)) notFound();
-  return pageMetadata(params, `/blog/${slug}`);
+  const { slug, locale } = await params;
+  if (!localeCodes.includes(locale as Locale)) notFound();
+  const result = await getBlogPost(locale, slug);
+  if (!result) notFound();
+  return blogPostMetadata(result.post);
 }
+
 export default async function BlogArticle({ params }: Props) {
   const { locale: code, slug } = await params;
-  const post = findBlogPost(slug);
-  if (!post || !localeCodes.includes(code as Locale)) notFound();
+  if (!localeCodes.includes(code as Locale)) notFound();
   const locale = code as Locale;
-  const copy = blogCopy[locale];
-  const article = { ...post, sections: articleSections(post.ids) };
-  const enabled=canUseWorkflow(post.action === '/dashboard' ? 'cover-letter' : post.action.split('/').pop()!,await requestIdentity());
+  const result = await getBlogPost(locale, slug);
+  if (!result) notFound();
+  const { post, document, assets } = result;
+  const copy = getBlogCopy(locale);
+  const config = blogConfig();
+  // Retain existing CTA access checks for legacy workflow-specific slugs.
+  // New articles use the already-public cover-letter workflow.
+  const action = findBlogPost(slug)?.action || '/dashboard';
+  const workflow = action === '/dashboard' ? 'cover-letter' : action.split('/').pop()!;
+  const [related, identity] = await Promise.all([
+    post.category ? listBlogPosts(locale, { pageSize: 4, excludeId: post.id, category: post.category.slug, sort: 'created' }) : Promise.resolve({ posts: [], page: 1, hasNext: false }), requestIdentity(),
+  ]);
+  const enabled = canUseWorkflow(workflow, identity);
+  const article = {
+    title: post.title, intro: post.excerpt,
+    sections: [],
+  };
+  const seo = postSeo(post, config);
   return <>
-    <PageArticle post={article} locale={locale}/>
-    {enabled && <div className="mx-auto mt-12 max-w-4xl"><Button asChild><Link href={localizedPath(locale, post.action as Page)}>{copy.write}</Link></Button></div>}
-    <section aria-labelledby="related-guides" className="mt-12 space-y-8 border-t border-border pt-8">
-      <h2 id="related-guides" className="section-title">{copy.related}</h2>
-      <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2 xl:grid-cols-4" lang="en" dir="ltr">{blogPosts.filter(item => item.slug !== slug).map(item => <ContentCard key={item.slug} href={localizedPath('en', `/blog/${item.slug}`)} title={item.title} category={item.category} metadata={`${articleReadingMinutes(item.ids)} min read`} headingLevel={3} variant="editorial" />)}</div>
-    </section>
+    <script id="blog-article-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(seo.structuredData) }} />
+    <PageArticle post={article} locale={locale} contentLocale={locale} contentsLabel={copy.contents} referenceLabel={copy.label}
+      headerContent={<><BlogPostMetadata post={post} locale={locale} document={document} /><BlogCover post={post} priority /></>}
+      tableOfContents={<BlogTableOfContents document={document} locale={locale} />}>
+      <BlogContent document={document} schemaVersion={post.contentSchemaVersion} assets={assets}
+        mediaOrigins={config.mediaOrigins} styles={articleStyles} labels={copy} />
+      <BlogByline post={post} />
+    </PageArticle>
+    {enabled && <div className="mx-auto mt-12 max-w-4xl"><Button asChild><Link prefetch={false} href={localizedPath(locale, action as Page)}>{copy.write}</Link></Button></div>}
+    {related.posts.length > 0 && <section aria-labelledby="related-guides" className="mt-12 space-y-8 border-t border-border pt-8">
+      <h2 id="related-guides" className="section-title">{copy.latestRelated}</h2>
+      <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2 xl:grid-cols-4" lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+        {related.posts.map(item => <BlogPreview key={item.id} post={item} editorial />)}
+      </div>
+    </section>}
   </>;
 }

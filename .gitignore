@@ -55,3 +55,4 @@ Desktop.ini
 .vercel
 /.next/
 /public/pdf.worker.min.mjs
+/tests/*

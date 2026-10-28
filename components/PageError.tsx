@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import { Button } from "./ui/button";
 import {
   Card,
@@ -8,11 +9,17 @@ import {
   CardContent,
 } from "./ui/card";
 export default function PageError({
+  error,
   retry,
 }: {
   error: Error & { digest?: string };
   retry: () => void;
 }) {
+  useEffect(() => {
+    if (process.env.NODE_ENV === "development") {
+      console.error("[Page render error]", error);
+    }
+  }, [error]);
   return (
     <Card role="alert" className="mx-auto my-12 max-w-lg">
       <CardHeader>

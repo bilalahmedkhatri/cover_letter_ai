@@ -1,6 +1,16 @@
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
+  // Blocking metadata lets the published-post lookup return 404 before an
+  // existing loading boundary commits HTTP 200. No cached publication state.
+  htmlLimitedBots: /.*/,
+  images: {
+    remotePatterns: (process.env.BLOG_MEDIA_ORIGINS || '').split(',').map(value => value.trim()).filter(Boolean).map(value => {
+      const url = new URL(value);
+      if (url.protocol !== 'https:' || url.username || url.password || url.pathname !== '/' || url.search || url.hash) throw new Error('Invalid blog media origin configuration.');
+      return { protocol: 'https', hostname: url.hostname, port: url.port, pathname: '/**' };
+    }),
+  },
   async headers() {
     return [{ source: '/:path*', headers: [
       { key: 'X-Content-Type-Options', value: 'nosniff' },
