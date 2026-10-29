@@ -27,12 +27,13 @@ export function createBlogRepository(db: BlogExecutor, config: BlogConfig) {
       // Fixed SQL choices only: latest-added related articles use creation time;
       // the main listing retains the established publication-time order.
       const order = options.sort === 'created' ? 'p.created_at DESC, p.id DESC' : 'p.published_at DESC, p.id DESC';
-      const rows = await db.query<PostRow>(`SELECT ${projection} ${joins}
+      const rows = await db.query<PostRow & { total_count: string | number }>(`SELECT ${projection}, COUNT(*) OVER() AS total_count ${joins}
         WHERE p.status = 'published' AND p.locale = $1
         AND ($2::text IS NULL OR c.slug = $2) AND ($3::integer IS NULL OR p.id <> $3)
         ORDER BY ${order} LIMIT $4 OFFSET $5`,
       [locale, options.category ?? null, options.excludeId ?? null, size + 1, (page - 1) * size]);
-      return { posts: rows.slice(0, size).map(mapPost), page, hasNext: rows.length > size && page < config.maxPage };
+      const totalPages = rows.length ? Math.min(config.maxPage, Math.ceil(Number(rows[0].total_count) / size)) : page;
+      return { posts: rows.slice(0, size).map(mapPost), page, hasNext: rows.length > size && page < config.maxPage, totalPages };
     },
 
     async detail(locale: string, slug: string): Promise<BlogDetail | null> {

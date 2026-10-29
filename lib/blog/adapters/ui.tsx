@@ -59,9 +59,10 @@ export function BlogByline({ post }: { post: BlogPost }) {
 export function BlogPostMetadata({ post, locale, document }: { post: BlogPost; locale: Locale; document: DocNode | null }) {
   const copy = getBlogCopy(locale);
   const reading = articleReadingTime(document);
+  const isUpdated = new Date(post.updatedAt).getTime() > new Date(post.publishedAt).getTime();
+  const visibleDate = isUpdated ? post.updatedAt : post.publishedAt;
   return <p className="mt-6 flex flex-wrap items-center gap-x-8 gap-y-2 text-sm font-medium text-text-primary">
-    <time dateTime={post.publishedAt} aria-label={copy.published}>{displayDate(post.publishedAt, locale)}</time>
-    {post.updatedAt !== post.publishedAt && <time dateTime={post.updatedAt} aria-label={copy.updated}>{displayDate(post.updatedAt, locale)}</time>}
+    <time dateTime={visibleDate} aria-label={isUpdated ? copy.updated : copy.published}>{displayDate(visibleDate, locale)}</time>
     {reading && <span>{new Intl.NumberFormat(locale).format(reading.minutes)} {copy.minRead}</span>}
     {post.category && <Link prefetch={false} href={`${blogPath(blogConfig(), locale)}?${new URLSearchParams({ category: post.category.slug })}`} className="hover:text-accent">{post.category.name}</Link>}
   </p>;
@@ -236,14 +237,14 @@ export function BlogPostMetadata({ post, locale, document }: { post: BlogPost; l
 
 }
 
-export function BlogTableOfContents({ document, locale }: { document: DocNode | null; locale: Locale }) {
+export function BlogTableOfContents({ document, locale, sidebar = false }: { document: DocNode | null; locale: Locale; sidebar?: boolean }) {
   const headings = articleHeadings(document);
   if (!headings.length) return null;
   const copy = getBlogCopy(locale);
   const firstLevel = Math.min(...headings.map(heading => heading.level));
-  return <nav aria-labelledby="blog-contents-title" className="my-8 rounded-xl border border-border bg-card p-6" data-blog-toc>
+  return <nav aria-labelledby="blog-contents-title" className={`${sidebar ? 'max-h-[50vh] overflow-y-auto p-5' : 'my-8 p-6'} rounded-xl border border-border bg-card`} data-blog-toc>
     <h2 id="blog-contents-title" className="font-semibold text-text-primary">{copy.contents}</h2>
-    <ol className="mt-4 grid list-inside list-decimal gap-3 text-sm sm:grid-cols-2">
+    <ol className={`mt-4 grid list-inside list-decimal gap-3 text-sm ${sidebar ? '' : 'sm:grid-cols-2'}`}>
       {headings.map(heading => <li key={heading.id} style={{ paddingInlineStart: `${Math.max(0, heading.level - firstLevel)}rem` }}>
         <a href={`#${heading.id}`} className="underline decoration-border underline-offset-4 hover:text-accent">{heading.title}</a>
       </li>)}
@@ -270,17 +271,22 @@ export function BlogPreview({ post, editorial = false }: { post: BlogPost; edito
     headingLevel={editorial ? 3 : 2} variant={editorial ? 'related-blog' : 'blog'} contentLang={locale} />;
 }
 
-export function BlogPagination({ locale, page, hasNext, category }: { locale: Locale; page: number; hasNext: boolean; category?: string }) {
+export function BlogPagination({ locale, page, hasNext, category, totalPages }: { locale: Locale; page: number; hasNext: boolean; category?: string; totalPages?: number }) {
   const copy = getBlogCopy(locale);
   if (page === 1 && !hasNext) return null;
+  const firstPage = Math.floor((page - 1) / 10) * 10 + 1;
+  const lastPage = Math.min(firstPage + 9, totalPages ?? page + (hasNext ? 1 : 0));
+  const pages = Array.from({ length: Math.max(0, lastPage - firstPage + 1) }, (_, index) => firstPage + index);
   const href = (number: number) => {
     const query = new URLSearchParams({ page: String(number) });
     if (category !== undefined) query.set('category', category);
     return `${blogPath(blogConfig(), locale)}?${query}`;
   };
-  return <nav aria-label={copy.pagination} className="flex items-center justify-center gap-4">
+  return <nav aria-label={copy.pagination} className="flex flex-wrap items-center justify-center gap-2">
     {page > 1 && <Button asChild variant="outline"><Link prefetch={false} href={href(page - 1)} rel="prev">{copy.previous}</Link></Button>}
-    <span aria-current="page" className="text-sm text-text-secondary">{new Intl.NumberFormat(locale).format(page)}</span>
+    {pages.map(number => number === page
+      ? <span key={number} aria-current="page" className="inline-flex h-9 min-w-9 items-center justify-center rounded-md bg-accent px-3 text-sm font-medium text-accent-foreground">{new Intl.NumberFormat(locale).format(number)}</span>
+      : <Button key={number} asChild variant="outline" size="sm"><Link prefetch={false} href={href(number)}>{new Intl.NumberFormat(locale).format(number)}</Link></Button>)}
     {hasNext && <Button asChild variant="outline"><Link prefetch={false} href={href(page + 1)} rel="next">{copy.next}</Link></Button>}
   </nav>;
 }

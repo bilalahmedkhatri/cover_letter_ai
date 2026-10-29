@@ -2,7 +2,7 @@ import type { Locale } from '../types';
 
 export const siteOrigin = 'https://ailettergen.com';
 export const localeCodes: Locale[] = ['en', 'es', 'fr', 'ru', 'nl', 'pt', 'ar'];
-export const publicPages = ['/', '/about', '/privacy', '/terms', '/pricing', '/features', '/guides', '/compare', '/blog'] as const;
+export const publicPages = ['/', '/about', '/privacy', '/terms', '/pricing', '/features', '/guides', '/compare', '/blog', '/guest-post'] as const;
 export const accountPages = ['/login', '/account'] as const;
 export const dashboardPages = ['/dashboard','/dashboard/university','/dashboard/research','/dashboard/email','/dashboard/settings','/dashboard/billing','/dashboard/cover-letter/result','/dashboard/university/result','/dashboard/email/result','/dashboard/research/result'] as const;
 export const allPages = [...publicPages, ...accountPages, ...dashboardPages];
@@ -29,8 +29,8 @@ export function resolveRoute(pathname: string): { locale: Locale; page: Page; pa
 // Index only pages whose primary content is available in the requested language.
 export function contentLocales(page: Page): Locale[] {
   if (page.startsWith('/blog/')) return []; // Per-record locale, resolved on the server.
-  if (page === '/terms') return ['en'];
-  if (['/pricing','/features','/guides','/compare'].includes(page)) return ['en','ru'];
+  if (page === '/terms' || page === '/guest-post') return ['en'];
+  if (['/pricing','/features'].includes(page)) return ['en','ru'];
   return localeCodes;
 }
 export function canonicalLocale(locale: Locale,page: Page): Locale { return contentLocales(page).includes(locale) ? locale : 'en'; }

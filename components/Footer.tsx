@@ -23,6 +23,7 @@ const Footer: React.FC = () => {
                 <li><a href={localizedPath(locale, '/dashboard')} className="text-text-secondary hover:text-accent text-sm transition-colors">{t('footerGenerator')}</a></li>
                 <li><a href={localizedPath(locale, '/pricing')} className="text-text-secondary hover:text-accent text-sm transition-colors">{shell.pricing}</a></li>
                 <li><a href={localizedPath(locale, '/blog')} className="text-text-secondary hover:text-accent text-sm transition-colors">{shell.blog}</a></li>
+                <li><a href={localizedPath(locale, '/guest-post')} className="text-text-secondary hover:text-accent text-sm transition-colors">Write for us</a></li>
                 {(['/features', '/guides', '/compare'] as const).map((page, index) => <li key={page}><a href={localizedPath(locale, page)} className="text-text-secondary hover:text-accent text-sm transition-colors">{shell.resources[index]}</a></li>)}
               </ul>
             </div>

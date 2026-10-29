@@ -20,11 +20,11 @@ export default async function Blog({ params, searchParams }: Props) {
   const query = await searchParams;
   const page = typeof query.page === 'string' && /^\d{1,5}$/.test(query.page) ? Number(query.page) : 1;
   const category = typeof query.category === 'string' ? query.category : undefined;
-  const result = await listBlogPosts(locale, { page, category });
+  const result = await listBlogPosts(locale, { page, category, pageSize: 12 });
   return <div className="space-y-12">
     <header className="max-w-5xl"><h1 className="editorial-title mt-4">{copy.title}</h1><p className="mt-6 text-lg leading-8 text-text-secondary">{copy.intro}</p></header>
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">{result.posts.map(post => <BlogPreview key={post.id} post={post} />)}</div>
     {!result.posts.length && <p className="rounded-lg border border-border bg-card p-4 text-sm text-text-secondary">{copy.empty}</p>}
-    <BlogPagination locale={locale} page={result.page} hasNext={result.hasNext} category={category} />
+    <BlogPagination locale={locale} page={result.page} hasNext={result.hasNext} category={category} totalPages={result.totalPages} />
   </div>;
 }

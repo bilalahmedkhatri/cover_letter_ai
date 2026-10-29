@@ -62,14 +62,14 @@ export function getPageCopy(locale: Locale, page: Page): PageCopy {
     copy.pricingTeaser = { teaser: pricing.teaser, view: pricing.view };
   }
   if (['/', '/features', '/guides', '/compare'].includes(page)) {
-    const resource = resourceCopy(locale);
+    const resource = resourceCopy(locale, page === '/compare' || page === '/guides' ? page : undefined);
     const comparison = ['compareHeading', 'compareIntro', 'product', 'price', 'focus', 'ownPeriod', 'ownFocus', 'reziPeriod', 'reziFocus', 'tealPeriod', 'tealFocus', 'source', 'checked', 'fair'] as const;
     const keys: (keyof typeof resource)[] = page === '/' ? [...comparison, 'beforeSend', 'guideSection', 'guideSectionIntro', 'reviewSteps', 'viewGuides', 'generic', 'genericExample', 'specific', 'specificExample', 'exampleNote', 'viewCompare']
       : page === '/features' ? ['featuresTitle', 'featuresIntro', 'features', 'limitsTitle', 'limits', 'start']
       : page === '/guides' ? ['guidesTitle', 'guidesIntro', 'guides', 'useOutline', 'outlineNote', 'beforeSend', 'checks', 'start']
       : [...comparison, 'compareTitle', 'choiceTitle', 'choice', 'featuresTitle', 'start'];
     copy.resource = Object.fromEntries(keys.map(key => [key, resource[key]]));
-    copy.resourceNotice = resourceNotice[locale];
+    copy.resourceNotice = page === '/compare' || page === '/guides' ? '' : resourceNotice[locale];
     if (publicWorkflows.includes('email')) copy.business = businessLetterCopy[locale];
   }
   if (page === '/pricing' || page === '/dashboard/billing' || page === '/dashboard/settings') {

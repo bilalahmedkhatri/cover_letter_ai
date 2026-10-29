@@ -1,5 +1,7 @@
 import type { Locale } from '../types';
 import {publicWorkflows} from './workflow.mjs';
+import { compareTranslations } from './compareCopy';
+import { guidesTranslations } from './guidesCopy';
 
 export type ResourcePage = '/features' | '/guides' | '/compare';
 export const resourceLabels: Record<Locale, [string, string, string, string]> = {
@@ -100,8 +102,11 @@ const ru: typeof en = {
   reviewSteps: ['Выберите один подходящий пример из своего опыта.', 'Опишите действие без преувеличений.', 'Проверьте объём и незаполненные шаблонные поля.'],
   viewGuides: 'Открыть руководства', viewCompare: 'Посмотреть сравнение', start: 'Открыть рабочее пространство',
 };
-export function resourceCopy(locale: Locale) {
-  const copy=locale==='ru'?ru:en;
+export function resourceCopy(locale: Locale, page?: ResourcePage) {
+  const base = locale === 'ru' ? ru : en;
+  const translatedGuide = page === '/guides' ? guidesTranslations[locale] : undefined;
+  const copy = page === '/compare' ? { ...base, ...compareTranslations[locale] } : translatedGuide
+    ? { ...base, ...translatedGuide, guides: base.guides.map(guide => translatedGuide.guides.find(item => item.kind === guide.kind) ?? guide) } : base;
   return publicWorkflows.length===1 ? {...copy,features:[
     locale==='ru'?['Сопроводительные письма для работы','Подготовьте письмо на основе своего опыта и требований вакансии.']:['Job cover letters','Prepare a job cover letter from your own experience and the role requirements.'],
     locale==='ru'?['Контекст перед первым предложением','Добавьте опыт, навыки, резюме и текст вакансии. Используйте только подтверждённые факты.']:['Context before the first sentence','Add your experience and skills, upload a resume and supply the vacancy details. Include only achievements you can support.'],
@@ -109,6 +114,6 @@ export function resourceCopy(locale: Locale) {
   ]} : copy;
 }
 export function resourceMetadata(locale: Locale, page: ResourcePage) {
-  const copy = resourceCopy(locale);
+  const copy = resourceCopy(locale, page);
   return { title: ({ '/features': copy.featuresTitle, '/guides': copy.guidesTitle, '/compare': copy.compareTitle })[page] + ' | AI Letter Generator', description: ({ '/features': copy.featuresIntro, '/guides': copy.guidesIntro, '/compare': copy.compareIntro })[page] };
 }

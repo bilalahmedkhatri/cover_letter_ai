@@ -18,7 +18,7 @@ export function PriceComparison({ compact = false }: { compact?: boolean }) {
     ['Rezi Pro', '$29', c.reziPeriod, c.reziFocus, 'https://www.rezi.ai/pricing'],
     ['Teal+', '$29', c.tealPeriod, c.tealFocus, 'https://www.tealhq.com/pricing'],
   ];
-  return <div lang={locale === 'ru' ? 'ru' : 'en'} dir="ltr">
+  return <div lang={compact ? (locale === 'ru' ? 'ru' : 'en') : locale} dir={!compact && locale === 'ar' ? 'rtl' : 'ltr'}>
     {!compact && <div className="space-y-4 sm:hidden">{rows.map(([name, price, period, focus, url], index) => <article key={name} className={`rounded-xl border border-border p-5 ${index === 0 ? 'bg-accent/5' : 'bg-card'}`}><h3 className="font-semibold"><a href={url} className="underline decoration-border underline-offset-4" {...(index > 0 ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{name}</a></h3><p className="mt-3"><span className="text-2xl font-semibold">{price}</span><span className="ms-2 text-xs text-text-secondary">{period}</span></p><p className="mt-4 text-sm leading-7 text-text-secondary">{focus}</p></article>)}</div>}
     <div className={`${compact ? '' : 'hidden sm:block'} overflow-x-auto rounded-xl border border-border`}>
       <table className={`w-full ${compact ? '' : 'min-w-[560px]'} text-start text-sm`}>
@@ -62,7 +62,7 @@ export default function ResourcePages({ page }: { page: ResourcePage }) {
   const intro = page === '/features' ? c.featuresIntro : page === '/guides' ? c.guidesIntro : c.compareIntro;
   return <div className="space-y-12 sm:space-y-16">
     {pageCopy.resourceNotice && <p className="rounded-lg border border-border p-4 text-sm text-text-secondary">{pageCopy.resourceNotice}</p>}
-    <div lang={locale === 'ru' ? 'ru' : 'en'} dir="ltr" className="space-y-12 sm:space-y-16">
+    <div lang={page !== '/features' ? locale : locale === 'ru' ? 'ru' : 'en'} dir={page !== '/features' && locale === 'ar' ? 'rtl' : 'ltr'} className="space-y-12 sm:space-y-16">
       <header className="max-w-3xl pt-6"><h1 className="editorial-title">{title}</h1><p className="mt-6 text-lg leading-8 text-text-secondary">{intro}</p></header>
       {page === '/features' && <><div className="grid gap-6 md:grid-cols-2">{c.features.map(([heading, text], index) => <article key={heading} className="rounded-xl border border-border bg-card p-7"><span className="text-xs font-semibold text-accent">0{index + 1}</span><h2 className="mt-4 text-xl font-semibold">{heading}</h2><p className="mt-4 text-sm leading-7 text-text-secondary">{text}</p></article>)}</div><section className="max-w-3xl"><h2 className="section-title">{c.limitsTitle}</h2><p className="mt-4 text-sm leading-7 text-text-secondary">{c.limits}</p></section></>}
       {page === '/guides' && <>{c.guides.filter(guide=>publicWorkflows.includes(guide.kind==='job'?'cover-letter':guide.kind)).map((guide, index) => {

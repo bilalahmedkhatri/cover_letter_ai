@@ -1,7 +1,5 @@
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import PageArticle from '@/components/PageArticle';
-import { Button } from '@/components/ui/button';
 import { findBlogPost } from '@/services/blogContent.mjs';
 import { localizedPath, localeCodes, type Page } from '@/services/routing';
 import type { Locale } from '@/types';
@@ -14,6 +12,7 @@ import { getBlogCopy } from '@/lib/blog/adapters/copy';
 import { articleStyles, BlogByline, BlogCover, BlogPreview, BlogPostMetadata, BlogTableOfContents } from '@/lib/blog/adapters/ui';
 import { BlogContent } from '@/lib/blog/core/renderer';
 import { postSeo, serializeJsonLd } from '@/lib/blog/core/seo';
+import { BlogWritingHelp } from '@/lib/blog/adapters/sidebar';
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -49,14 +48,21 @@ export default async function BlogArticle({ params }: Props) {
   const seo = postSeo(post, config);
   return <>
     <script id="blog-article-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(seo.structuredData) }} />
-    <PageArticle post={article} locale={locale} contentLocale={locale} contentsLabel={copy.contents} referenceLabel={copy.label}
+    <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_17rem]" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+    <aside className="space-y-5 lg:sticky lg:top-24 lg:col-start-2 lg:row-start-1" lang={locale}>
+      <BlogTableOfContents document={document} locale={locale} sidebar />
+      {enabled && <BlogWritingHelp locale={locale} label={copy.write} href={localizedPath(locale, action as Page)} />}
+    </aside>
+    <div className="min-w-0 lg:col-start-1 lg:row-start-1">
+    <PageArticle post={article} locale={locale} contentLocale={locale} contentsLabel={copy.contents}
       headerContent={<><BlogPostMetadata post={post} locale={locale} document={document} /><BlogCover post={post} priority /></>}
-      tableOfContents={<BlogTableOfContents document={document} locale={locale} />}>
+      tableOfContents={false}>
       <BlogContent document={document} schemaVersion={post.contentSchemaVersion} assets={assets}
         mediaOrigins={config.mediaOrigins} styles={articleStyles} labels={copy} />
       <BlogByline post={post} />
     </PageArticle>
-    {enabled && <div className="mx-auto mt-12 max-w-4xl"><Button asChild><Link prefetch={false} href={localizedPath(locale, action as Page)}>{copy.write}</Link></Button></div>}
+    </div>
+    </div>
     {related.posts.length > 0 && <section aria-labelledby="related-guides" className="mt-12 space-y-8 border-t border-border pt-8">
       <h2 id="related-guides" className="section-title">{copy.latestRelated}</h2>
       <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2 xl:grid-cols-4" lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'}>

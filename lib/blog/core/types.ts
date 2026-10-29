@@ -51,7 +51,7 @@ export interface BlogListOptions {
   sort?: 'published' | 'created';
 }
 
-export interface BlogPage { posts: BlogPost[]; page: number; hasNext: boolean }
+export interface BlogPage { posts: BlogPost[]; page: number; hasNext: boolean; totalPages?: number }
 export interface BlogDetail { post: BlogPost; document: DocNode | null; assets: BlogAsset[] }
 export interface PublishedBlogLink { locale: string; slug: string; updatedAt: string }
 

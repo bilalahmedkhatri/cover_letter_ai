@@ -78,14 +78,14 @@ export const legalLanguageNotice: Record<Locale, string> = {
 export function alternateLocales(page: Page): Locale[] {
   if (page.startsWith('/blog/')) return []; // Article bodies currently remain English.
   if (['/login','/account'].includes(page) || page.startsWith('/dashboard')) return [];
-  if (['/pricing', '/features', '/guides', '/compare'].includes(page)) return ['en', 'ru'];
-  return page === '/terms' ? [] : localeCodes;
+  if (['/pricing', '/features'].includes(page)) return ['en', 'ru'];
+  return page === '/terms' || page === '/guest-post' ? [] : localeCodes;
 }
 export function getMetadata(locale: Locale, page: Page) {
   const resource = ['/features', '/guides', '/compare'].includes(page) ? resourceMetadata(locale, page as ResourcePage) : null;
   const business = page === '/' ? businessLetterCopy[locale] : null;
   const post = page.startsWith('/blog/') ? findBlogPost(page.slice(6)) : null;
-  const blog = page === '/blog' ? { title: `${blogCopy[locale].label} | ailettergen`, description: blogCopy[locale].intro } : post ? { title: `${post.title} | ailettergen`, description: post.intro } : null;
+  const blog = page === '/guest-post' ? { title: 'Write for Us — Guest Post Guidelines | ailettergen', description: 'Pitch an original article about cover letters, job applications and responsible AI writing. Read our guest post guidelines and contact the AILetterGen editorial team.' } : page === '/blog' ? { title: `${blogCopy[locale].label} | ailettergen`, description: blogCopy[locale].intro } : post ? { title: `${post.title} | ailettergen`, description: post.intro } : null;
   return {
     title: page.startsWith('/dashboard') ? `${locale==='ru'?'Ваш кабинет':'Your dashboard'} | AI Letter Generator` : ['/login','/account'].includes(page) ? `${locale === 'ru' ? (page === '/login' ? 'Войти' : 'Ваш кабинет') : (page === '/login' ? 'Sign in' : 'Your account')} | AI Letter Generator` : blog?.title ?? resource?.title ?? (page === '/pricing' ? `${pricingLabel[locale]} | AI Letter Generator` : translations[locale][titles[page as keyof typeof titles]]),
     description: blog?.description ?? business?.description ?? resource?.description ?? (page === '/pricing' ? (locale === 'ru' ? 'Сравните Starter за $10, Plus за $20 и Pro за $28: кредиты, лимиты писем и исследований, возможности и продление на 30 дней. Платные тарифы готовятся к запуску.' : 'Compare Starter $10, Plus $20 and Pro $28: shared credits, letter and research limits, features and 30-day prepaid renewal. Paid plans are being prepared.') : descriptions[locale][pages.indexOf(page)] || translations[locale].title404),

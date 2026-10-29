@@ -31,6 +31,8 @@ export default function Header() {
   );
   const { theme, setTheme } = useTheme();
   const pathname = useRoutePath();
+  const blogBase = localizedPath(locale, "/blog");
+  const isBlogPage = pathname === blogBase || pathname.startsWith(`${blogBase}/`);
   const [open, setOpen] = useState(false);
   useEffect(() => setOpen(false), [pathname]);
   const resources = shell.resources;
@@ -71,6 +73,7 @@ export default function Header() {
   return (
     <header className="site-header sticky top-0 z-30 border-b border-border bg-header-bg/95 backdrop-blur-md">
       <div className="mx-auto flex h-20 max-w-screen-xl items-center justify-between gap-3 px-5 sm:px-8 lg:px-10">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
         <Link
           href={localizedPath(locale, "/")}
           className="brand"
@@ -78,6 +81,8 @@ export default function Header() {
         >
           <Brand />
         </Link>
+        {isBlogPage && <Link href={blogBase} prefetch={false} className="shrink-0 whitespace-nowrap text-sm font-medium text-text-secondary hover:text-accent sm:text-base" aria-current={pathname === blogBase ? "page" : undefined}><span aria-hidden="true">/ </span>Blog</Link>}
+        </div>
         <nav
           aria-label={copy.menu}
           className="header-nav hidden items-center gap-6 text-sm xl:flex"
