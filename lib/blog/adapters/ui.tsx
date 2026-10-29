@@ -252,11 +252,20 @@ export function BlogTableOfContents({ document, locale }: { document: DocNode | 
 
 export function BlogPreview({ post, editorial = false }: { post: BlogPost; editorial?: boolean }) {
   const locale = post.locale as Locale;
-  const copy = getBlogCopy(locale);
+  const cover = post.cover;
+  const src = cover?.mediaType.startsWith('image/') && cover.mediaType !== 'image/svg+xml'
+    ? mediaUrl(cover.publicUrl, blogConfig().mediaOrigins) : undefined;
+  // Optional editorial labels; never infer popularity or trending from publication order.
+  const badges = Array.isArray(post.metadata.badges)
+    ? [...new Set(post.metadata.badges.filter((value): value is string =>
+      typeof value === 'string' && ['latest', 'popular', 'trending'].includes(value.toLowerCase()))
+      .map(value => value.toLowerCase()))] : [];
   return <ContentCard href={blogPath(blogConfig(), locale, post.slug)} title={post.title} category={post.category?.name}
-    description={editorial ? undefined : post.excerpt} actionLabel={editorial ? undefined : copy.read}
-    metadata={displayDate(post.publishedAt, locale)} media={post.cover ? <BlogCover post={post} /> : undefined}
-    headingLevel={editorial ? 3 : 2} variant={editorial ? 'editorial' : 'default'} contentLang={locale} />;
+    badges={badges} metadata={<time dateTime={post.publishedAt}>{displayDate(post.publishedAt, locale)}</time>}
+    media={<div className="relative h-48 shrink-0 overflow-hidden bg-card-secondary">
+      {src && cover && <Image src={src} alt={cover.alt || post.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover" />}
+    </div>}
+    headingLevel={editorial ? 3 : 2} variant="blog" contentLang={locale} />;
 }
 
 export function BlogPagination({ locale, page, hasNext, category }: { locale: Locale; page: number; hasNext: boolean; category?: string }) {
