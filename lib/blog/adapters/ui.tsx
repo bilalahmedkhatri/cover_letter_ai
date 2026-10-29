@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ContentCard } from '@/components/ui/content-card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import type { Locale } from '@/types';
 import type { BlogPost } from '../core/types';
 import type { ContentStyle } from '../core/renderer';
@@ -260,12 +261,13 @@ export function BlogPreview({ post, editorial = false }: { post: BlogPost; edito
     ? [...new Set(post.metadata.badges.filter((value): value is string =>
       typeof value === 'string' && ['latest', 'popular', 'trending'].includes(value.toLowerCase()))
       .map(value => value.toLowerCase()))] : [];
-  return <ContentCard href={blogPath(blogConfig(), locale, post.slug)} title={post.title} category={post.category?.name}
-    badges={badges} metadata={<time dateTime={post.publishedAt}>{displayDate(post.publishedAt, locale)}</time>}
+  return <ContentCard href={blogPath(blogConfig(), locale, post.slug)} title={post.title} category={editorial ? undefined : post.category?.name}
+    badges={editorial ? undefined : badges} metadata={editorial ? undefined : <time dateTime={post.publishedAt}>{displayDate(post.publishedAt, locale)}</time>}
     media={<div className="relative h-48 shrink-0 overflow-hidden bg-card-secondary">
       {src && cover && <Image src={src} alt={cover.alt || post.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover" />}
+      {editorial && post.category && <Badge variant="secondary" lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} className="absolute start-3 top-3 z-10 max-w-[calc(100%-1.5rem)] truncate shadow-sm">{post.category.name}</Badge>}
     </div>}
-    headingLevel={editorial ? 3 : 2} variant="blog" contentLang={locale} />;
+    headingLevel={editorial ? 3 : 2} variant={editorial ? 'related-blog' : 'blog'} contentLang={locale} />;
 }
 
 export function BlogPagination({ locale, page, hasNext, category }: { locale: Locale; page: number; hasNext: boolean; category?: string }) {
