@@ -42,14 +42,14 @@ export function LandingAdditions() {
   const { locale } = useLocale();
   const pageCopy = usePageCopy();
   const c = pageCopy.resource!;
-  const contentLanguage = locale === 'ru' ? 'ru' : 'en';
+  const contentLanguage = locale;
   return <>
     {pageCopy.resourceNotice && <p className="text-xs text-text-secondary">{pageCopy.resourceNotice}</p>}
-    <section lang={contentLanguage} dir="ltr" className="grid gap-9 lg:grid-cols-2 lg:gap-14">
-      <div><p className="eyebrow">{c.beforeSend}</p><h2 className="section-title mt-4">{c.guideSection}</h2><p className="mt-5 text-sm leading-7 text-text-secondary">{c.guideSectionIntro}</p><ol className="mt-6 space-y-4">{c.reviewSteps.map((step, index) => <li key={step} className="flex gap-3 text-sm leading-6"><span className="text-accent">0{index + 1}</span>{step}</li>)}</ol><Button asChild variant="outline" className="mt-7"><a href={localizedPath(locale, '/guides')}>{c.viewGuides}<ArrowRight/></a></Button></div>
+    <section lang={contentLanguage} dir={locale === 'ar' ? 'rtl' : 'ltr'} className="grid gap-9 lg:grid-cols-2 lg:gap-14">
+      <div><p className="eyebrow">{c.beforeSend}</p><h2 className="section-title mt-4">{c.guideSection}</h2><p className="mt-5 text-sm leading-7 text-text-secondary">{c.guideSectionIntro}</p><ol className="mt-6 space-y-4">{c.reviewSteps.map((step, index) => <li key={step} className="flex gap-3 text-sm leading-6"><span className="text-accent">0{index + 1}</span>{step}</li>)}</ol><Button asChild variant="outline" className="mt-7"><a href={localizedPath(locale, '/guides')}>{c.viewGuides}<ArrowRight className="rtl:rotate-180"/></a></Button></div>
       <div className="rounded-2xl border border-border bg-card p-6 sm:p-8"><p className="eyebrow">{c.generic}</p><p className="mt-3 font-serif text-xl leading-8 text-text-secondary">{c.genericExample}</p><div className="my-6 h-px bg-border"/><p className="eyebrow text-accent">{c.specific}</p><p className="mt-3 font-serif text-xl leading-8">{c.specificExample}</p><p className="mt-6 text-xs leading-6 text-text-secondary">{c.exampleNote}</p></div>
     </section>
-    <section lang={contentLanguage} dir="ltr"><h2 className="section-title">{c.compareHeading}</h2><p className="mt-5 mb-8 max-w-3xl text-sm leading-7 text-text-secondary">{c.compareIntro}</p><PriceComparison compact/><Button asChild variant="outline" className="mt-6"><a href={localizedPath(locale, '/compare')}>{c.viewCompare}<ArrowRight/></a></Button></section>
+    <section lang={contentLanguage} dir={locale === 'ar' ? 'rtl' : 'ltr'}><h2 className="section-title">{c.compareHeading}</h2><Button asChild variant="outline" className="mt-6"><a href={localizedPath(locale, '/compare')}>{c.viewCompare}<ArrowRight className="rtl:rotate-180"/></a></Button></section>
   </>;
 }
 

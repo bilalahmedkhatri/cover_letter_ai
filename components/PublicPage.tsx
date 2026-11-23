@@ -11,6 +11,6 @@ export default function PublicPage({ page, locale: code, children }: { page: Pag
   const locale = code as Locale;
   return <main className="mx-auto max-w-screen-xl px-5 py-12 sm:px-8 lg:px-10">
     <PageCopyProvider value={getPageCopy(locale, page)}>{children}</PageCopyProvider>
-    <PageArticle page={page} locale={locale}/>
+    {page !== '/guides' && <PageArticle page={page} locale={locale}/>}
   </main>;
 }

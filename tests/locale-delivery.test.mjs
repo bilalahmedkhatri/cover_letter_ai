@@ -33,8 +33,38 @@ const { languageLabel, paymentStatusLabels } = await import('../services/dashboa
 const { privacyPolicyCopy } = await import('../services/privacyPolicyCopy.ts');
 const { privacyGuideCopy } = await import('../services/privacyGuideCopy.ts');
 const { getMetadata, alternateLocales } = await import('../services/seo.ts');
+const { pageArticles, articleSections } = await import('../services/pageArticles.mjs');
 hooks.deregister();
 const locales = ['en', 'ru', 'es', 'fr', 'pt', 'nl', 'ar'];
+
+test('public reference topics have one owner across features, about, pricing, terms and privacy', () => {
+  const pages = ['/features', '/about', '/pricing', '/terms', '/privacy'];
+  const ids = new Set();
+  const paragraphs = new Set();
+  for (const page of pages) {
+    assert.ok(pageArticles[page].title && pageArticles[page].intro);
+    const sections = articleSections(page);
+    assert.ok(sections.length > 0, `${page}: retain useful reference content`);
+    for (const section of sections) {
+      assert.ok(!ids.has(section.id), `${page}: repeated topic ${section.id}`);
+      ids.add(section.id);
+      assert.ok(section.link.startsWith('/'), `${page}: retain a destination`);
+      for (const paragraph of section.paragraphs) {
+        assert.ok(paragraph.trim());
+        assert.ok(!paragraphs.has(paragraph), `${page}: repeated paragraph in ${section.id}`);
+        paragraphs.add(paragraph);
+      }
+    }
+  }
+  assert.equal(ids.size, 38, 'Retain every unique topic across the five reference pages');
+  for (const [page, topics] of Object.entries({
+    '/features': ['brief', 'editing', 'research', 'exports'],
+    '/about': ['workflow', 'trust', 'navigation', 'maintenance'],
+    '/pricing': ['allowance', 'starter', 'plus', 'pro', 'free', 'failures'],
+    '/terms': ['responsibilities', 'acceptable', 'permissions', 'limits', 'attribution', 'access'],
+    '/privacy': ['dataflow', 'security', 'history', 'profile', 'credentials', 'deletion'],
+  })) for (const topic of topics) assert.ok(pageArticles[page].modules.includes(topic), `${page}: ${topic}`);
+});
 
 test('privacy has complete policy and reference copy in every locale without English fallback notices', () => {
   const englishPolicy = privacyPolicyCopy.en;
@@ -45,7 +75,7 @@ test('privacy has complete policy and reference copy in every locale without Eng
     assert.equal(policy.sections.length, 7, locale);
     assert.ok(policy.title && policy.back, locale);
     assert.deepEqual(guide.sections.map(section => section.id), englishGuide.sections.map(section => section.id));
-    assert.equal(guide.sections.length, 14, locale);
+    assert.equal(guide.sections.length, 9, locale);
     assert.ok(guide.reference && guide.contents && guide.title && guide.intro, locale);
     for (const [index, section] of policy.sections.entries()) {
       const original = englishPolicy.sections[index];
@@ -101,6 +131,9 @@ test('route payloads preserve values while excluding unrelated pricing, guides a
     assert.deepEqual(landing.pricingTeaser, { teaser: pricingCopy(locale).teaser, view: pricingCopy(locale).view });
     assert.equal(landing.resource.guides, undefined);
     assert.equal(landing.resource.features, undefined);
+    assert.equal(landing.resource.compareIntro, undefined);
+    assert.equal(landing.resource.ownPeriod, undefined);
+    assert.equal(landing.resource.product, undefined);
     const pricing = getPageCopy(locale, '/pricing');
     assert.deepEqual(pricing.pricing, pricingCopy(locale));
     assert.equal(pricing.resource, undefined);
@@ -108,7 +141,7 @@ test('route payloads preserve values while excluding unrelated pricing, guides a
     assert.deepEqual(getPageCopy(locale, '/login'), {});
     for (const route of ['/features', '/guides', '/compare']) {
       const selected = getPageCopy(locale, route);
-      for (const [key, value] of Object.entries(selected.resource)) assert.deepEqual(value, resourceCopy(locale)[key]);
+      for (const [key, value] of Object.entries(selected.resource)) assert.deepEqual(value, resourceCopy(locale, route)[key]);
       assert.equal(selected.landing, undefined);
       assert.equal(selected.pricing, undefined);
     }
@@ -116,6 +149,10 @@ test('route payloads preserve values while excluding unrelated pricing, guides a
     assert.equal(getPageCopy(locale, '/guides').resource.features, undefined);
     assert.equal(getPageCopy(locale, '/compare').resource.guides, undefined);
     assert.equal(getPageCopy(locale, '/privacy').aboutDescription, undefined);
+    const about = getPageCopy(locale, '/about');
+    assert.equal(about.messages.landingStep1Text, undefined);
+    assert.equal(about.messages.landingForJobSeekersText, undefined);
+    assert.equal(about.messages.backToGenerator, translations[locale].backToGenerator);
   }
 });
 

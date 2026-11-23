@@ -72,6 +72,7 @@ export default function BillingPanel({ compact = false }: { compact?: boolean })
   const order = billing?.order;
   return <section id="pricing" className="scroll-mt-28 space-y-6 rounded-2xl border border-border bg-card p-6 sm:p-8">
     <div><h2 className="section-title">{compact ? pricing.statusTitle : copy.title}</h2></div>
+    {!compact && <p className="text-sm leading-6 text-text-secondary">{pricing.wallet}</p>}
     {billing?.sandbox && <p className="text-sm font-semibold">{copy.sandbox}</p>}
     {!billing?.checkoutEnabled && <p className="text-sm text-text-secondary">{copy.unavailable}</p>}
     {compact ? <Button asChild variant="outline"><a href={localizedPath(locale, '/pricing')}>{pricing.view}</a></Button> : <div className="grid gap-5 md:grid-cols-3">
@@ -86,8 +87,6 @@ export default function BillingPanel({ compact = false }: { compact?: boolean })
           <li>{pricing.or} {billingLimits(plan).premiumLetters} {pricing.premium.toLowerCase()}</li>
           {publicWorkflows.includes('research') && <li>{pricing.or} {billingLimits(plan).universityResearch} {pricing.research.toLowerCase()}</li>}
         </ul>
-        <p className="mt-5 text-xs leading-5 text-text-muted">{pricing.wallet}</p>
-
         <Button className="mt-6 w-full" disabled={!billing?.checkoutEnabled || Boolean(busy)} onClick={() => checkout(plan.id)}>
           {busy === plan.id ? copy.creating : billing?.checkoutEnabled ? copy.buy : (locale === 'ru' ? 'Скоро' : 'Coming soon')}
         </Button>

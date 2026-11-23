@@ -36,7 +36,6 @@ export default function PricingPage() {
       <section id="compare-plans" className="scroll-mt-28">
         <h2 className="section-title">{copy.compare}</h2>
         <p className="mt-3 text-text-secondary">{copy.compareIntro}</p>
-        <p className="mt-4 max-w-3xl text-sm leading-6 text-text-secondary">{copy.wallet}</p>
         <div className="mt-8 overflow-x-auto rounded-xl border border-border" tabIndex={0} aria-label={copy.compare}>
           <table className="w-full min-w-[650px] border-collapse text-start text-sm">
             <caption className="sr-only">{copy.compare}. {copy.wallet}</caption>

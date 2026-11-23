@@ -141,6 +141,73 @@
     padding: 1.25rem;
   }
 }
+@keyframes landing-reveal {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.landing .paper-stage,
+.landing [data-landing-card] {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  box-shadow: 0 12px 32px -24px rgb(0 0 0 / 0.45), inset 0 1px 0 rgb(var(--color-accent) / 0.1);
+}
+.landing .landing-depth {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  inline-size: 210px;
+  block-size: 210px;
+  inset-inline-end: -45px;
+  inset-block-start: -60px;
+  color: rgb(var(--color-accent));
+  opacity: 0.48;
+}
+.landing .landing-depth--orbit { color: #8b7ed8; }
+.landing .landing-depth--frames { color: #4299b8; }
+.landing .paper-stage > .landing-depth {
+  inline-size: 340px;
+  block-size: 340px;
+  inset-block-start: -80px;
+  inset-inline-end: -85px;
+  opacity: 0.75;
+}
+.landing .sample-paper {
+  position: relative;
+  box-shadow: 8px 10px 0 -3px rgb(var(--color-card) / 0.7),
+    8px 10px 0 -2px rgb(var(--color-accent) / 0.15),
+    15px 20px 0 -6px rgb(var(--color-card) / 0.5),
+    15px 20px 0 -5px rgb(var(--color-accent) / 0.1),
+    0 24px 42px -24px rgb(0 0 0 / 0.5);
+}
+@media (min-width: 768px) {
+  .landing .sample-paper { transform: perspective(1100px) rotateX(3deg) rotateY(-4deg); }
+  .landing[dir="rtl"] .sample-paper { transform: perspective(1100px) rotateX(3deg) rotateY(4deg); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .landing .paper-stage,
+  .landing [data-landing-revealed] {
+    animation: landing-reveal 400ms ease-out;
+  }
+  .landing [data-landing-revealed] [data-landing-card] {
+    animation: landing-reveal 400ms ease-out backwards;
+  }
+  .landing [data-landing-card]:nth-child(2) { animation-delay: 60ms; }
+  .landing [data-landing-card]:nth-child(3) { animation-delay: 120ms; }
+  .landing [data-landing-card]:nth-child(n+4) { animation-delay: 180ms; }
+  .landing [data-landing-card],
+  .landing .purpose-tab { transition: transform 180ms ease-out, border-color 180ms ease-out; }
+  .landing .sample-paper { transition: transform 400ms ease-out; }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .landing [data-landing-card]:hover,
+  .landing .purpose-tab:hover { transform: translateY(-2px); }
+  .landing .paper-stage:hover .sample-paper { transform: perspective(1100px) rotateX(0) rotateY(0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

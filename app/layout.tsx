@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import PrivateAnalytics from '@/components/PrivateAnalytics';
+import AnalyticsScripts from '@/components/AnalyticsScripts';
 import "./globals.css";
 import { socialImage } from '@/services/seo';
 import WorkspaceProviders from '@/components/WorkspaceProviders';
@@ -33,6 +34,7 @@ export default async function RootLayout({
       <body>
         <WorkspaceProviders>{children}</WorkspaceProviders>
         <PrivateAnalytics />
+        <AnalyticsScripts />
       </body>
     </html>
   );

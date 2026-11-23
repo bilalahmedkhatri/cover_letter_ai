@@ -8,6 +8,13 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
+## Future paid launch — deferred (5 November 2026)
+
+- Current release work covers production configuration, existing database migrations and the cover-letter user flow. Paid launch remains a future update.
+- Keep `BILLING_ENABLE_CHECKOUT=false` until server-side paid entitlement and credit/quota enforcement are integrated with generation and verified end to end.
+- Before enabling payments, verify signed webhooks, duplicate-payment protection, allowance reservation/settlement, failure recovery and account ownership. Preserve existing plan names/prices; do not enable paid checkout as part of unrelated launch fixes.
+- Local configuration and migration files do not prove production readiness. Confirm the intended Vercel project/environment and database before deployment or migrations, and report production checks separately from local source changes.
+
 ## Product release and sidebar conventions
 
 - Reuse existing components/helpers and preserve structure; prefer the smallest effective change.

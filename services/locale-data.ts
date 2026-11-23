@@ -3,6 +3,8 @@ import type { Locale } from '../types';
 import { translations, type TranslationKeys } from './translations';
 import { interfaceCopy } from './interfaceCopy';
 import { landingContent } from './landingContent';
+import { landingResearch } from './landingResearch';
+import { landingHelperCopy, landingReviewCopy } from './landingHelperCopy';
 import { resourceCopy, resourceLabels, resourceNotice } from './resourceCopy';
 import { pricingCopy, pricingLabel, pricingNotice } from './pricingCopy';
 import { billingCopy } from './billingCopy';
@@ -35,6 +37,8 @@ export type PageCopy = {
   messages?: Partial<Record<TranslationKeys, string>>;
   interface?: ReturnType<typeof interfaceCopy>;
   landing?: ReturnType<typeof landingContent>;
+  landingResearch?: ReturnType<typeof landingResearch>;
+  landingReviews?: ReturnType<typeof landingReviewCopy>;
   resource?: Partial<ReturnType<typeof resourceCopy>>;
   pricing?: ReturnType<typeof pricingCopy>;
   pricingTeaser?: Pick<ReturnType<typeof pricingCopy>, 'teaser' | 'view'>;
@@ -48,7 +52,7 @@ export type PageCopy = {
 
 export function getPageCopy(locale: Locale, page: Page): PageCopy {
   const copy: PageCopy = {};
-  if (page === '/' || page === '/about') {
+  if (page === '/') {
     copy.messages = selectMessages(locale, Object.keys(translations.en).filter(key => key.startsWith('landing')) as TranslationKeys[]);
   }
   if (['/about', '/privacy', '/terms'].includes(page)) {
@@ -57,6 +61,8 @@ export function getPageCopy(locale: Locale, page: Page): PageCopy {
   if (page === '/') {
     copy.interface = interfaceCopy(locale);
     copy.landing = landingContent(locale);
+    copy.landingResearch = landingResearch(locale);
+    copy.landingReviews = landingReviewCopy(locale);
     const pricing = pricingCopy(locale);
     // Landing uses only the teaser; never serialize the entire pricing table here.
     copy.pricingTeaser = { teaser: pricing.teaser, view: pricing.view };
@@ -64,12 +70,13 @@ export function getPageCopy(locale: Locale, page: Page): PageCopy {
   if (['/', '/features', '/guides', '/compare'].includes(page)) {
     const resource = resourceCopy(locale, page === '/compare' || page === '/guides' ? page : undefined);
     const comparison = ['compareHeading', 'compareIntro', 'product', 'price', 'focus', 'ownPeriod', 'ownFocus', 'reziPeriod', 'reziFocus', 'tealPeriod', 'tealFocus', 'source', 'checked', 'fair'] as const;
-    const keys: (keyof typeof resource)[] = page === '/' ? [...comparison, 'beforeSend', 'guideSection', 'guideSectionIntro', 'reviewSteps', 'viewGuides', 'generic', 'genericExample', 'specific', 'specificExample', 'exampleNote', 'viewCompare']
+    const keys: (keyof typeof resource)[] = page === '/' ? ['compareHeading', 'viewCompare', 'beforeSend', 'guideSection', 'guideSectionIntro', 'reviewSteps', 'viewGuides', 'generic', 'genericExample', 'specific', 'specificExample', 'exampleNote']
       : page === '/features' ? ['featuresTitle', 'featuresIntro', 'features', 'limitsTitle', 'limits', 'start']
       : page === '/guides' ? ['guidesTitle', 'guidesIntro', 'guides', 'useOutline', 'outlineNote', 'beforeSend', 'checks', 'start']
       : [...comparison, 'compareTitle', 'choiceTitle', 'choice', 'featuresTitle', 'start'];
     copy.resource = Object.fromEntries(keys.map(key => [key, resource[key]]));
-    copy.resourceNotice = page === '/compare' || page === '/guides' ? '' : resourceNotice[locale];
+    if (page === '/') Object.assign(copy.resource, landingHelperCopy(locale));
+    copy.resourceNotice = page === '/' || page === '/compare' || page === '/guides' ? '' : resourceNotice[locale];
     if (publicWorkflows.includes('email')) copy.business = businessLetterCopy[locale];
   }
   if (page === '/pricing' || page === '/dashboard/billing' || page === '/dashboard/settings') {
