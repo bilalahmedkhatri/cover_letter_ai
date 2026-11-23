@@ -10,18 +10,12 @@ export default function AnalyticsScripts() {
     <>
       {gaId && (
         <>
-          <Script
-            strategy="afterInteractive"
-            src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-          />
-          <Script id="ga4-init" strategy="afterInteractive">
+          <Script async src={`https://www.googletagmanager.com/gtm.js?id=${gaId}`}></Script>
+          <Script>
             {`
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', '${gaId}', {
-                page_path: window.location.pathname,
-              });
             `}
           </Script>
         </>
